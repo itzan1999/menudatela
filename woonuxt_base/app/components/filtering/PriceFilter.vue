@@ -51,19 +51,21 @@ watch(isFiltersActive, () => {
         <label for="price-to" class="absolute px-2 leading-none text-gray-400" v-html="currencySymbol"></label>
       </div>
       <div class="mx-1 mt-1 col-span-full">
-        <SliderRoot
-          v-model="price"
-          :min="0"
-          :max="maxPrice"
-          aria-labelledby="price-from price-to"
-          class="relative flex items-center w-full"
-          @value-commit="applyPrice">
-          <SliderTrack class="relative flex-1 h-1.5 rounded-full bg-gray-300 cursor-pointer">
-            <SliderRange class="absolute h-full rounded-full bg-primary" />
-          </SliderTrack>
-          <SliderThumb class="block w-5 h-5 bg-white border border-gray-300 rounded-full" />
-          <SliderThumb class="block w-5 h-5 bg-white border border-gray-300 rounded-full" />
-        </SliderRoot>
+        <ClientOnly>
+          <SliderRoot
+            v-model="price"
+            :min="0"
+            :max="maxPrice"
+            aria-labelledby="price-from price-to"
+            class="relative flex items-center w-full"
+            @value-commit="applyPrice">
+            <SliderTrack class="relative flex-1 h-1.5 rounded-full bg-gray-300 cursor-pointer">
+              <SliderRange class="absolute h-full rounded-full bg-primary" />
+            </SliderTrack>
+            <SliderThumb class="block w-5 h-5 bg-white border border-gray-300 rounded-full" />
+            <SliderThumb class="block w-5 h-5 bg-white border border-gray-300 rounded-full" />
+          </SliderRoot>
+        </ClientOnly>
       </div>
     </div>
   </div>
