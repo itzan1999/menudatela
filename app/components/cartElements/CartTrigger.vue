@@ -1,0 +1,67 @@
+<script setup>
+const { toggleCart, cartItemCount } = useCart();
+
+watch(
+  cartItemCount,
+  (newCount, oldCount) => {
+    if (newCount > oldCount) {
+      const trigger = document.querySelector('.cart-trigger');
+      const badge = trigger?.querySelector('.cart-badge');
+      if (badge) {
+        badge.classList.add('animate-popIn');
+        setTimeout(() => badge.classList.remove('animate-popIn'), 300);
+      }
+    }
+  },
+);
+</script>
+
+<template>
+  <div class="cart-trigger header-icon relative cursor-pointer inline-flex" title="Cart" @click="toggleCart">
+    <Icon name="ion:cart-outline" size="20" class="mr-1 md:mr-0" />
+    <ClientOnly>
+      <Transition name="popIn" mode="out-in">
+        <span
+          v-if="cartItemCount > 0"
+          class="cart-badge bg-primary rounded-full text-white leading-none min-w-4 p-0.75 -top-1 -right-1 md:-right-2 text-[10px] absolute inline-flex justify-center items-center tabular-nums">
+          {{ cartItemCount }}
+        </span>
+      </Transition>
+    </ClientOnly>
+  </div>
+</template>
+
+<style>
+.header-icon {
+  color: var(--color-charcoal);
+  opacity: 0.75;
+  transition: opacity 0.2s ease;
+}
+
+.header-icon:hover {
+  opacity: 1;
+}
+
+.popIn-enter-active,
+.popIn-leave-active {
+  transition: all 200ms cubic-bezier(0, 0, 0.57, 1.61);
+}
+
+.popIn-enter-from,
+.popIn-leave-to {
+  transform: scale(0);
+}
+
+.cart-badge.animate-popIn {
+  animation: cartPop 250ms cubic-bezier(0.2, 0.9, 0.3, 1.3);
+}
+
+@keyframes cartPop {
+  50% {
+    transform: scale(1.25);
+  }
+  100% {
+    background-color: var(--color-primary-dark);
+  }
+}
+</style>
