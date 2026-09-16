@@ -16,6 +16,11 @@
 
   /* Spacing for Safe Areas */
   --spacing-safe: env(safe-area-inset-bottom);
+
+  /* Paleta cálida MenudaTela */
+  --color-cream: #f7f2ea;
+  --color-charcoal: #221e1a;
+  --color-sand: #dcd3c4;
 }
 
 /* Class for no slider */
