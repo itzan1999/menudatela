@@ -6,6 +6,10 @@ export default defineNuxtConfig({
 
   components: [{ path: './components', pathPrefix: false }],
 
+  alias: {
+    '#tailwind': './woonuxt_base/app/assets/css/main.css',
+  },
+
   /**
    * Depending on your servers capabilities, you may need to adjust the following settings.
    * It will affect the build time but also increase the reliability of the build process.

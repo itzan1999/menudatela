@@ -1,6 +1,9 @@
 {
   "name": "woonuxt",
   "private": true,
+  "imports": {
+    "#tailwind": "./woonuxt_base/app/assets/css/main.css"
+  },
   "scripts": {
     "build": "nuxt build",
     "prebuild": "npm run graphql:codegen",

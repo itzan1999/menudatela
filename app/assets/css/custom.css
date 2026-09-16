@@ -19,7 +19,10 @@ body {
   font-family: var(--font-sans);
 }
 
-h1, h2, h3, h4,
+h1,
+h2,
+h3,
+h4,
 .font-heading {
   font-family: var(--font-serif);
   letter-spacing: -0.01em;
