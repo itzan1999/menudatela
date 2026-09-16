@@ -1,4 +1,6 @@
 @import 'tailwindcss';
+@source '../../**/*.{vue,ts,js}';
+@source '../../../../app/**/*.{vue,ts,js}';
 @plugin '@tailwindcss/typography';
 
 /* Center container */
