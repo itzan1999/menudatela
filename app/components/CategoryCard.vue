@@ -8,7 +8,7 @@ defineProps({
 <template>
   <NuxtLink v-if="node" :to="`/product-category/${decodeURIComponent(node.slug)}`" class="category-tile">
     <span class="category-name" v-html="node.name"></span>
-    <span class="category-count" v-if="node.count">{{ node.count }} productos</span>
+    <span v-if="node.count" class="category-count">{{ node.count }} productos</span>
   </NuxtLink>
 </template>
 
@@ -24,7 +24,9 @@ defineProps({
   text-align: center;
   background-color: var(--color-cream);
   border: 1px solid var(--color-sand);
-  transition: background-color 0.25s ease, border-color 0.25s ease;
+  transition:
+    background-color 0.25s ease,
+    border-color 0.25s ease;
 }
 
 .category-tile:hover {

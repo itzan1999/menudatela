@@ -18,12 +18,7 @@ watch(
 <template>
   <form class="relative items-center flex-1" @submit.prevent="setSearchQuery(searchQuery)">
     <Icon name="ion:search-outline" size="18" class="absolute z-10 opacity-50 pointer-events-none left-1" />
-    <input
-      id="product-search-input"
-      v-model="searchQuery"
-      type="text"
-      :placeholder="$t('shop.searchProducts')"
-      class="search-input" />
+    <input id="product-search-input" v-model="searchQuery" type="text" :placeholder="$t('shop.searchProducts')" class="search-input" />
     <span
       v-if="searchQuery"
       class="absolute z-10 flex items-center gap-1 px-2 py-1 text-xs cursor-pointer text-charcoal/60 hover:text-charcoal right-1"

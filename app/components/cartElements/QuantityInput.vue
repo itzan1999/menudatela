@@ -46,7 +46,7 @@ const onFocusOut = () => {
       :max="productType.stockQuantity"
       :disabled="isOptimisticItem"
       aria-label="Quantity"
-      class="qty-value"
+      class="qty-field"
       @focusout="onFocusOut" />
     <button
       title="Increase Quantity"
@@ -64,6 +64,8 @@ const onFocusOut = () => {
 .qty-input {
   display: flex;
   align-items: stretch;
+  font-size: 0.75rem;
+  line-height: 1;
   border: 1px solid var(--color-sand);
 }
 
@@ -74,7 +76,7 @@ const onFocusOut = () => {
   width: 1.5rem;
   height: 1.5rem;
   color: var(--color-charcoal);
-  background: transparent;
+  background-color: transparent;
   transition: background-color 0.15s ease;
 }
 
@@ -87,25 +89,24 @@ const onFocusOut = () => {
   cursor: not-allowed;
 }
 
-.qty-value {
+.qty-field {
   width: 2rem;
   padding: 0 0.25rem;
-  font-size: 0.75rem;
   text-align: center;
+  font-size: 0.75rem;
   color: var(--color-charcoal);
-  background: transparent;
+  background-color: transparent;
   border-left: 1px solid var(--color-sand);
   border-right: 1px solid var(--color-sand);
   outline: none;
 }
 
-.qty-value::-webkit-inner-spin-button,
-.qty-value::-webkit-outer-spin-button {
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
-
-.qty-value {
+input[type='number'] {
   -moz-appearance: textfield;
   appearance: textfield;
 }

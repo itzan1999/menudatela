@@ -17,7 +17,9 @@ const activeVariation = ref<Variation | null>(null);
 const variation = ref<VariationAttribute[]>([]);
 const attrValues = ref<ProductAttributeInput[]>([]);
 
-const productLoadError = error.value ? getErrorMessage(error.value) || `We couldn't load "${slug}" right now. Please refresh and try again.` : t('shop.productNotFound');
+const productLoadError = error.value
+  ? getErrorMessage(error.value) || `We couldn't load "${slug}" right now. Please refresh and try again.`
+  : t('shop.productNotFound');
 
 const normalizeMatchToken = (value?: string | null): string =>
   (value ?? '')

@@ -50,7 +50,8 @@ export function useCart() {
 
   const getOptimisticBase = (): Cart => cart.value ?? buildEmptyCart();
 
-  const createOptimisticKey = (): string => `optimistic:${Date.now()}:${(globalThis.crypto?.randomUUID ? globalThis.crypto.randomUUID() : Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2))}`;
+  const createOptimisticKey = (): string =>
+    `optimistic:${Date.now()}:${globalThis.crypto?.randomUUID ? globalThis.crypto.randomUUID() : Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2)}`;
 
   const buildOptimisticProductNode = (product: ProductDetail) => ({
     name: product.name,

@@ -30,7 +30,7 @@ const moveToWishList = () => {
 
 <template>
   <SwipeCard :disabled="isOptimisticItem" @remove="removeItem">
-    <div v-if="productType" class="cart-card-row group">
+    <div v-if="productType" class="flex items-center gap-3 group cart-card-row">
       <NuxtLink :to="productSlug">
         <NuxtPicture
           width="64"
@@ -39,11 +39,11 @@ const moveToWishList = () => {
           :alt="productType.image?.altText || productType.name"
           :title="productType.image?.title || productType.name"
           loading="lazy"
-          :img-attrs="{ class: 'w-16 h-16 skeleton object-cover' }" />
+          :img-attrs="{ class: 'w-16 h-16 skeleton' }" />
       </NuxtLink>
       <div class="flex-1">
         <div class="flex gap-x-2 gap-y-1 flex-wrap items-center">
-          <NuxtLink class="cart-item-name" :to="productSlug">{{ productType.name }}</NuxtLink>
+          <NuxtLink class="leading-tight line-clamp-2 cart-item-name" :to="productSlug">{{ productType.name }}</NuxtLink>
           <span v-if="productType.salePrice" class="cart-badge-sale">Save {{ salePercentage }}</span>
           <span v-if="isLowStock" class="cart-badge-lowstock">Low Stock</span>
         </div>
@@ -51,10 +51,10 @@ const moveToWishList = () => {
       </div>
       <div class="inline-flex gap-2 flex-col items-end">
         <QuantityInput :item />
-        <div class="text-xs cart-actions group-hover:opacity-100 flex leading-none items-center">
+        <div class="text-[11px] cart-card-actions flex leading-none items-center">
           <button
             v-if="storeSettings.showMoveToWishlist"
-            class="mr-2 pr-2 border-r cart-action-divider disabled:cursor-not-allowed disabled:opacity-50"
+            class="mr-2 pr-2 border-r border-[var(--color-sand)] disabled:cursor-not-allowed disabled:opacity-50"
             :disabled="isOptimisticItem"
             type="button"
             @click="moveToWishList">
@@ -65,7 +65,7 @@ const moveToWishList = () => {
             aria-label="Remove Item"
             type="button"
             :disabled="isOptimisticItem"
-            class="cart-remove-btn flex items-center gap-1 disabled:cursor-not-allowed disabled:opacity-50"
+            class="remove-btn flex items-center gap-1 disabled:cursor-not-allowed disabled:opacity-50"
             @click="removeItem">
             <Icon name="ion:trash" class="hidden md:inline-block" size="12" />
           </button>
@@ -77,15 +77,11 @@ const moveToWishList = () => {
 
 <style scoped>
 .cart-card-row {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
   padding-bottom: 1rem;
   border-bottom: 1px solid var(--color-sand);
 }
 
 .cart-item-name {
-  line-height: 1.3;
   color: var(--color-charcoal);
   transition: opacity 0.2s ease;
 }
@@ -99,8 +95,9 @@ const moveToWishList = () => {
   line-height: 1;
   padding: 0.125rem 0.25rem;
   border-radius: 2px;
-  color: var(--color-charcoal);
-  background-color: color-mix(in oklab, var(--color-sand) 60%, transparent);
+  color: color-mix(in oklab, var(--color-charcoal) 80%, transparent);
+  background-color: var(--color-sand);
+  border: 1px solid var(--color-sand);
 }
 
 .cart-badge-lowstock {
@@ -108,26 +105,20 @@ const moveToWishList = () => {
   line-height: 1;
   padding: 0.125rem 0.25rem;
   border-radius: 2px;
-  color: #b45309;
+  color: #92620a;
   background-color: #fef3c7;
   border: 1px solid #fde68a;
 }
 
-.cart-actions {
+.cart-card-actions {
   color: color-mix(in oklab, var(--color-charcoal) 45%, transparent);
-  opacity: 0;
-  transition: opacity 0.2s ease;
 }
 
-.cart-action-divider {
-  border-color: var(--color-sand);
+.cart-card-actions:hover {
+  color: var(--color-charcoal);
 }
 
-.cart-remove-btn {
-  transition: color 0.2s ease;
-}
-
-.cart-remove-btn:hover {
-  color: #b5602d;
+.remove-btn:hover {
+  color: #9a3b26;
 }
 </style>

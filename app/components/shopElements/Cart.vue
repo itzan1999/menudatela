@@ -6,7 +6,7 @@ const { cart, toggleCart, isCartMutating } = useCart();
   <div class="fixed top-0 bottom-0 right-0 z-50 flex flex-col w-11/12 max-w-lg overflow-x-hidden cart-drawer">
     <Icon name="ion:close-outline" class="absolute p-1 rounded-lg top-6 left-6 md:left-8 cursor-pointer close-icon" size="34" @click="toggleCart(false)" />
 
-    <EmptyCart v-if="cart && !cart.isEmpty" class="rounded-lg p-1.5 hover:bg-red-400 hover:text-white" />
+    <EmptyCart v-if="cart && !cart.isEmpty" class="rounded-lg p-1.5 empty-cart-btn" />
 
     <div class="mt-8 text-center cart-title">
       {{ $t('shop.cart') }}
@@ -132,5 +132,18 @@ const { cart, toggleCart, isCartMutating } = useCart();
 .cart-btn--solid:hover {
   background-color: transparent;
   color: var(--color-charcoal);
+}
+
+.empty-cart-btn {
+  color: var(--color-charcoal);
+  opacity: 0.6;
+  transition:
+    opacity 0.2s ease,
+    color 0.2s ease;
+}
+
+.empty-cart-btn:hover {
+  opacity: 1;
+  color: #9a3b26;
 }
 </style>

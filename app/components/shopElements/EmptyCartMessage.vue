@@ -23,7 +23,9 @@ const { toggleCart } = useCart();
   color: var(--color-cream);
   background-color: var(--color-charcoal);
   border: 1px solid var(--color-charcoal);
-  transition: background-color 0.2s ease, color 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
 }
 
 .empty-cart-btn:hover {

@@ -421,7 +421,11 @@ export default defineNuxtPlugin(() => {
     reset: resetStripeOrderMeta,
     processPayment: async () => {
       const paymentIsPaid = await confirmStripePayment();
-      return { success: paymentIsPaid, isPaid: paymentIsPaid, error: paymentIsPaid ? undefined : 'Payment was not confirmed. Please check its status before retrying.' };
+      return {
+        success: paymentIsPaid,
+        isPaid: paymentIsPaid,
+        error: paymentIsPaid ? undefined : 'Payment was not confirmed. Please check its status before retrying.',
+      };
     },
     getComponentProps: () => ({
       stripe: stripe.value,
