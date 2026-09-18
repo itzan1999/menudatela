@@ -11,7 +11,7 @@ const { orderInput, isProcessingOrder, processCheckout, checkoutError, resolvePa
 const { setActiveGateway, isActiveGatewayReady, processActiveGatewayPayment, getActiveGatewayDisabledMessage, resetActiveGateway } = usePaymentGateways();
 
 const isSubmitting = ref(false);
-const buttonText = computed(() => isSubmitting.value || isProcessingOrder.value ? t('general.processing') : t('shop.checkoutButton'));
+const buttonText = computed(() => (isSubmitting.value || isProcessingOrder.value ? t('general.processing') : t('shop.checkoutButton')));
 const checkoutPaymentGateways = paymentGateways;
 const selectedPaymentMethodId = computed<string>(() => resolvePaymentMethodId(orderInput.value.paymentMethod));
 
