@@ -145,7 +145,7 @@ main .account-card,
 main .wn-form {
   border: 1px solid var(--color-sand) !important;
   background-color: transparent !important;
-  padding: 1.5rem !important;
+  padding: 0rem !important;
   border-radius: 0 !important;
 }
 
