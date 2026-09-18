@@ -83,3 +83,147 @@ h4,
   background-color: var(--color-charcoal);
   color: var(--color-cream);
 }
+
+/* Eliminar tarjetas blancas predeterminadas dentro del área de mi cuenta */
+main .bg-white,
+main .shadow-sm,
+main .rounded-lg,
+main .rounded-md {
+  background-color: transparent !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+
+/* Encabezados de secciones secundarias en tipografía Serif */
+main h2,
+main h3 {
+  font-family: var(--font-serif);
+  color: var(--color-charcoal);
+  font-weight: 400;
+}
+
+/* Campos del formulario: bordes nítidos y fondo crema unificado */
+main input[type='text'],
+main input[type='email'],
+main input[type='tel'],
+main input[type='password'],
+main select {
+  border-radius: 0 !important;
+  border: 1px solid var(--color-sand) !important;
+  background-color: var(--color-cream) !important;
+  color: var(--color-charcoal) !important;
+}
+
+main input:focus,
+main select:focus {
+  border-color: var(--color-charcoal) !important;
+}
+
+/* Badges de estado en pedidos (ej. Processing / Completed) */
+main .badge,
+main [class*='bg-blue-'],
+main [class*='bg-green-'] {
+  border-radius: 0 !important;
+  font-family: var(--font-sans);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* Ocultar la barra de scroll en el menú móvil */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* 1. Contenedor del formulario con borde sutil */
+main form,
+main .account-card,
+main .wn-form {
+  border: 1px solid var(--color-sand) !important;
+  background-color: transparent !important;
+  padding: 1.5rem !important;
+  border-radius: 0 !important;
+}
+
+/* 2. Área inferior de botones (elimina fondo blanco) */
+main form > div:last-child,
+main .form-actions,
+main .bg-gray-50,
+main .bg-slate-50 {
+  background-color: transparent !important;
+  border-top: 1px solid var(--color-sand) !important;
+  padding-top: 1rem !important;
+  margin-top: 1.5rem !important;
+}
+
+/* 3. Botones Submit con hover a charcoal */
+main button[type='submit'],
+main form button {
+  background-color: transparent !important;
+  border: 1px solid var(--color-charcoal) !important;
+  color: var(--color-charcoal) !important;
+  font-family: var(--font-sans) !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+  padding: 0.75rem 1.5rem !important;
+  border-radius: 0 !important;
+  transition: all 0.2s ease-in-out !important;
+}
+
+main button[type='submit']:hover,
+main form button:hover {
+  background-color: var(--color-charcoal) !important;
+  color: var(--color-cream) !important;
+}
+
+/* 4. Rediseño de Tabla de Pedidos (Estilo Minimalista) */
+main table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+  border: 1px solid var(--color-sand) !important;
+}
+
+main table th {
+  font-family: var(--font-sans) !important;
+  font-size: 11px !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  border-bottom: 1px solid var(--color-sand) !important;
+  padding: 0.75rem 1rem !important;
+  text-align: left !important;
+}
+
+main table td {
+  padding: 1rem !important;
+  border-bottom: 1px solid var(--color-sand) !important;
+  background-color: transparent !important;
+}
+
+main table tr:hover td {
+  background-color: rgba(0, 0, 0, 0.015) !important;
+}
+
+/* Estado de los pedidos en blanco y negro sobrio */
+main table [class*='bg-'] {
+  background-color: transparent !important;
+  border: 1px solid var(--color-sand) !important;
+  color: var(--color-charcoal) !important;
+  font-size: 10px !important;
+  padding: 2px 8px !important;
+  border-radius: 0 !important;
+}
+
+/* 5. Rediseño de Lista de Deseos */
+main .wishlist-item,
+main [class*='wishlist'] .flex {
+  border: 1px solid var(--color-sand) !important;
+  padding: 1rem !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+}
