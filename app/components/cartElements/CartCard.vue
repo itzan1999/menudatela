@@ -77,8 +77,7 @@ const moveToWishList = () => {
 
 <style scoped>
 .cart-card-row {
-  padding-bottom: 1rem;
-  border-bottom: 1px solid var(--color-sand);
+  padding-bottom: 0.25rem;
 }
 
 .cart-item-name {

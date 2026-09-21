@@ -47,13 +47,24 @@
   .wn-form input[type='password'],
   .wn-form textarea,
   .wn-form select {
-    @apply bg-gray-50 border rounded-md border-gray-300 shadow-inner w-full py-2 px-4 text-base text-gray-900 leading-6 outline-none transition-colors;
-    @apply focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/30;
+    @apply w-full py-2.5 px-4 text-sm leading-6 outline-none transition-colors;
+    background-color: var(--color-cream);
+    border: 1px solid var(--color-sand);
+    color: var(--color-charcoal);
+  }
+
+  .wn-form input[type='text']:focus-visible,
+  .wn-form input[type='email']:focus-visible,
+  .wn-form input[type='tel']:focus-visible,
+  .wn-form input[type='password']:focus-visible,
+  .wn-form textarea:focus-visible,
+  .wn-form select:focus-visible {
+    border-color: var(--color-charcoal);
   }
 
   .wn-form select {
     @apply appearance-none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' viewBox='0 0 16 16'%3E%3Cpath stroke='%23333' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M4 6l4 4 4-4'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' viewBox='0 0 16 16'%3E%3Cpath stroke='%23221e1a' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M4 6l4 4 4-4'/%3E%3C/svg%3E");
     background-position: center right 10px;
     background-repeat: no-repeat;
     background-size: 1rem;
@@ -61,30 +72,38 @@
   }
 
   .wn-form label {
-    @apply inline-block leading-loose text-sm text-gray-700;
+    @apply inline-block leading-loose text-sm;
+    color: color-mix(in oklab, var(--color-charcoal) 75%, transparent);
   }
 
   .wn-form input::placeholder,
   .wn-form textarea::placeholder {
-    @apply text-gray-400;
+    color: color-mix(in oklab, var(--color-charcoal) 40%, transparent);
   }
 
   .wn-form input:read-only,
   .wn-form textarea:read-only {
-    @apply bg-gray-100 border-gray-200 text-gray-900 shadow-none cursor-not-allowed;
+    cursor: not-allowed;
+    background-color: var(--color-sand);
+    border-color: var(--color-sand);
+    color: var(--color-charcoal);
   }
 
   .wn-form input:read-only:focus,
   .wn-form input:read-only:focus-visible,
   .wn-form textarea:read-only:focus,
   .wn-form textarea:read-only:focus-visible {
-    @apply border-gray-200 ring-0;
+    border-color: var(--color-sand);
   }
 
   .wn-form input:disabled,
   .wn-form textarea:disabled,
   .wn-form select:disabled {
-    @apply bg-gray-100 border-gray-200 text-gray-400 shadow-none cursor-not-allowed opacity-70;
+    cursor: not-allowed;
+    background-color: var(--color-sand);
+    border-color: var(--color-sand);
+    color: color-mix(in oklab, var(--color-charcoal) 40%, transparent);
+    opacity: 0.7;
   }
 
   .wn-form input.has-error,

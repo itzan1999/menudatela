@@ -15,8 +15,10 @@ const { cart, toggleCart, isCartMutating } = useCart();
 
     <ClientOnly>
       <template v-if="cart && !cart.isEmpty">
-        <ul class="flex flex-col flex-1 gap-4 p-6 overflow-y-scroll md:p-8">
-          <CartCard v-for="item in cart.contents?.nodes" :key="item.key" :item />
+        <ul class="flex flex-col flex-1 cart-list p-6 overflow-y-scroll md:p-8">
+          <li v-for="item in cart.contents?.nodes" :key="item.key">
+            <CartCard :item />
+          </li>
         </ul>
         <div class="px-6 pb-8 mb-safe md:px-8 space-y-4">
           <!-- Order Summary -->
@@ -145,5 +147,11 @@ const { cart, toggleCart, isCartMutating } = useCart();
 .empty-cart-btn:hover {
   opacity: 1;
   color: #9a3b26;
+}
+
+.cart-list > * + * {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-sand);
 }
 </style>

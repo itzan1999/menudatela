@@ -19,8 +19,10 @@ useSeoMeta({
       <div v-if="cart && !cart.isEmpty" class="grid lg:grid-cols-3 gap-8 lg:gap-12 w-full">
         <!-- Cart Items -->
         <div class="lg:col-span-2">
-          <ul class="flex flex-col gap-4">
-            <CartCard v-for="item in cart.contents?.nodes" :key="item.key" :item />
+          <ul class="flex flex-col cart-list">
+            <li v-for="item in cart.contents?.nodes" :key="item.key">
+              <CartCard :item />
+            </li>
           </ul>
         </div>
 
@@ -53,10 +55,7 @@ useSeoMeta({
               </div>
             </div>
 
-            <NuxtLink
-              :to="isCartMutating ? undefined : '/checkout'"
-              class="checkout-btn"
-              :class="{ 'pointer-events-none opacity-50': isCartMutating }">
+            <NuxtLink :to="isCartMutating ? undefined : '/checkout'" class="checkout-btn" :class="{ 'pointer-events-none opacity-50': isCartMutating }">
               {{ isCartMutating ? $t('general.updating') : $t('shop.checkout') }}
             </NuxtLink>
           </div>
@@ -122,11 +121,19 @@ useSeoMeta({
   color: var(--color-cream);
   background-color: var(--color-charcoal);
   border: 1px solid var(--color-charcoal);
-  transition: background-color 0.2s ease, color 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
 }
 
 .checkout-btn:hover {
   background-color: transparent;
   color: var(--color-charcoal);
+}
+
+.cart-list > * + * {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-sand);
 }
 </style>
