@@ -17,7 +17,7 @@ watch([orderby, order], () => {
     <button
       type="button"
       class="flex items-center justify-center border-r border-[var(--color-sand)]/60 px-2.5 py-2 text-[var(--color-charcoal)]/60 hover:text-[var(--color-charcoal)] transition-colors cursor-pointer"
-      aria-label="Cambiar dirección de orden"
+      :aria-label="$t('shop.changeSortDirection')"
       @click="order = order === 'ASC' ? 'DESC' : 'ASC'">
       <Icon name="ion:filter-outline" class="h-4 w-4 transition-transform duration-200" :class="order === 'ASC' ? 'rotate-180' : ''" />
     </button>
@@ -27,7 +27,7 @@ watch([orderby, order], () => {
       <select
         v-model="orderby"
         name="orderby"
-        aria-label="Ordenar por"
+        :aria-label="$t('shop.sortBy')"
         class="cursor-pointer appearance-none bg-transparent py-2 pl-3 pr-6 text-xs font-medium tracking-wider uppercase text-[var(--color-charcoal)] outline-none">
         <option value="date" class="bg-[var(--color-cream)]">{{ $t('general.latest') }}</option>
         <option value="alphabetically" class="bg-[var(--color-cream)]">{{ $t('general.alphabetically') }}</option>

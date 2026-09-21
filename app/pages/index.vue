@@ -28,19 +28,19 @@ useSeoMeta({
       <div class="container trust-bar-grid">
         <div class="trust-item">
           <Icon name="ion:leaf-outline" size="20" />
-          <span>100% algodón y lino</span>
+          <span>{{ $t('home.trust.cottonLinen') }}</span>
         </div>
         <div class="trust-item">
           <Icon name="ion:cube-outline" size="20" />
-          <span>Envíos en 24-48h</span>
+          <span>{{ $t('home.trust.fastShipping') }}</span>
         </div>
         <div class="trust-item">
           <Icon name="ion:refresh-outline" size="20" />
-          <span>Devolución gratuita</span>
+          <span>{{ $t('home.trust.freeReturns') }}</span>
         </div>
         <div class="trust-item">
           <Icon name="ion:lock-closed-outline" size="20" />
-          <span>Pago 100% seguro</span>
+          <span>{{ $t('home.trust.securePayment') }}</span>
         </div>
       </div>
     </section>

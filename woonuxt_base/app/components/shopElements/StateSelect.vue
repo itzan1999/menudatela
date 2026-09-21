@@ -32,7 +32,7 @@ watch(
 
 <template>
   <select v-if="countryStatesDict[props.countryCode ?? '']?.length" v-bind="$attrs" @change="select">
-    <option value="" :selected="!(props.modelValue ?? '')">Select a state</option>
+    <option value="" :selected="!(props.modelValue ?? '')">{{ $t('billing.selectState') }}</option>
     <option
       v-for="state in countryStatesDict[props.countryCode ?? '']"
       :key="state.code"
@@ -41,5 +41,5 @@ watch(
       {{ state.name }}
     </option>
   </select>
-  <input v-else v-bind="$attrs" type="text" placeholder="State" @change="select" />
+  <input v-else v-bind="$attrs" type="text" :placeholder="$t('billing.state')" @change="select" />
 </template>

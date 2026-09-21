@@ -201,10 +201,10 @@ onMounted(() => {
         <span
           v-if="node.onSale"
           class="bg-[var(--color-charcoal)] px-2 py-0.5 font-sans text-[10px] font-semibold tracking-[0.2em] uppercase text-[var(--color-cream)]">
-          Oferta
+          {{ $t('shop.onSale') }}
         </span>
         <span v-if="isOutOfStock" class="bg-stone-300 px-2 py-0.5 font-sans text-[10px] font-semibold tracking-[0.2em] uppercase text-stone-700">
-          Agotado
+          {{ $t('shop.outOfStock') }}
         </span>
       </div>
 

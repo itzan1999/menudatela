@@ -2,7 +2,8 @@
 const { viewer, avatar, logoutUser, isPending, navigateToLogin } = useAuth();
 const route = useRoute();
 
-const linkTitle = computed<string>(() => viewer.value?.username || 'Sign In');
+const { t } = useI18n();
+const linkTitle = computed<string>(() => viewer.value?.username || t('account.signIn'));
 </script>
 
 <template>
@@ -20,8 +21,8 @@ const linkTitle = computed<string>(() => viewer.value?.username || 'Sign In');
           <Icon v-else name="ion:person-outline" size="20" />
         </NuxtLink>
         <div class="account-dropdown font-medium">
-          <Button to="/my-account" size="sm" variant="ghost" class="dropdown-item" icon="ion:person"> My Account </Button>
-          <Button to="/wishlist" size="sm" variant="ghost" class="dropdown-item" icon="ion:heart"> Wishlist </Button>
+          <Button to="/my-account" size="sm" variant="ghost" class="dropdown-item" icon="ion:person">{{ $t('account.myAccount') }}</Button>
+          <Button to="/wishlist" size="sm" variant="ghost" class="dropdown-item" icon="ion:heart">{{ $t('shop.wishlist') }}</Button>
           <Button
             type="button"
             size="sm"
@@ -30,7 +31,7 @@ const linkTitle = computed<string>(() => viewer.value?.username || 'Sign In');
             icon="ion:log-out"
             :loading="isPending"
             @click.stop="logoutUser">
-            Logout
+            {{ $t('account.logout') }}
           </Button>
         </div>
       </div>

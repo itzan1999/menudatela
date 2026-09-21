@@ -45,7 +45,13 @@
     "shippingReturns": "Envío y Devoluciones",
     "privacyPolicy": "Política de Privacidad",
     "termsConditions": "Términos y Condiciones",
-    "updating": "Actualizando"
+    "updating": "Actualizando",
+    "language": "Idioma",
+    "delete": "Eliminar",
+    "cancel": "Cancelar",
+    "refresh": "Actualizar lista",
+    "upTo": "Hasta",
+    "faq": "Preguntas frecuentes"
   },
   "account": {
     "changePassword": "Cambiar contraseña",
@@ -79,7 +85,24 @@
     "updating": "Actualizando",
     "updateDetails": "Actualizar detalles",
     "updateSuccess": "Actualizado con éxito",
-    "failed": "Error al actualizar"
+    "failed": "Error al actualizar",
+    "settings": "Configuración",
+    "settingsDescription": "Gestiona tus preferencias, notificaciones y opciones de privacidad",
+    "preferences": "Preferencias",
+    "dangerZone": "Zona de peligro",
+    "deleteAccount": "Eliminar cuenta",
+    "deleteAccountDescription": "Cuando elimines tu cuenta no podrás volver atrás. Se eliminarán permanentemente tu cuenta, historial de pedidos y todos los datos asociados.",
+    "deleteConfirmation": "¿Seguro que quieres eliminar tu cuenta? Esta acción no se puede deshacer.",
+    "deleteUnavailable": "La eliminación de la cuenta se procesaría aquí. Requiere una implementación personalizada del backend.",
+    "personalInfoDescription": "Gestiona tu información personal, incluidos tu nombre, nombre de usuario y correo electrónico de contacto",
+    "personalDetails": "Datos personales",
+    "passwordDescription": "Actualiza tu contraseña para mantener segura tu cuenta",
+    "passwordRequirements": "Requisitos de la contraseña:",
+    "passwordMinLength": "Al menos 8 caracteres",
+    "passwordsMatch": "Las contraseñas coinciden",
+    "signIn": "Iniciar sesión",
+    "removeFilter": "Quitar filtro",
+    "languageSwitcher": "Selector de idioma"
   },
   "shop": {
     "shopByCategory": "Comprar por categoría",
@@ -139,6 +162,25 @@
     "downloadsRemaining": "Descargas restantes",
     "expires": "Expira",
     "productNotFound": "Producto no encontrado",
+    "reviewSingular": "Reseña",
+    "reviewPlural": "Reseñas",
+    "shareExperience": "Comparte tu experiencia",
+    "reviewInvitation": "Si has probado este producto, nos encantaría conocer tu opinión.",
+    "noReviewsAvailable": "Aún no hay opiniones disponibles para este producto.",
+    "noOrders": "No se encontraron pedidos.",
+    "onlyOnSale": "Ver solo productos en oferta",
+    "changeSortDirection": "Cambiar dirección de orden",
+    "sortBy": "Ordenar por",
+    "save": "Ahorrar",
+    "lowStock": "Poco stock",
+    "moveToWishlist": "Mover a la lista de deseos",
+    "removeItem": "Eliminar artículo",
+    "decreaseQuantity": "Reducir cantidad",
+    "increaseQuantity": "Aumentar cantidad",
+    "quantity": "Cantidad",
+    "orderList": "Lista de pedidos",
+    "productsLoadError": "No hemos podido cargar los productos. Actualiza la página e inténtalo de nuevo.",
+    "perMeter": "/ metro",
     "productResultCount": {
       "showing": "Mostrando de",
       "to": "a",
@@ -148,6 +190,18 @@
       "title": "No se encontraron productos",
       "subText": "Intente ajustar su búsqueda o filtro para encontrar lo que está buscando.",
       "clearFiltersAndSearch": "Borrar todos los filtros y la búsqueda"
+    }
+  },
+  "home": {
+    "heroEyebrow": "Colección de otoño",
+    "heroTitle": "Telas con carácter",
+    "heroSubtitle": "Tejidos seleccionados uno a uno para dar vida a tus proyectos. Algodón, lino y texturas naturales.",
+    "viewCollection": "Ver colección",
+    "trust": {
+      "cottonLinen": "100% algodón y lino",
+      "fastShipping": "Envíos en 24-48 h",
+      "freeReturns": "Devolución gratuita",
+      "securePayment": "Pago 100% seguro"
     }
   },
   "billing": {
@@ -169,7 +223,15 @@
     "cashOnDelivery": "Contra reembolso",
     "differentAddress": "¿Dirección de envío diferente?",
     "useSameAddress": "Usar la misma dirección para facturación",
-    "noAddressProvided": "Aún no se ha proporcionado dirección"
+    "noAddressProvided": "Aún no se ha proporcionado dirección",
+    "billingAndShipping": "Facturación y envío",
+    "addressesDescription": "Gestiona tus direcciones de facturación y envío para pedidos y entregas",
+    "billingAddress": "Dirección de facturación",
+    "company": "Empresa",
+    "shippingAddress": "Dirección de envío",
+    "selectCountry": "Selecciona un país",
+    "selectState": "Selecciona una provincia o estado",
+    "savePaymentMethod": "Guardar la información de pago en mi cuenta para futuras compras."
   },
   "error": {
     "invalidUsername": "Nombre de usuario inválido. Por favor, regístrate.",
@@ -178,6 +240,7 @@
     "passwordMismatch": "Las contraseñas no coinciden. Por favor, inténtalo de nuevo.",
     "invalidPasswordResetLink": "El enlace de restablecimiento de contraseña no es válido.",
     "general": "Ha ocurrido un error",
-    "noOrder": "No hemos podido encontrar tu pedido. Por favor, inténtalo de nuevo más tarde."
+    "noOrder": "No hemos podido encontrar tu pedido. Por favor, inténtalo de nuevo más tarde.",
+    "tryAgain": "Ha ocurrido un error. Inténtalo de nuevo."
   }
 }

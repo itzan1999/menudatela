@@ -102,7 +102,7 @@ const removeBadge = (key: string, rawValue: string) => {
           <button
             type="button"
             class="ml-1 leading-none text-[15px] opacity-40 hover:opacity-100 transition-opacity cursor-pointer px-0.5"
-            aria-label="Quitar filtro"
+            :aria-label="$t('general.removeFilter')"
             @click.prevent="removeBadge(badge.key, badge.rawValue)">
             ×
           </button>
@@ -113,7 +113,7 @@ const removeBadge = (key: string, rawValue: string) => {
         type="button"
         class="mt-1 self-start font-sans text-xs font-medium tracking-widest uppercase text-[var(--color-charcoal)]/60 underline underline-offset-4 transition-colors hover:text-[var(--color-charcoal)] cursor-pointer"
         @click="resetFilter">
-        Limpiar filtros
+        {{ $t('general.clearFilters') }}
       </button>
     </div>
 

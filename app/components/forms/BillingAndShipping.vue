@@ -2,9 +2,9 @@
   <div>
     <!-- Page Header -->
     <div class="mb-8">
-      <h1 class="font-heading text-2xl mb-2" style="color: var(--color-charcoal)">Billing & Shipping</h1>
+      <h1 class="font-heading text-2xl mb-2" style="color: var(--color-charcoal)">{{ $t('billing.billingAndShipping') }}</h1>
       <p class="text-sm" style="color: color-mix(in oklab, var(--color-charcoal) 65%, transparent)">
-        Manage your billing and shipping addresses for orders and deliveries
+        {{ $t('billing.addressesDescription') }}
       </p>
     </div>
 
@@ -12,7 +12,7 @@
       <!-- Billing Address Card -->
       <div class="account-form">
         <div class="account-form-header">
-          <h3 class="font-heading text-base" style="color: var(--color-charcoal)">Billing Address</h3>
+          <h3 class="font-heading text-base" style="color: var(--color-charcoal)">{{ $t('billing.billingAddress') }}</h3>
         </div>
         <!-- Billing Fields -->
         <div v-if="customer.billing" class="grid gap-6 p-6 md:p-8 md:grid-cols-2">
@@ -55,7 +55,7 @@
           </div>
 
           <div class="w-full space-y-2">
-            <label for="billing-company">Company <span class="opacity-60">({{ $t('general.optional') }})</span></label>
+            <label for="billing-company">{{ $t('billing.company') }} <span class="opacity-60">({{ $t('general.optional') }})</span></label>
             <input
               id="billing-company"
               v-model="customer.billing.company"
@@ -154,7 +154,7 @@
       <!-- Shipping Address Card -->
       <div class="account-form">
         <div class="account-form-header">
-          <h3 class="font-heading text-base" style="color: var(--color-charcoal)">Shipping Address</h3>
+          <h3 class="font-heading text-base" style="color: var(--color-charcoal)">{{ $t('billing.shippingAddress') }}</h3>
         </div>
         <!-- Shipping Fields -->
         <div v-if="customer.shipping" class="grid gap-6 p-6 md:p-8 md:grid-cols-2">

@@ -20,7 +20,7 @@ const { wooNuxtVersionInfo } = useHelpers();
           }}</a>
           <a href="/" class="py-1.5 block">{{ $t('general.careers') }}</a>
           <a href="/" class="py-1.5 block">{{ $t('general.press') }}</a>
-          <a href="https://woonuxt.com/faq" class="py-1.5 block" rel="noreferrer" target="_blank">FAQ's</a>
+          <a href="https://woonuxt.com/faq" class="py-1.5 block" rel="noreferrer" target="_blank">{{ $t('general.faq') }}</a>
         </div>
       </div>
       <div class="w-[42.857%] lg:w-auto">

@@ -31,8 +31,8 @@ const onFocusOut = () => {
 <template>
   <div class="qty-input">
     <button
-      title="Decrease Quantity"
-      aria-label="Decrease Quantity"
+      :title="$t('shop.decreaseQuantity')"
+      :aria-label="$t('shop.decreaseQuantity')"
       type="button"
       class="qty-btn"
       :disabled="isUpdatingCart || isOptimisticItem || quantity <= 0"
@@ -45,12 +45,12 @@ const onFocusOut = () => {
       min="0"
       :max="productType.stockQuantity"
       :disabled="isOptimisticItem"
-      aria-label="Quantity"
+      :aria-label="$t('shop.quantity')"
       class="qty-field"
       @focusout="onFocusOut" />
     <button
-      title="Increase Quantity"
-      aria-label="Increase Quantity"
+      :title="$t('shop.increaseQuantity')"
+      :aria-label="$t('shop.increaseQuantity')"
       type="button"
       class="qty-btn"
       :disabled="isUpdatingCart || isOptimisticItem || hasNoMoreStock"

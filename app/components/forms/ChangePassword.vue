@@ -2,15 +2,15 @@
   <div>
     <!-- Page Header -->
     <div class="mb-8">
-      <h1 class="font-heading text-2xl mb-2" style="color: var(--color-charcoal)">Password</h1>
+      <h1 class="font-heading text-2xl mb-2" style="color: var(--color-charcoal)">{{ $t('account.password') }}</h1>
       <p class="text-sm" style="color: color-mix(in oklab, var(--color-charcoal) 65%, transparent)">
-        Update your password to keep your account secure
+        {{ $t('account.passwordDescription') }}
       </p>
     </div>
 
     <form class="account-form wn-form" @submit.prevent="updatePassword">
       <div class="account-form-header">
-        <h3 class="font-heading text-base" style="color: var(--color-charcoal)">Change Password</h3>
+        <h3 class="font-heading text-base" style="color: var(--color-charcoal)">{{ $t('account.changePassword') }}</h3>
       </div>
       <!-- Form Fields -->
       <div class="grid p-6 md:p-8 gap-6 md:grid-cols-2">
@@ -37,21 +37,21 @@
           <div class="flex items-start gap-3">
             <Icon name="ion:information-circle" size="20" class="shrink-0 mt-0.5" style="color: var(--color-charcoal); opacity: 0.6" />
             <div class="text-sm">
-              <p class="font-medium mb-2" style="color: var(--color-charcoal)">Password requirements:</p>
+              <p class="font-medium mb-2" style="color: var(--color-charcoal)">{{ $t('account.passwordRequirements') }}</p>
               <ul class="space-y-1.5" style="color: color-mix(in oklab, var(--color-charcoal) 70%, transparent)">
                 <li class="flex items-center gap-2">
                   <Icon
                     :name="password.new.length >= 8 ? 'ion:checkmark-circle' : 'ion:ellipse-outline'"
                     size="16"
                     :style="{ color: password.new.length >= 8 ? '#2e7d32' : 'var(--color-sand)' }" />
-                  At least 8 characters
+                  {{ $t('account.passwordMinLength') }}
                 </li>
                 <li class="flex items-center gap-2">
                   <Icon
                     :name="password.new === password.confirm && password.new ? 'ion:checkmark-circle' : 'ion:ellipse-outline'"
                     size="16"
                     :style="{ color: password.new === password.confirm && password.new ? '#2e7d32' : 'var(--color-sand)' }" />
-                  Passwords match
+                  {{ $t('account.passwordsMatch') }}
                 </li>
               </ul>
             </div>
@@ -95,7 +95,7 @@ const updatePassword = async () => {
   }
 
   if (!viewer.value?.id || !viewer.value?.username) {
-    errorMessage.value = t('error.somethingWentWrong');
+    errorMessage.value = t('error.general');
     return;
   }
 
@@ -116,7 +116,7 @@ const updatePassword = async () => {
   } catch (error) {
     console.error(error);
     const gqlError = (error as { gqlErrors?: Array<{ message?: string }> } | null)?.gqlErrors?.[0]?.message;
-    errorMessage.value = gqlError || 'An error occurred. Please try again.';
+    errorMessage.value = gqlError || t('error.tryAgain');
     button.value = { text: t('account.failed'), state: 'error' };
   }
 

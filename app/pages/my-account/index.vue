@@ -50,15 +50,15 @@ useSeoMeta({
           <nav class="account-nav">
             <NuxtLink to="/my-account?tab=personal-info" class="account-nav-link" :class="{ 'is-active': activeTab == 'personal-info' }">
               <Icon name="ion:person-outline" size="18" />
-              <span>Personal Information</span>
+              <span>{{ $t('account.personalInfo') }}</span>
             </NuxtLink>
             <NuxtLink to="/my-account?tab=addresses" class="account-nav-link" :class="{ 'is-active': activeTab == 'addresses' }">
               <Icon name="ion:card-outline" size="18" />
-              <span>Billing & Shipping</span>
+              <span>{{ $t('billing.billingAndShipping') }}</span>
             </NuxtLink>
             <NuxtLink to="/my-account?tab=password" class="account-nav-link" :class="{ 'is-active': activeTab == 'password' }">
               <Icon name="ion:lock-closed-outline" size="18" />
-              <span>Password</span>
+              <span>{{ $t('account.password') }}</span>
             </NuxtLink>
             <div class="account-nav-divider"></div>
             <NuxtLink to="/my-account?tab=orders" class="account-nav-link" :class="{ 'is-active': activeTab == 'orders' }">
@@ -67,12 +67,12 @@ useSeoMeta({
             </NuxtLink>
             <NuxtLink to="/my-account?tab=wishlist" class="account-nav-link" :class="{ 'is-active': activeTab == 'wishlist' }">
               <Icon name="ion:heart-outline" size="18" />
-              <span>Wishlist</span>
+              <span>{{ $t('shop.wishlist') }}</span>
             </NuxtLink>
             <div class="account-nav-divider"></div>
             <NuxtLink to="/my-account?tab=settings" class="account-nav-link" :class="{ 'is-active': activeTab == 'settings' }">
               <Icon name="ion:settings-outline" size="18" />
-              <span>Settings</span>
+              <span>{{ $t('account.settings') }}</span>
             </NuxtLink>
           </nav>
 

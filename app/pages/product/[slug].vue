@@ -301,7 +301,7 @@ const addToCartLoading = computed(() => (isOptimisticCartMode.value ? false : is
           v-else
           class="relative aspect-square w-full min-w-0 rounded-none object-contain skeleton bg-[var(--color-cream)]"
           src="/images/placeholder.jpg"
-          :alt="product?.name || 'Product'" />
+          :alt="product?.name || $t('shop.product')" />
 
         <div class="w-full min-w-0 md:py-2">
           <!-- Hook: Before product title -->
@@ -327,7 +327,7 @@ const addToCartLoading = computed(() => (isOptimisticCartMode.value ? false : is
                   class="text-2xl font-serif text-[var(--color-charcoal)]"
                   :sale-price="priceTarget?.salePrice"
                   :regular-price="priceTarget?.regularPrice" />
-                <span class="ml-1 font-sans text-xs uppercase tracking-wider text-[var(--color-charcoal)]/60">/ metro</span>
+                <span class="ml-1 font-sans text-xs uppercase tracking-wider text-[var(--color-charcoal)]/60">{{ $t('shop.perMeter') }}</span>
               </div>
             </div>
 

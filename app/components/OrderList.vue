@@ -20,7 +20,7 @@ const goToOrder = (databaseId?: string | number | null): void => {
 <template>
   <div class="orders-card flex min-h-62.5 p-4 md:p-8 justify-center items-center">
     <div v-if="orders && orders.length" class="w-full">
-      <table class="w-full text-left table-auto orders-table" aria-label="Order List">
+      <table class="w-full text-left table-auto orders-table" :aria-label="$t('shop.orderList')">
         <thead>
           <tr>
             <th>{{ $t('shop.order') }}</th>
@@ -40,13 +40,13 @@ const goToOrder = (databaseId?: string | number | null): void => {
       </table>
       <div class="text-center flex justify-center w-full mt-8">
         <button type="button" class="refresh-btn" @click="refresh">
-          <span>Refresh list</span>
+          <span>{{ $t('general.refresh') }}</span>
           <Icon name="ion:refresh-outline" size="14" />
         </button>
       </div>
     </div>
     <div v-else-if="orders && orders.length === 0" class="min-h-62.5 flex items-center justify-center text-lg" style="color: color-mix(in oklab, var(--color-charcoal) 55%, transparent)">
-      No orders found.
+      {{ $t('shop.noOrders') }}
     </div>
     <LoadingIcon v-else size="24" stroke="2" />
   </div>

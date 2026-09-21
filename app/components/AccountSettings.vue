@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { locale, locales, setLocale } = useI18n();
+const { locale, locales, setLocale, t } = useI18n();
 
 const settings = ref({
   preferences: {
@@ -53,8 +53,8 @@ const saveSettings = async () => {
 };
 
 const deleteAccount = () => {
-  if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
-    alert('Account deletion would be processed here. This requires custom backend implementation.');
+  if (confirm(t('account.deleteConfirmation'))) {
+    alert(t('account.deleteUnavailable'));
   }
 };
 </script>
@@ -63,9 +63,9 @@ const deleteAccount = () => {
   <div>
     <!-- Page Header -->
     <div class="mb-8">
-      <h1 class="font-heading text-2xl mb-2" style="color: var(--color-charcoal)">Settings</h1>
+      <h1 class="font-heading text-2xl mb-2" style="color: var(--color-charcoal)">{{ $t('account.settings') }}</h1>
       <p class="text-sm" style="color: color-mix(in oklab, var(--color-charcoal) 65%, transparent)">
-        Manage your preferences, notifications, and privacy settings
+        {{ $t('account.settingsDescription') }}
       </p>
     </div>
 
@@ -73,13 +73,13 @@ const deleteAccount = () => {
       <!-- Preferences Section -->
       <div class="account-form">
         <div class="account-form-header">
-          <h3 class="font-heading text-base" style="color: var(--color-charcoal)">Preferences</h3>
+          <h3 class="font-heading text-base" style="color: var(--color-charcoal)">{{ $t('account.preferences') }}</h3>
         </div>
 
         <div class="p-6 md:p-8 space-y-6">
           <!-- Language -->
           <div class="space-y-2">
-            <label for="language">Language</label>
+            <label for="language">{{ $t('general.language') }}</label>
             <select id="language" v-model="settings.preferences.language">
               <option v-for="lang in languages" :key="lang.value" :value="lang.value">{{ lang.label }}</option>
             </select>
@@ -91,7 +91,7 @@ const deleteAccount = () => {
     <!-- Danger Zone -->
     <div class="danger-zone mt-12">
       <div class="danger-zone-header">
-        <h3 class="font-heading text-base" style="color: #7a2e1c">Danger Zone</h3>
+        <h3 class="font-heading text-base" style="color: #7a2e1c">{{ $t('account.dangerZone') }}</h3>
       </div>
       <div class="p-6 md:p-8">
         <div class="flex items-center justify-between gap-6">
@@ -100,15 +100,15 @@ const deleteAccount = () => {
               <Icon name="ion:warning-outline" size="18" style="color: #9a3b26" />
             </div>
             <div>
-              <h4 class="font-medium mb-1" style="color: var(--color-charcoal)">Delete Account</h4>
+              <h4 class="font-medium mb-1" style="color: var(--color-charcoal)">{{ $t('account.deleteAccount') }}</h4>
               <p class="text-sm" style="color: color-mix(in oklab, var(--color-charcoal) 60%, transparent)">
-                Once you delete your account, there is no going back. This will permanently delete your account, order history, and all associated data.
+                {{ $t('account.deleteAccountDescription') }}
               </p>
             </div>
           </div>
           <button type="button" class="delete-btn" @click="deleteAccount">
             <Icon name="ion:trash-outline" size="14" />
-            <span>Delete</span>
+            <span>{{ $t('general.delete') }}</span>
           </button>
         </div>
       </div>

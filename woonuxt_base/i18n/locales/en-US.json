@@ -45,7 +45,13 @@
     "shippingReturns": "Shipping & Returns",
     "privacyPolicy": "Privacy Policy",
     "termsConditions": "Terms & Conditions",
-    "updating": "Updating"
+    "updating": "Updating",
+    "language": "Language",
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "refresh": "Refresh list",
+    "upTo": "Up to",
+    "faq": "FAQ"
   },
   "account": {
     "changePassword": "Change Password",
@@ -79,7 +85,24 @@
     "updating": "Updating",
     "updateDetails": "Update Details",
     "updateSuccess": "Updated successfully",
-    "failed": "Failed to update"
+    "failed": "Failed to update",
+    "settings": "Settings",
+    "settingsDescription": "Manage your preferences, notifications, and privacy settings",
+    "preferences": "Preferences",
+    "dangerZone": "Danger Zone",
+    "deleteAccount": "Delete Account",
+    "deleteAccountDescription": "Once you delete your account, there is no going back. This will permanently delete your account, order history, and all associated data.",
+    "deleteConfirmation": "Are you sure you want to delete your account? This action cannot be undone.",
+    "deleteUnavailable": "Account deletion would be processed here. This requires custom backend implementation.",
+    "personalInfoDescription": "Manage your personal information, including your name, username and email address where you can be contacted",
+    "personalDetails": "Personal Details",
+    "passwordDescription": "Update your password to keep your account secure",
+    "passwordRequirements": "Password requirements:",
+    "passwordMinLength": "At least 8 characters",
+    "passwordsMatch": "Passwords match",
+    "signIn": "Sign In",
+    "removeFilter": "Remove filter",
+    "languageSwitcher": "Language switcher"
   },
   "shop": {
     "shopByCategory": "Shop by Category",
@@ -139,6 +162,25 @@
     "downloadsRemaining": "Downloads remaining",
     "expires": "Expires",
     "productNotFound": "Product not found",
+    "reviewSingular": "Review",
+    "reviewPlural": "Reviews",
+    "shareExperience": "Share your experience",
+    "reviewInvitation": "If you have tried this product, we would love to hear your opinion.",
+    "noReviewsAvailable": "No reviews are available for this product yet.",
+    "noOrders": "No orders found.",
+    "onlyOnSale": "Only show products on sale",
+    "changeSortDirection": "Change sort direction",
+    "sortBy": "Sort by",
+    "save": "Save",
+    "lowStock": "Low stock",
+    "moveToWishlist": "Move to Wishlist",
+    "removeItem": "Remove item",
+    "decreaseQuantity": "Decrease quantity",
+    "increaseQuantity": "Increase quantity",
+    "quantity": "Quantity",
+    "orderList": "Order list",
+    "productsLoadError": "We couldn't load products right now. Please refresh and try again.",
+    "perMeter": "/ meter",
     "productResultCount": {
       "showing": "Showing",
       "to": "to",
@@ -148,6 +190,18 @@
       "title": "No products found",
       "subText": "Try adjusting your search or filter to find what you're looking for.",
       "clearFiltersAndSearch": "Clear all filters and search"
+    }
+  },
+  "home": {
+    "heroEyebrow": "Autumn collection",
+    "heroTitle": "Fabrics with character",
+    "heroSubtitle": "Hand-selected fabrics to bring your projects to life. Cotton, linen, and natural textures.",
+    "viewCollection": "View collection",
+    "trust": {
+      "cottonLinen": "100% cotton and linen",
+      "fastShipping": "Shipping in 24-48h",
+      "freeReturns": "Free returns",
+      "securePayment": "100% secure payment"
     }
   },
   "billing": {
@@ -169,7 +223,15 @@
     "cashOnDelivery": "Cash on Delivery",
     "differentAddress": "Ship to a different address?",
     "useSameAddress": "Use same address for billing",
-    "noAddressProvided": "No address provided yet"
+    "noAddressProvided": "No address provided yet",
+    "billingAndShipping": "Billing & Shipping",
+    "addressesDescription": "Manage your billing and shipping addresses for orders and deliveries",
+    "billingAddress": "Billing Address",
+    "company": "Company",
+    "shippingAddress": "Shipping Address",
+    "selectCountry": "Select a country",
+    "selectState": "Select a state",
+    "savePaymentMethod": "Save payment information to my account for future purchases."
   },
   "error": {
     "invalidUsername": "No account found with that username. Sign up for a new account.",
@@ -178,6 +240,7 @@
     "passwordMismatch": "Passwords do not match. Please try again.",
     "invalidPasswordResetLink": "Password reset link is invalid.",
     "general": "Something went wrong",
-    "noOrder": "We could not find your order. Please try again later."
+    "noOrder": "We could not find your order. Please try again later.",
+    "tryAgain": "An error occurred. Please try again."
   }
 }

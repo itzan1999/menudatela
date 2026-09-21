@@ -11,11 +11,11 @@
       :img-attrs="{ class: 'object-cover w-full h-[480px] lg:h-[620px]' }" />
     <div class="hero-overlay"></div>
     <div class="container absolute inset-0 flex flex-col items-start justify-center">
-      <p class="hero-eyebrow">Colección otoño</p>
-      <h1 class="hero-title">Telas con carácter</h1>
-      <p class="hero-subtitle">Tejidos seleccionados uno a uno para dar vida a tus proyectos. Algodón, lino y texturas naturales.</p>
+      <p class="hero-eyebrow">{{ $t('home.heroEyebrow') }}</p>
+      <h1 class="hero-title">{{ $t('home.heroTitle') }}</h1>
+      <p class="hero-subtitle">{{ $t('home.heroSubtitle') }}</p>
       <NuxtLink class="hero-cta" to="/products">
-        <span>Ver colección</span>
+        <span>{{ $t('home.viewCollection') }}</span>
         <Icon name="ion:arrow-forward-outline" size="16" />
       </NuxtLink>
     </div>

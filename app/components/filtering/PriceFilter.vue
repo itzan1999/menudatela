@@ -35,7 +35,7 @@ watch(isFiltersActive, () => {
 
     <div v-show="isOpen" class="mt-4 flex flex-col gap-3">
       <div class="flex items-center justify-between font-sans text-xs text-[var(--color-charcoal)]/70">
-        <span>Hasta</span>
+        <span>{{ $t('general.upTo') }}</span>
         <span class="font-semibold text-[var(--color-charcoal)]">{{ maxPrice[0] }} €</span>
       </div>
 

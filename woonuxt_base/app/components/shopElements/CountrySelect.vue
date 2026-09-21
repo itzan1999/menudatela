@@ -22,7 +22,7 @@ function select(evt: Event) {
 
 <template>
   <select :id="name ?? 'country-select'" v-bind="$attrs" :value="modelValue ?? ''" required @change="select">
-    <option value="" disabled>Select a country</option>
+    <option value="" disabled>{{ $t('billing.selectCountry') }}</option>
     <option v-for="country in countriesToShow" :key="country.code" :value="country.code">
       {{ country.name }}
     </option>

@@ -52,7 +52,7 @@ useHead({
         <ProductGrid />
       </div>
     </div>
-    <NoProductsFound v-else-if="hasError">We couldn't load products right now. Please refresh and try again.</NoProductsFound>
-    <NoProductsFound v-else>No products found. Please try adjusting your filters or check back later.</NoProductsFound>
+    <NoProductsFound v-else-if="hasError">{{ $t('shop.productsLoadError') }}</NoProductsFound>
+    <NoProductsFound v-else>{{ $t('shop.noProductsFound.subText') }}</NoProductsFound>
   </main>
 </template>

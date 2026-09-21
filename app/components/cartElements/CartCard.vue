@@ -44,8 +44,8 @@ const moveToWishList = () => {
       <div class="flex-1">
         <div class="flex gap-x-2 gap-y-1 flex-wrap items-center">
           <NuxtLink class="leading-tight line-clamp-2 cart-item-name" :to="productSlug">{{ productType.name }}</NuxtLink>
-          <span v-if="productType.salePrice" class="cart-badge-sale">Save {{ salePercentage }}</span>
-          <span v-if="isLowStock" class="cart-badge-lowstock">Low Stock</span>
+          <span v-if="productType.salePrice" class="cart-badge-sale">{{ $t('shop.save') }} {{ salePercentage }}</span>
+          <span v-if="isLowStock" class="cart-badge-lowstock">{{ $t('shop.lowStock') }}</span>
         </div>
         <ProductPrice class="mt-1 text-xs" :sale-price="productType.salePrice" :regular-price="productType.regularPrice" />
       </div>
@@ -58,11 +58,11 @@ const moveToWishList = () => {
             :disabled="isOptimisticItem"
             type="button"
             @click="moveToWishList">
-            Move to Wishlist
+            {{ $t('shop.moveToWishlist') }}
           </button>
           <button
-            title="Remove Item"
-            aria-label="Remove Item"
+            :title="$t('shop.removeItem')"
+            :aria-label="$t('shop.removeItem')"
             type="button"
             :disabled="isOptimisticItem"
             class="remove-btn flex items-center gap-1 disabled:cursor-not-allowed disabled:opacity-50"

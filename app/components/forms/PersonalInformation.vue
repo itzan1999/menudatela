@@ -2,15 +2,15 @@
   <div v-if="customer">
     <!-- Page Header -->
     <div class="mb-8">
-      <h1 class="font-heading text-2xl mb-2" style="color: var(--color-charcoal)">Personal Information</h1>
+      <h1 class="font-heading text-2xl mb-2" style="color: var(--color-charcoal)">{{ $t('account.personalInfo') }}</h1>
       <p class="text-sm" style="color: color-mix(in oklab, var(--color-charcoal) 65%, transparent)">
-        Manage your personal information, including your name, username and email address where you can be contacted
+        {{ $t('account.personalInfoDescription') }}
       </p>
     </div>
 
     <form class="account-form wn-form" @submit.prevent="saveChanges">
       <div class="account-form-header">
-        <h3 class="font-heading text-base" style="color: var(--color-charcoal)">Personal Details</h3>
+        <h3 class="font-heading text-base" style="color: var(--color-charcoal)">{{ $t('account.personalDetails') }}</h3>
       </div>
       <!-- Form Fields -->
       <div class="grid gap-6 p-6 md:p-8 md:grid-cols-2">

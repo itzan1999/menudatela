@@ -47,10 +47,10 @@ const getPercentageForStar = (starRating: number): number => {
     <!-- Columna Izquierda: Resumen y Barras -->
     <div class="space-y-6 lg:col-span-5">
       <div>
-        <h3 class="mb-2 font-serif text-2xl text-[var(--color-charcoal)]">Opiniones de clientes</h3>
+        <h3 class="mb-2 font-serif text-2xl text-[var(--color-charcoal)]">{{ $t('shop.customerReviews') }}</h3>
         <div class="flex items-center gap-3">
           <StarRating :rating="averageRating" />
-          <span class="font-sans text-xs text-[var(--color-charcoal)]/70"> Basado en {{ reviewCount }} {{ reviewCount === 1 ? 'Reseña' : 'Reseñas' }} </span>
+          <span class="font-sans text-xs text-[var(--color-charcoal)]/70"> {{ $t('general.basedOn') }} {{ reviewCount }} {{ $t(reviewCount === 1 ? 'shop.reviewSingular' : 'shop.reviewPlural') }} </span>
         </div>
       </div>
 
@@ -66,21 +66,21 @@ const getPercentageForStar = (starRating: number): number => {
 
       <!-- Acción para Escribir Opinión -->
       <div class="space-y-3 pt-4 border-t border-[var(--color-sand)]/60">
-        <h4 class="font-serif text-lg text-[var(--color-charcoal)]">Comparte tu experiencia</h4>
-        <p class="font-sans text-xs leading-relaxed text-[var(--color-charcoal)]/70">Si has probado este producto, nos encantaría conocer tu opinión.</p>
+        <h4 class="font-serif text-lg text-[var(--color-charcoal)]">{{ $t('shop.shareExperience') }}</h4>
+        <p class="font-sans text-xs leading-relaxed text-[var(--color-charcoal)]/70">{{ $t('shop.reviewInvitation') }}</p>
 
         <button
           type="button"
           class="flex h-11 w-full items-center justify-center border border-[var(--color-sand)] bg-transparent px-6 font-sans text-xs font-semibold uppercase tracking-widest text-[var(--color-charcoal)] transition-all duration-300 hover:border-[var(--color-charcoal)] hover:bg-[var(--color-charcoal)] hover:text-[var(--color-cream)] cursor-pointer"
           @click="showForm = !showForm">
-          {{ showForm ? 'Cancelar' : 'Escribir opinión' }}
+          {{ showForm ? $t('general.cancel') : $t('shop.writeReview') }}
         </button>
       </div>
     </div>
 
     <!-- Columna Derecha: Lista de Reseñas -->
     <div class="divide-y divide-[var(--color-sand)]/60 lg:col-span-7">
-      <div v-if="reviews.length === 0" class="py-4 font-sans text-xs text-[var(--color-charcoal)]/60">No hay opiniones disponibles para este producto aún.</div>
+      <div v-if="reviews.length === 0" class="py-4 font-sans text-xs text-[var(--color-charcoal)]/60">{{ $t('shop.noReviewsAvailable') }}</div>
 
       <div v-for="review in reviews" :key="review.id" class="py-5 first:pt-0">
         <div class="mb-1 flex items-center justify-between">

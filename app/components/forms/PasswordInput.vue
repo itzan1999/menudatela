@@ -35,7 +35,7 @@ const handleInputChanged = (e: Event) => {
     <button
       type="button"
       class="absolute right-3 flex items-center text-[var(--color-charcoal)]/50 hover:text-[var(--color-charcoal)] cursor-pointer"
-      :aria-label="showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+      :aria-label="$t(showPassword ? 'account.hidePassword' : 'account.showPassword')"
       @click="showPassword = !showPassword">
       <Icon :name="showPassword ? 'ion:eye-outline' : 'ion:eye-off-outline'" class="h-4 w-4" />
     </button>

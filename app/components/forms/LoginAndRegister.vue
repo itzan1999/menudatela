@@ -45,7 +45,7 @@
         </p>
         <div class="mb-4">
           <label class="mb-1.5 block font-sans text-[11px] font-medium tracking-wider uppercase text-[var(--color-charcoal)]/80" for="resetEmail">
-            {{ $t('billing.email') }} / Usuario
+            {{ $t('account.emailOrUsername') }}
           </label>
           <input
             id="resetEmail"
@@ -67,7 +67,7 @@
         </p>
         <div class="mb-6">
           <label class="mb-1.5 block font-sans text-[11px] font-medium tracking-wider uppercase text-[var(--color-charcoal)]/80" for="newPasswordInput">
-            Nueva Contraseña
+            {{ $t('account.newPassword') }}
           </label>
           <PasswordInput id="newPasswordInput" v-model="newPassword" placeholder="********" name="newPassword" autocomplete="new-password" :required="true" />
         </div>
@@ -79,12 +79,12 @@
         <div class="grid grid-cols-2 gap-3 mb-4">
           <div>
             <label class="mb-1.5 block font-sans text-[11px] font-medium tracking-wider uppercase text-[var(--color-charcoal)]/80" for="firstName">
-              Nombre
+              {{ $t('billing.firstName') }}
             </label>
             <input
               id="firstName"
               v-model="userInfo.firstName"
-              placeholder="Nombre"
+              :placeholder="$t('billing.firstName')"
               autocomplete="given-name"
               name="firstName"
               type="text"
@@ -93,12 +93,12 @@
           </div>
           <div>
             <label class="mb-1.5 block font-sans text-[11px] font-medium tracking-wider uppercase text-[var(--color-charcoal)]/80" for="lastName">
-              Apellidos
+              {{ $t('billing.lastName') }}
             </label>
             <input
               id="lastName"
               v-model="userInfo.lastName"
-              placeholder="Apellidos"
+              :placeholder="$t('billing.lastName')"
               autocomplete="family-name"
               name="lastName"
               type="text"
@@ -110,7 +110,7 @@
         <!-- Nombre de Usuario (Username) -->
         <div class="mb-4">
           <label class="mb-1.5 block font-sans text-[11px] font-medium tracking-wider uppercase text-[var(--color-charcoal)]/80" for="regUsername">
-            Nombre de usuario
+            {{ $t('account.username') }}
           </label>
           <input
             id="regUsername"
@@ -152,7 +152,7 @@
       <template v-else-if="formView === FormView.LOGIN">
         <div class="mb-4">
           <label class="mb-1.5 block font-sans text-[11px] font-medium tracking-wider uppercase text-[var(--color-charcoal)]/80" for="username">
-            {{ $t('billing.email') }} / Usuario
+            {{ $t('account.emailOrUsername') }}
           </label>
           <input
             id="username"
@@ -174,7 +174,7 @@
               type="button"
               class="font-sans text-[11px] text-[var(--color-charcoal)]/60 hover:text-[var(--color-charcoal)] hover:underline cursor-pointer"
               @click="navigate(FormView.FORGOT_PASSWORD)">
-              ¿Olvidaste tu contraseña?
+              {{ $t('account.forgotPassword') }}
             </button>
           </div>
           <PasswordInput
@@ -213,7 +213,7 @@
         type="button"
         class="group inline-flex items-center justify-center gap-2 font-sans text-[11px] font-semibold tracking-widest uppercase text-[var(--color-charcoal)]/60 transition-colors duration-200 hover:text-[var(--color-charcoal)] cursor-pointer"
         @click="navigate(FormView.LOGIN)">
-        <span>{{ $t('account.backToLogin', 'Volver a iniciar sesión') }}</span>
+        <span>{{ $t('account.backToLogin') }}</span>
       </button>
     </div>
   </div>

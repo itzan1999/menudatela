@@ -28,7 +28,7 @@ const toggleSale = () => {
           : 'border-[var(--color-sand)] bg-transparent text-[var(--color-charcoal)]/80 hover:border-[var(--color-charcoal)]'
       "
       @click="toggleSale">
-      <span>Ver solo productos en oferta</span>
+      <span>{{ $t('shop.onlyOnSale') }}</span>
       <span v-if="selectedTerms.length > 0">✓</span>
     </button>
   </div>
