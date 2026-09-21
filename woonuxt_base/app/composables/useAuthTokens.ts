@@ -6,7 +6,21 @@ const LEGACY_GQL_TOKEN_COOKIE = 'gql:default';
 const REFRESH_BUFFER_SECONDS = 60;
 const REFRESH_REQUEST_TIMEOUT_MS = 5000;
 
+const deleteAuthTokenCookie = (): void => {
+  if (!import.meta.client) return;
+
+  const hostname = window.location.hostname;
+  const baseDomain = hostname.includes('.') ? `.${hostname.split('.').slice(-2).join('.')}` : hostname;
+  const expires = 'Thu, 01 Jan 1970 00:00:00 GMT';
+
+  for (const domain of ['', hostname, baseDomain]) {
+    const domainAttribute = domain ? `;domain=${domain}` : '';
+    document.cookie = `${AUTH_TOKEN_COOKIE}=;expires=${expires};max-age=0;path=/${domainAttribute}`;
+  }
+};
+
 let refreshInFlight: Promise<boolean> | null = null;
+let authSessionVersion = 0;
 
 const parseJwtExpiry = (token?: string | null): number => {
   if (!token) return 0;
@@ -63,12 +77,15 @@ export const useAuthTokens = () => {
   };
 
   const clearAuthSession = (): void => {
+    authSessionVersion += 1;
     clearActiveAuthToken();
     refreshToken.value = null;
+    deleteAuthTokenCookie();
   };
 
   const setAuthSessionFromLogin = (payload?: LoginSession | null): void => {
     if (!payload?.authToken) return;
+    authSessionVersion += 1;
     refreshToken.value = payload.refreshToken ?? null;
     setActiveAuthToken(payload.authToken);
   };
@@ -131,9 +148,11 @@ export const useAuthTokens = () => {
     }
     if (!force && reusableToken()) return true;
 
+    const sessionVersion = authSessionVersion;
     refreshInFlight = (async () => {
       try {
         const token = await requestRefreshedAuthToken();
+        if (sessionVersion !== authSessionVersion) return false;
         if (!token) {
           if (!liveToken()) clearAuthSession();
           return false;

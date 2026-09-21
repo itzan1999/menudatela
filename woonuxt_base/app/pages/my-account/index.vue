@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 const { logoutUser, viewer, avatar, isPending, handlePostLoginRedirect } = useAuth();
-const { cart } = useCart();
+const { cart, isUpdatingCart } = useCart();
 const route = useRoute();
 
 const activeTab = computed(() => route.query.tab || 'personal-info');
-const showLoader = computed(() => !cart.value && !viewer.value);
+const showLoader = computed(() => !cart.value && !viewer.value && isUpdatingCart.value);
 
 // Check if user should be redirected and prevent dashboard from showing
 const isRedirecting = ref(false);

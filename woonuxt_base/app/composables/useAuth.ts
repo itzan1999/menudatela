@@ -148,16 +148,8 @@ export const useAuth = () => {
 
   const logoutUser = async (): Promise<AuthResponse> => {
     isPending.value = true;
-    let errorMsg: string | undefined;
 
     try {
-      try {
-        const { logout } = await gql.Logout();
-        if (!logout?.success) errorMsg = 'There was an error logging out. Your session was cleared locally.';
-      } catch (error: unknown) {
-        errorMsg = getErrorMessage(error);
-      }
-
       // Clear all auth/session state synchronously first so the UI updates immediately.
       clearAuthSession();
       clearWooSession();
@@ -165,14 +157,12 @@ export const useAuth = () => {
       resetAccountState();
       updateCart(null);
 
-      // Navigate now — don't wait for refreshCart() first. refreshCart() can take 1-2s
-      // and applyCartSnapshot could restore viewer state if a stale cookie survived.
-      await router.push(router.currentRoute.value.path === '/my-account' ? '/my-account' : '/');
+      // Navigate immediately; the remote mutation is best-effort because local logout
+      // must still work when the API is unavailable. The remote mutation is intentionally
+      // omitted because it can trigger auth refresh/reload logic while the session is closing.
+      // await router.push('/');
 
-      // Fire-and-forget: get a fresh anonymous guest cart/session in the background.
-      void refreshCart().catch(() => {});
-
-      return errorMsg ? { success: false, error: errorMsg } : { success: true };
+      return { success: true };
     } finally {
       isPending.value = false;
     }
