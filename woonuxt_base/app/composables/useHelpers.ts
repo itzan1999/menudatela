@@ -5,6 +5,8 @@ export function useHelpers() {
   const runtimeConfig = useRuntimeConfig();
   const requestOrigin = import.meta.server ? useRequestURL().origin : import.meta.client ? window.location.origin : undefined;
 
+  const i18n = useNuxtApp().$i18n as { locale: { value: string } };
+
   const isShowingMobileMenu = useState<boolean>('isShowingMobileMenu', () => false);
   const wooNuxtVersionInfo: string = pkg.version || '0.0.0';
   const productsPerPage: number = runtimeConfig.public?.PRODUCTS_PER_PAGE || 24;
@@ -96,7 +98,8 @@ export function useHelpers() {
    */
   const formatDate = (date?: string | null): string => {
     if (!date) return '';
-    return new Date(date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+    const locale = i18n.locale.value.replace('_', '-');
+    return new Date(date).toLocaleDateString(locale, { month: 'long', day: 'numeric', year: 'numeric' });
   };
 
   /**

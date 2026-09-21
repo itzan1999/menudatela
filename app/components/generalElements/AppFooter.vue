@@ -18,8 +18,6 @@ const { wooNuxtVersionInfo } = useHelpers();
           <a class="footer-link" href="https://github.com/scottyzen/woonuxt?tab=readme-ov-file#next-generation-front-end-for-woocommerce" target="_blank">{{
             $t('general.about')
           }}</a>
-          <a href="/" class="footer-link">{{ $t('general.careers') }}</a>
-          <a href="/" class="footer-link">{{ $t('general.press') }}</a>
           <a href="https://woonuxt.com/faq" class="footer-link" rel="noreferrer" target="_blank">FAQ's</a>
         </div>
       </div>
@@ -29,7 +27,6 @@ const { wooNuxtVersionInfo } = useHelpers();
           <NuxtLink to="/products" class="footer-link">{{ $t('shop.newArrivals') }}</NuxtLink>
           <NuxtLink to="/products?filter=sale[true]" class="footer-link">{{ $t('shop.onSale') }}</NuxtLink>
           <NuxtLink to="/products?orderby=rating&order=ASC&filter=rating[1]" class="footer-link">{{ $t('shop.topRated') }}</NuxtLink>
-          <a href="/" class="footer-link">{{ $t('shop.giftCards') }}</a>
         </div>
       </div>
       <div class="w-[42.857%] lg:w-auto">
@@ -47,7 +44,6 @@ const { wooNuxtVersionInfo } = useHelpers();
           <NuxtLink to="/my-account/" class="footer-link">{{ $t('account.myAccount') }}</NuxtLink>
           <NuxtLink to="/my-account/?tab=orders" class="footer-link">{{ $t('shop.orderHistory') }}</NuxtLink>
           <NuxtLink to="/wishlist" class="footer-link">{{ $t('shop.wishlist') }}</NuxtLink>
-          <a href="/" class="footer-link">{{ $t('general.newsletter') }}</a>
         </div>
       </div>
     </div>

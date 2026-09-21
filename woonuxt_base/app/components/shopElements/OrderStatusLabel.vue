@@ -2,8 +2,18 @@
 import type { Order } from '#types/gql';
 
 const props = defineProps<{ order: Order }>();
+const { t } = useI18n();
 
-const readableStatus = computed(() => props.order?.status?.replace(/_/g, ' ') || '');
+const readableStatus = computed(() => {
+  const status = props.order?.status;
+  if (!status) return '';
+
+  const fallback = status.replace(/_/g, ' ');
+  const translationKey = `shop.orderStatuses.${status.toLowerCase()}`;
+  const translation = t(translationKey);
+
+  return translation === translationKey ? fallback : translation;
+});
 </script>
 
 <template>
