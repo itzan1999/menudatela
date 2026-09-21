@@ -174,7 +174,9 @@ const deleteAccount = () => {
   color: #9a3b26;
   background-color: transparent;
   border: 1px solid #9a3b26;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
   white-space: nowrap;
 }
 

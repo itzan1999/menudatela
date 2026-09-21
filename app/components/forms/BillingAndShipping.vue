@@ -55,7 +55,9 @@
           </div>
 
           <div class="w-full space-y-2">
-            <label for="billing-company">{{ $t('billing.company') }} <span class="opacity-60">({{ $t('general.optional') }})</span></label>
+            <label for="billing-company"
+              >{{ $t('billing.company') }} <span class="opacity-60">({{ $t('general.optional') }})</span></label
+            >
             <input
               id="billing-company"
               v-model="customer.billing.company"
@@ -79,7 +81,9 @@
           </div>
 
           <div class="w-full space-y-2">
-            <label for="billing-address-2">{{ $t('billing.address2') }} <span class="opacity-60">({{ $t('general.optional') }})</span></label>
+            <label for="billing-address-2"
+              >{{ $t('billing.address2') }} <span class="opacity-60">({{ $t('general.optional') }})</span></label
+            >
             <input
               id="billing-address-2"
               v-model="customer.billing.address2"
@@ -103,7 +107,9 @@
           </div>
 
           <div v-if="customer.billing.state && customer.billing.country" class="w-full space-y-2">
-            <label for="billing-state">{{ $t('billing.state') }} <span class="opacity-60">({{ $t('general.optional') }})</span></label>
+            <label for="billing-state"
+              >{{ $t('billing.state') }} <span class="opacity-60">({{ $t('general.optional') }})</span></label
+            >
             <StateSelect
               id="billing-state"
               v-model="customer.billing.state"
@@ -197,7 +203,9 @@
           </div>
 
           <div class="w-full space-y-2">
-            <label for="shipping-company">Company <span class="opacity-60">({{ $t('general.optional') }})</span></label>
+            <label for="shipping-company"
+              >Company <span class="opacity-60">({{ $t('general.optional') }})</span></label
+            >
             <input
               id="shipping-company"
               v-model="customer.shipping.company"
@@ -221,7 +229,9 @@
           </div>
 
           <div class="w-full space-y-2">
-            <label for="shipping-address-2">{{ $t('billing.address2') }} <span class="opacity-60">({{ $t('general.optional') }})</span></label>
+            <label for="shipping-address-2"
+              >{{ $t('billing.address2') }} <span class="opacity-60">({{ $t('general.optional') }})</span></label
+            >
             <input
               id="shipping-address-2"
               v-model="customer.shipping.address2"
@@ -245,7 +255,9 @@
           </div>
 
           <div v-if="customer.shipping.state && customer.shipping.country" class="w-full space-y-2">
-            <label for="shipping-state">{{ $t('billing.state') }} <span class="opacity-60">({{ $t('general.optional') }})</span></label>
+            <label for="shipping-state"
+              >{{ $t('billing.state') }} <span class="opacity-60">({{ $t('general.optional') }})</span></label
+            >
             <StateSelect
               id="shipping-state"
               v-model="customer.shipping.state"
@@ -280,7 +292,11 @@
 
         <!-- Submit Button -->
         <div class="account-form-footer">
-          <button type="submit" class="save-btn ml-auto" :class="{ 'save-btn--success': button.state === 'success', 'save-btn--error': button.state === 'error' }" :disabled="loading">
+          <button
+            type="submit"
+            class="save-btn ml-auto"
+            :class="{ 'save-btn--success': button.state === 'success', 'save-btn--error': button.state === 'error' }"
+            :disabled="loading">
             {{ button.text }}
           </button>
         </div>
@@ -355,7 +371,9 @@ async function saveChanges(): Promise<void> {
   color: var(--color-charcoal);
   background-color: transparent;
   border: 1px solid var(--color-charcoal);
-  transition: background-color 0.2s ease, color 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
 }
 
 .save-btn:hover:not(:disabled) {

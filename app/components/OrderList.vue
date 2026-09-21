@@ -45,7 +45,10 @@ const goToOrder = (databaseId?: string | number | null): void => {
         </button>
       </div>
     </div>
-    <div v-else-if="orders && orders.length === 0" class="min-h-62.5 flex items-center justify-center text-lg" style="color: color-mix(in oklab, var(--color-charcoal) 55%, transparent)">
+    <div
+      v-else-if="orders && orders.length === 0"
+      class="min-h-62.5 flex items-center justify-center text-lg"
+      style="color: color-mix(in oklab, var(--color-charcoal) 55%, transparent)">
       {{ $t('shop.noOrders') }}
     </div>
     <LoadingIcon v-else size="24" stroke="2" />

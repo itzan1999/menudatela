@@ -69,7 +69,11 @@
 
       <!-- Submit Button -->
       <div class="account-form-footer">
-        <button type="submit" class="save-btn ml-auto" :class="{ 'save-btn--success': button.state === 'success', 'save-btn--error': button.state === 'error' }" :disabled="loading">
+        <button
+          type="submit"
+          class="save-btn ml-auto"
+          :class="{ 'save-btn--success': button.state === 'success', 'save-btn--error': button.state === 'error' }"
+          :disabled="loading">
           {{ button.text }}
         </button>
       </div>
@@ -175,7 +179,9 @@ const updatePassword = async () => {
   color: var(--color-charcoal);
   background-color: transparent;
   border: 1px solid var(--color-charcoal);
-  transition: background-color 0.2s ease, color 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
 }
 
 .save-btn:hover:not(:disabled) {

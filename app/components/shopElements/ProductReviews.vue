@@ -50,7 +50,9 @@ const getPercentageForStar = (starRating: number): number => {
         <h3 class="mb-2 font-serif text-2xl text-[var(--color-charcoal)]">{{ $t('shop.customerReviews') }}</h3>
         <div class="flex items-center gap-3">
           <StarRating :rating="averageRating" />
-          <span class="font-sans text-xs text-[var(--color-charcoal)]/70"> {{ $t('general.basedOn') }} {{ reviewCount }} {{ $t(reviewCount === 1 ? 'shop.reviewSingular' : 'shop.reviewPlural') }} </span>
+          <span class="font-sans text-xs text-[var(--color-charcoal)]/70">
+            {{ $t('general.basedOn') }} {{ reviewCount }} {{ $t(reviewCount === 1 ? 'shop.reviewSingular' : 'shop.reviewPlural') }}
+          </span>
         </div>
       </div>
 

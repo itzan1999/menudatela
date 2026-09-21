@@ -19,7 +19,9 @@ const refresh = () => {
         <Button type="button" size="sm" variant="secondary" icon="ion:refresh-outline" @click="refresh">{{ $t('general.refresh') }}</Button>
       </div>
     </div>
-    <div v-else-if="downloads && downloads.length === 0" class="min-h-62.5 flex items-center justify-center text-gray-500 text-lg">{{ $t('shop.noDownloads') }}</div>
+    <div v-else-if="downloads && downloads.length === 0" class="min-h-62.5 flex items-center justify-center text-gray-500 text-lg">
+      {{ $t('shop.noDownloads') }}
+    </div>
     <LoadingIcon v-else size="24" stroke="2" />
   </div>
 </template>
