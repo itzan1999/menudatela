@@ -8,11 +8,17 @@
   /* Paleta cálida MenudaTela */
   --color-cream: #f7f2ea;
   --color-charcoal: #221e1a;
+  --color-charcoal-selected: #33312e;
   --color-sand: #dcd3c4;
 
   /* Sobreescribe las variables base que ya usa app.vue para html/body */
   --color-gray-100: #f7f2ea;
   --color-gray-900: #221e1a;
+}
+
+:root::selection {
+  background-color: var(--color-charcoal-selected);
+  color: var(--color-sand);
 }
 
 body {
