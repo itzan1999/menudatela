@@ -173,6 +173,7 @@
   },
   "error": {
     "invalidUsername": "No account found with that username. Sign up for a new account.",
+    "invalidPassword": "Invalid password. Please try again.",
     "incorrectPassword": "Incorrect password. Please try again.",
     "passwordMismatch": "Passwords do not match. Please try again.",
     "invalidPasswordResetLink": "Password reset link is invalid.",
