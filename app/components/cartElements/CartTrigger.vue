@@ -20,7 +20,7 @@ watch(cartItemCount, (newCount, oldCount) => {
       <Transition name="popIn" mode="out-in">
         <span
           v-if="cartItemCount > 0"
-          class="cart-badge bg-primary rounded-full text-white leading-none min-w-4 p-0.75 -top-1 -right-1 md:-right-2 text-[10px] absolute inline-flex justify-center items-center tabular-nums">
+          class="cart-badge bg-charcoal rounded-full text-white leading-none min-w-4 p-0.75 -top-1 -right-1 md:-right-2 text-[10px] absolute inline-flex justify-center items-center tabular-nums">
           {{ cartItemCount }}
         </span>
       </Transition>
