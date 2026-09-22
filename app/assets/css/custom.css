@@ -33,3 +33,50 @@ h4,
   font-family: var(--font-serif);
   letter-spacing: -0.01em;
 }
+
+/* Checkbox editorial, coherente con la paleta MenudaTela.
+   Selector con `input[type='checkbox'].form-checkbox` para superar en
+   especificidad a la regla global `input[type='checkbox']` de
+   woonuxt_base/app/app.vue (misma especificidad que un simple
+   `input.form-checkbox`, que por sí solo no gana). */
+input[type='checkbox'].form-checkbox {
+  appearance: none;
+  -webkit-appearance: none;
+  flex-shrink: 0;
+  width: 1.05rem;
+  height: 1.05rem;
+  background-color: var(--color-cream);
+  border: 1px solid var(--color-sand);
+  border-radius: 0;
+  padding: 0;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+input[type='checkbox'].form-checkbox:after {
+  content: none;
+}
+
+input[type='checkbox'].form-checkbox:hover {
+  border-color: var(--color-charcoal);
+}
+
+input[type='checkbox'].form-checkbox:checked {
+  background-color: var(--color-charcoal);
+  border-color: var(--color-charcoal);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' viewBox='0 0 12 12'%3E%3Cpath stroke='%23f7f2ea' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.6' d='M2.3 6.2l2.4 2.4 4.8-5.4'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+input[type='checkbox'].form-checkbox:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px color-mix(in oklab, var(--color-charcoal) 30%, transparent);
+}
+
+input[type='checkbox'].form-checkbox:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
