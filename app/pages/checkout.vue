@@ -79,16 +79,21 @@ const hasAvailableShippingMethods = computed<boolean>(() => {
   return !!cart.value?.availableShippingMethods?.[0]?.rates?.length;
 });
 
+const copyBillingToShipping = (): void => {
+  if (!customer.value?.billing) return;
+  customer.value.shipping = { ...customer.value.billing };
+};
+
 watch(shipToDifferentAddress, (newValue) => {
   if (!customer.value?.billing) return;
 
   if (!customer.value.shipping) {
-    customer.value.shipping = { ...customer.value.billing };
+    copyBillingToShipping();
     return;
   }
 
   if (!newValue) {
-    Object.assign(customer.value.shipping, { ...customer.value.billing });
+    Object.assign(customer.value.shipping, customer.value.billing);
   }
 });
 
@@ -96,7 +101,7 @@ onBeforeMount(() => {
   if (query.cancel_order) window.close();
 
   if (customer.value && !customer.value.shipping && customer.value.billing) {
-    customer.value.shipping = { ...customer.value.billing };
+    copyBillingToShipping();
   }
 });
 
@@ -179,7 +184,7 @@ useSeoMeta({
           <div v-if="viewer" class="checkout-section">
             <div class="">
               <div class="flex flex-wrap items-center gap-2">
-                <h1 class="checkout-greeting">{{ viewerGreeting }}</h1>
+                <h1 class="heading-serif-lg">{{ viewerGreeting }}</h1>
               </div>
               <p v-if="viewerEmail" class="flex flex-wrap items-center gap-2 text-sm mt-4 checkout-muted-text">
                 <span class="opacity-70">Email: </span>
@@ -193,23 +198,17 @@ useSeoMeta({
           </div>
 
           <div v-if="!viewer" class="checkout-section">
-            <h1 class="checkout-greeting">Guest checkout</h1>
+            <h1 class="heading-serif-lg">Guest checkout</h1>
             <div class="flex justify-between items-center gap-4 mt-3" @click="navigateToLogin(route.fullPath)">
               <p class="text-sm checkout-muted-text">Use guest checkout, or sign in to use your saved details.</p>
-              <Button
-                type="button"
-                class="ml-auto rounded-none border-[var(--color-sand)] bg-transparent text-[var(--color-charcoal)] tracking-wider uppercase text-xs font-medium transition-all duration-300 hover:border-[var(--color-charcoal)] hover:bg-[var(--color-charcoal)] hover:text-[var(--color-cream)] focus:ring-[var(--color-charcoal)]/30"
-                size="sm"
-                variant="outline">
-                Sign in
-              </Button>
+              <Button type="button" class="ml-auto tracking-wider uppercase text-xs font-medium" size="sm" variant="outline-charcoal"> Sign in </Button>
             </div>
           </div>
 
           <!-- Billing details -->
           <div v-if="customer?.billing" class="checkout-section">
             <div>
-              <h3 class="checkout-section-title">
+              <h3 class="section-title">
                 {{ $t('billing.billingDetails') }}
               </h3>
             </div>
@@ -279,7 +278,7 @@ useSeoMeta({
 
           <div v-if="shipToDifferentAddress" class="checkout-section">
             <div class="mb-6">
-              <h3 class="checkout-section-title flex items-center gap-2">
+              <h3 class="section-title flex items-center gap-2">
                 <span>{{ $t('general.shippingAddress') }}</span>
               </h3>
             </div>
@@ -287,7 +286,7 @@ useSeoMeta({
           </div>
           <!-- Shipping methods -->
           <div v-if="shouldShowShippingFlow && hasAvailableShippingMethods && cart?.chosenShippingMethods?.[0]" class="checkout-section">
-            <h3 class="checkout-section-title flex items-center gap-2">
+            <h3 class="section-title flex items-center gap-2">
               <span>{{ $t('general.shippingSelect') }}</span>
             </h3>
             <ShippingOptions :options="cart?.availableShippingMethods?.[0]?.rates ?? []" :active-option="cart.chosenShippingMethods[0]" />
@@ -295,7 +294,7 @@ useSeoMeta({
 
           <!-- Pay methods -->
           <div v-if="checkoutPaymentGateways?.nodes.length" class="checkout-section col-span-full">
-            <h3 class="checkout-section-title flex items-center gap-2">
+            <h3 class="section-title flex items-center gap-2">
               <span>{{ $t('billing.paymentOptions') }}</span>
             </h3>
 
@@ -310,7 +309,7 @@ useSeoMeta({
 
           <!-- Order note -->
           <div class="checkout-section">
-            <h3 class="checkout-section-title">{{ $t('shop.orderNote') }} ({{ $t('general.optional') }})</h3>
+            <h3 class="section-title">{{ $t('shop.orderNote') }} ({{ $t('general.optional') }})</h3>
             <textarea
               id="order-note"
               v-model="orderInput.customerNote"
@@ -331,7 +330,8 @@ useSeoMeta({
             :disabled="isCheckoutDisabled"
             size="lg"
             type="submit"
-            class="mt-4 w-full rounded-none border border-[var(--color-sand)] bg-transparent text-[var(--color-charcoal)] shadow-none tracking-wider uppercase text-xs font-medium transition-all duration-300 hover:border-[var(--color-charcoal)] hover:bg-[var(--color-charcoal)] hover:text-[var(--color-cream)] focus:ring-[var(--color-charcoal)]/30 disabled:hover:border-[var(--color-sand)] disabled:hover:bg-transparent disabled:hover:text-[var(--color-charcoal)]">
+            class="mt-4 w-full tracking-wider uppercase text-xs font-medium"
+            variant="outline-charcoal">
             {{ buttonText }}
           </Button>
         </OrderSummary>
@@ -353,24 +353,6 @@ useSeoMeta({
   @apply w-full border p-4 sm:p-8;
   background-color: var(--color-cream);
   border-color: var(--color-sand);
-}
-
-.checkout-greeting {
-  font-family: var(--font-serif);
-  font-size: 1.375rem;
-  font-weight: 500;
-  line-height: 1.1;
-  color: var(--color-charcoal);
-}
-
-.checkout-section-title {
-  margin-bottom: 1.25rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid var(--color-sand);
-  font-family: var(--font-serif);
-  font-size: 1.125rem;
-  font-weight: 500;
-  color: var(--color-charcoal);
 }
 
 .checkout-muted-text {

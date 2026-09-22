@@ -46,7 +46,6 @@ const paymentOptions = computed<PaymentGatewayOption[]>(() => {
     .sort((first, second) => (first.sortOrder ?? 0) - (second.sortOrder ?? 0));
 });
 
-const activePaymentOption = computed<PaymentGatewayOption | null>(() => paymentOptions.value.find((option) => isOptionSelected(option)) || null);
 const selectedOptionId = computed<string>(() => {
   const explicitlySelectedOption = paymentOptions.value.find((option) => option.isSelected);
   if (explicitlySelectedOption) return explicitlySelectedOption.id;
@@ -54,9 +53,11 @@ const selectedOptionId = computed<string>(() => {
   return paymentOptions.value.find((option) => option.gateway.id === selectedGatewayId.value)?.id ?? '';
 });
 
-const isOptionSelected = (option: PaymentGatewayOption): boolean => {
-  return option.id === selectedOptionId.value;
-};
+const activePaymentOption = computed<PaymentGatewayOption | null>(
+  () => paymentOptions.value.find((option) => option.id === selectedOptionId.value) ?? null,
+);
+
+const isOptionSelected = (option: PaymentGatewayOption): boolean => option.id === selectedOptionId.value;
 
 const updatePaymentMethod = async (option: PaymentGatewayOption) => {
   await option.onSelect?.();

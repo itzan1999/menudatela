@@ -4,7 +4,7 @@ const { cart, isCartMutating } = useCart();
 
 <template>
   <aside v-if="cart" class="order-summary mb-8 w-full min-h-70 p-4 sm:p-8 relative">
-    <h2 class="order-summary-title">{{ $t('shop.orderSummary') }}</h2>
+    <h2 class="section-title">{{ $t('shop.orderSummary') }}</h2>
 
     <ul class="flex flex-col gap-4 overflow-y-auto">
       <CartCard v-for="item in cart.contents.nodes" :key="item.key" :item />
@@ -31,7 +31,7 @@ const { cart, isCartMutating } = useCart();
       </Transition>
       <div class="flex justify-between mt-4 pt-4 order-summary-total-row">
         <span class="text-base">{{ $t('shop.total') }}</span>
-        <span class="order-summary-total tabular-nums" v-html="cart.total"></span>
+        <span class="heading-serif-lg tabular-nums" v-html="cart.total"></span>
       </div>
     </div>
 
@@ -51,17 +51,6 @@ const { cart, isCartMutating } = useCart();
   border: 1px solid var(--color-sand);
 }
 
-.order-summary-title {
-  margin-bottom: 1.25rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid var(--color-sand);
-  font-family: var(--font-serif);
-  font-size: 1.125rem;
-  font-weight: 500;
-  line-height: 1.1;
-  color: var(--color-charcoal);
-}
-
 .order-summary-line {
   color: color-mix(in oklab, var(--color-charcoal) 65%, transparent);
 }
@@ -71,18 +60,11 @@ const { cart, isCartMutating } = useCart();
 }
 
 .order-summary-discount {
-  color: #6b7a4f;
+  color: var(--color-positive);
 }
 
 .order-summary-total-row {
   border-top: 1px solid var(--color-sand);
-}
-
-.order-summary-total {
-  font-family: var(--font-serif);
-  font-size: 1.375rem;
-  font-weight: 500;
-  color: var(--color-charcoal);
 }
 
 .order-summary-overlay {

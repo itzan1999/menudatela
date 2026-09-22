@@ -10,6 +10,8 @@
   --color-charcoal: #221e1a;
   --color-charcoal-selected: #33312e;
   --color-sand: #dcd3c4;
+  --color-danger: #b3382c;
+  --color-positive: #6b7a4f;
 
   /* Sobreescribe las variables base que ya usa app.vue para html/body */
   --color-gray-100: #f7f2ea;
@@ -79,4 +81,26 @@ input[type='checkbox'].form-checkbox:focus-visible {
 input[type='checkbox'].form-checkbox:disabled {
   cursor: not-allowed;
   opacity: 0.5;
+}
+
+/* Cabecera de sección: serif con divisor inferior en arena.
+   Compartida por checkout, resúmenes de pedido y otras páginas con
+   secciones tituladas, para no redeclarar la misma regla por archivo. */
+.section-title {
+  margin-bottom: 1.25rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--color-sand);
+  font-family: var(--font-serif);
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: var(--color-charcoal);
+}
+
+/* Titular grande serif (saludos, totales de pedido, cabeceras de página). */
+.heading-serif-lg {
+  font-family: var(--font-serif);
+  font-size: 1.375rem;
+  font-weight: 500;
+  line-height: 1.1;
+  color: var(--color-charcoal);
 }

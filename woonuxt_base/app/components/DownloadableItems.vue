@@ -22,13 +22,13 @@ const getDownloadHref = (item: DownloadableItem & { downloadUrl?: string | null 
     </thead>
     <tbody>
       <tr v-for="item in props.downloadableItems" :key="item.id">
-        <td class="rounded-l-lg">
-          <NuxtLink v-if="item.product" :to="`/product/${item.product.slug}`" class="hover:underline">{{ item.product.name }}</NuxtLink>
+        <td>
+          <NuxtLink v-if="item.product" :to="`/product/${item.product.slug}`" class="download-link">{{ item.product.name }}</NuxtLink>
         </td>
         <td>{{ item.downloadsRemaining || '∞' }}</td>
         <td>{{ item.accessExpires ? formatDate(item.accessExpires) : 'Never' }}</td>
         <td v-if="getDownloadHref(item)">
-          <a :href="getDownloadHref(item) || undefined" :download="item.name" class="text-primary hover:text-primary-dark hover:underline">{{ item.name }}</a>
+          <a :href="getDownloadHref(item) || undefined" :download="item.name" class="download-link">{{ item.name }}</a>
         </td>
       </tr>
     </tbody>
@@ -38,16 +38,24 @@ const getDownloadHref = (item: DownloadableItem & { downloadUrl?: string | null 
 <style scoped>
 @reference "#tailwind";
 
-tbody tr:nth-child(odd) {
-  @apply bg-gray-50;
-}
-
 thead tr {
   @apply text-xs sm:text-base;
+  border-bottom: 1px solid var(--color-sand);
+  color: var(--color-charcoal);
 }
 
 tbody tr {
-  @apply text-xs sm:text-sm text-gray-500;
+  @apply text-xs sm:text-sm;
+  border-bottom: 1px solid var(--color-sand);
+  color: color-mix(in oklab, var(--color-charcoal) 65%, transparent);
+}
+
+.download-link {
+  color: var(--color-charcoal);
+}
+
+.download-link:hover {
+  text-decoration: underline;
 }
 
 td,

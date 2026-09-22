@@ -33,9 +33,7 @@ const { wooNuxtVersionInfo } = useHelpers();
         <div class="footer-heading">{{ $t('general.customerService') }}</div>
         <div class="footer-links">
           <NuxtLink to="/contact" class="footer-link">{{ $t('general.contactUs') }}</NuxtLink>
-          <a href="/" class="footer-link">{{ $t('general.shippingReturns') }}</a>
-          <a href="/" class="footer-link">{{ $t('general.privacyPolicy') }}</a>
-          <a href="/" class="footer-link">{{ $t('general.termsConditions') }}</a>
+          <NuxtLink to="/shipping-returns" class="footer-link">{{ $t('general.shippingReturns') }}</NuxtLink>
         </div>
       </div>
       <div class="w-[42.857%] lg:w-auto">
@@ -44,6 +42,15 @@ const { wooNuxtVersionInfo } = useHelpers();
           <NuxtLink to="/my-account/" class="footer-link">{{ $t('account.myAccount') }}</NuxtLink>
           <NuxtLink to="/my-account/?tab=orders" class="footer-link">{{ $t('shop.orderHistory') }}</NuxtLink>
           <NuxtLink to="/wishlist" class="footer-link">{{ $t('shop.wishlist') }}</NuxtLink>
+        </div>
+      </div>
+      <div class="w-[42.857%] lg:w-auto">
+        <div class="footer-heading">{{ $t('general.legal') }}</div>
+        <div class="footer-links">
+          <NuxtLink to="/legal?tab=cookies" class="footer-link">{{ $t('general.cookiesPolicy') }}</NuxtLink>
+          <NuxtLink to="/legal?tab=terminos" class="footer-link">{{ $t('general.termsConditions') }}</NuxtLink>
+          <NuxtLink to="/legal?tab=privacidad" class="footer-link">{{ $t('general.privacyPolicy') }}</NuxtLink>
+          <NuxtLink to="/legal?tab=aviso-legal" class="footer-link">{{ $t('general.legalNotice') }}</NuxtLink>
         </div>
       </div>
     </div>

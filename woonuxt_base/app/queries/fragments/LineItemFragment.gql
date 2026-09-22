@@ -19,6 +19,7 @@ fragment LineItem on LineItem {
   quantity
   total
   id
+  databaseId
   product {
     node {
       ...LineItemProduct

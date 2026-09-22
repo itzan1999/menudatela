@@ -28,8 +28,8 @@ async function submitCoupon(): Promise<void> {
         :loading="isUpdatingCoupon"
         :disabled="couponCode === '' || isUpdatingCoupon"
         type="submit"
-        variant="primary"
-        class="min-w-20 rounded-none border border-[var(--color-sand)] bg-transparent text-[var(--color-charcoal)] shadow-none tracking-wider uppercase text-xs font-medium transition-all duration-300 hover:border-[var(--color-charcoal)] hover:bg-[var(--color-charcoal)] hover:text-[var(--color-cream)] focus:ring-[var(--color-charcoal)]/30 disabled:hover:border-[var(--color-sand)] disabled:hover:bg-transparent disabled:hover:text-[var(--color-charcoal)]">
+        variant="outline-charcoal"
+        class="min-w-20 tracking-wider uppercase text-xs font-medium">
         {{ $t('general.apply') }}
       </Button>
     </form>

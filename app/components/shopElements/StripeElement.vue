@@ -27,20 +27,16 @@ const normalizedSetupFutureUsage = computed<'off_session' | null>(() => (props.s
  * a clientSecret (intent mode) instead. */
 const canCreateDeferred = computed(() => !props.clientSecret && !props.customerId && !!normalizedCurrency.value && (normalizedAmount.value ?? 0) > 0);
 
-const resolveRootCssVariable = (name: string, fallback: string): string => {
+const resolveComputedStyle = (el: Element, prop: string, fallback: string): string => {
   if (!import.meta.client) return fallback;
-  return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fallback;
-};
-
-const resolveBodyFontFamily = (): string => {
-  if (!import.meta.client) return 'inherit';
-  return getComputedStyle(document.body).fontFamily || 'inherit';
+  return getComputedStyle(el).getPropertyValue(prop).trim() || fallback;
 };
 
 const stripeAppearance = computed<Appearance>(() => {
-  const charcoalColor = resolveRootCssVariable('--color-charcoal', '#221e1a');
-  const sandColor = resolveRootCssVariable('--color-sand', '#dcd3c4');
-  const creamColor = resolveRootCssVariable('--color-cream', '#f7f2ea');
+  const charcoalColor = resolveComputedStyle(document.documentElement, '--color-charcoal', '#221e1a');
+  const sandColor = resolveComputedStyle(document.documentElement, '--color-sand', '#dcd3c4');
+  const creamColor = resolveComputedStyle(document.documentElement, '--color-cream', '#f7f2ea');
+  const dangerColor = resolveComputedStyle(document.documentElement, '--color-danger', '#b3382c');
 
   return {
     theme: 'flat',
@@ -49,8 +45,8 @@ const stripeAppearance = computed<Appearance>(() => {
     variables: {
       colorPrimary: charcoalColor,
       colorText: charcoalColor,
-      colorDanger: '#ef4444',
-      fontFamily: resolveBodyFontFamily(),
+      colorDanger: dangerColor,
+      fontFamily: resolveComputedStyle(document.body, 'font-family', 'inherit'),
       fontSizeBase: '16px',
       borderRadius: '0px',
     },
@@ -101,7 +97,7 @@ const stripeAppearance = computed<Appearance>(() => {
 });
 
 const resetStripeElements = () => {
-  if (containerEl.value) {
+  if (paymentElement && containerEl.value) {
     reservedHeight = containerEl.value.offsetHeight || reservedHeight;
   }
   if (paymentElement) {
@@ -164,16 +160,16 @@ const createStripeElements = async () => {
   if (elements) emit('updateElement', elements);
 };
 
-watch(
-  () => props.clientSecret,
-  () => {
-    if (!props.clientSecret && !canCreateDeferred.value) {
-      resetStripeElements();
-      return;
-    }
-    createStripeElements();
-  },
-);
+// Single combined watcher: clientSecret and canCreateDeferred both decide whether
+// elements should exist, so reacting to them separately let a change to both in the
+// same tick trigger createStripeElements() twice (double network call + iframe remount).
+watch([() => props.clientSecret, canCreateDeferred], ([clientSecret, canCreate]) => {
+  if (!clientSecret && !canCreate) {
+    resetStripeElements();
+    return;
+  }
+  createStripeElements();
+});
 
 watch([normalizedAmount, normalizedCurrency, normalizedSetupFutureUsage], async ([amount, currency, setupFutureUsage]) => {
   if (!elements || elementsMode !== 'deferred') return;
@@ -190,11 +186,6 @@ watch([normalizedAmount, normalizedCurrency, normalizedSetupFutureUsage], async 
   } catch (error) {
     console.error('Failed to update Stripe elements:', error);
   }
-});
-
-watch(canCreateDeferred, (canCreate) => {
-  if (!canCreate || elements) return;
-  createStripeElements();
 });
 
 onMounted(() => {

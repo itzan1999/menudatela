@@ -38,4 +38,13 @@ fragment OrderFragment on Order {
       ...LineItem
     }
   }
+  returnEligible
+  returnStatus
+  returnReason
+  returnDetails
+  returnRequestedAt
+  returnItems {
+    lineItemId
+    quantity
+  }
 }

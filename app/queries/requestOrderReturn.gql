@@ -1,0 +1,9 @@
+mutation requestOrderReturn($orderId: Int!, $reason: String!, $details: String, $items: [OrderReturnItemInput!]) {
+  requestOrderReturn(input: { orderId: $orderId, reason: $reason, details: $details, items: $items }) {
+    success
+    message
+    order {
+      ...OrderFragment
+    }
+  }
+}
