@@ -58,7 +58,7 @@ useSeoMeta({
     </div>
 
     <p class="faq-footer">
-      ¿No has encontrado lo que buscabas? Escríbenos desde nuestra <NuxtLink to="/contact">página de contacto</NuxtLink>.
+      ¿No has encontrado lo que buscabas? Escríbenos a nuestro correo de contacto <a href="mailto:dev@c3i.es">dev@c3i.es</a>.
     </p>
   </main>
 </template>
