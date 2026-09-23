@@ -15,9 +15,7 @@ const { wooNuxtVersionInfo } = useHelpers();
       <div class="w-[42.857%] lg:w-auto">
         <div class="footer-heading">{{ $t('general.information') }}</div>
         <div class="footer-links">
-          <a class="footer-link" href="https://github.com/scottyzen/woonuxt?tab=readme-ov-file#next-generation-front-end-for-woocommerce" target="_blank">{{
-            $t('general.about')
-          }}</a>
+          <NuxtLink to="/about" class="footer-link">{{ $t('general.about') }}</NuxtLink>
           <a href="https://woonuxt.com/faq" class="footer-link" rel="noreferrer" target="_blank">FAQ's</a>
         </div>
       </div>
