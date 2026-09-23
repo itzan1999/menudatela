@@ -35,7 +35,7 @@ useSeoMeta({
           <!-- User Profile Card -->
           <div class="profile-card">
             <div class="flex items-center gap-4">
-              <img v-if="avatar" :src="avatar" class="profile-avatar" alt="User avatar" width="56" height="56" />
+              <img v-if="avatar" :src="avatar" class="profile-avatar" :alt="$t('general.userAvatar')" width="56" height="56" />
               <div v-else class="profile-avatar profile-avatar--fallback">{{ viewer?.firstName?.charAt(0) }}{{ viewer?.lastName?.charAt(0) }}</div>
               <div class="flex-1 min-w-0">
                 <div class="profile-name">{{ viewer?.firstName }} {{ viewer?.lastName }}</div>

@@ -1,34 +1,7 @@
 <script setup lang="ts">
-const FAQS = [
-  {
-    question: '¿Necesito crear una cuenta para comprar?',
-    answer: 'Sí, es necesario registrarte con tu correo electrónico para poder realizar un pedido. Al crear tu cuenta recibirás un correo de confirmación y podrás consultar el estado de tus compras desde tu área de cliente.',
-  },
-  {
-    question: '¿Qué métodos de pago aceptáis?',
-    answer: 'Procesamos todos los pagos de forma segura a través de Stripe, que admite las principales tarjetas de crédito y débito. No almacenamos los datos completos de tu tarjeta en ningún momento.',
-  },
-  {
-    question: '¿Cuándo se confirma mi pedido?',
-    answer: 'Tras el pago recibirás un correo con el resumen de tu compra. Debido a nuestro proceso de gestión de stock, cada pedido se revisa y confirma manualmente por nuestro equipo antes de prepararlo para el envío; te avisaremos si hay cualquier cambio.',
-  },
-  {
-    question: '¿Cuánto tarda en llegar mi pedido?',
-    answer: 'Preparamos los pedidos en 24-48h laborables tras su confirmación. El tiempo de entrega habitual es de 2 a 5 días desde el envío, dependiendo del destino.',
-  },
-  {
-    question: '¿Puedo devolver un pedido?',
-    answer: 'Sí, dispones de 30 días desde la entrega para solicitar una devolución. Puedes gestionarla desde tu área de cliente en la página de Envíos y Devoluciones. Consulta también nuestra política de devoluciones en la sección legal.',
-  },
-  {
-    question: '¿Cómo puedo saber si una tela es adecuada para mi proyecto?',
-    answer: 'En la ficha de cada producto encontrarás su composición, gramaje y recomendaciones de uso. Si tienes dudas sobre una tela en concreto, escríbenos y te ayudaremos a elegir la más adecuada.',
-  },
-  {
-    question: '¿Cómo puedo contactar con vosotros?',
-    answer: 'Puedes escribirnos en cualquier momento a través de nuestra página de contacto y te responderemos por correo electrónico lo antes posible.',
-  },
-];
+const { t, tm } = useI18n();
+
+const FAQS = computed(() => tm('faq.items') as { question: string; answer: string }[]);
 
 const openIndex = ref<number | null>(null);
 
@@ -37,13 +10,13 @@ const toggle = (index: number) => {
 };
 
 useSeoMeta({
-  title: 'Preguntas Frecuentes',
+  title: () => t('faq.title'),
 });
 </script>
 
 <template>
   <main class="container my-16 max-w-3xl">
-    <h1 class="heading-serif-lg mb-8">Preguntas Frecuentes</h1>
+    <h1 class="heading-serif-lg mb-8">{{ $t('faq.title') }}</h1>
 
     <div class="faq-list">
       <div v-for="(faq, index) in FAQS" :key="faq.question" class="faq-item">
@@ -57,9 +30,9 @@ useSeoMeta({
       </div>
     </div>
 
-    <p class="faq-footer">
-      ¿No has encontrado lo que buscabas? Escríbenos a nuestro correo de contacto <a href="mailto:dev@c3i.es">dev@c3i.es</a>.
-    </p>
+    <i18n-t keypath="faq.footerCta" tag="p" class="faq-footer">
+      <template #email><a href="mailto:dev@c3i.es">dev@c3i.es</a></template>
+    </i18n-t>
   </main>
 </template>
 

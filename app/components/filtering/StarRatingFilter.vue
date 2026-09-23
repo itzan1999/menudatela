@@ -49,7 +49,7 @@ const radioClicked = (rating: string): void => {
           </span>
         </div>
         <span class="text-[10px] tracking-wider uppercase font-medium opacity-80">
-          {{ starCount === 5 ? '5 Estrellas' : '& Más' }}
+          {{ starCount === 5 ? $t('shop.fiveStars') : $t('shop.andMore') }}
         </span>
       </button>
     </div>

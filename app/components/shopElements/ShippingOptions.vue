@@ -12,7 +12,7 @@ const setActiveOption = async (id) => {
 </script>
 
 <template>
-  <div class="shipping-options" role="radiogroup" aria-label="Shipping methods">
+  <div class="shipping-options" role="radiogroup" :aria-label="$t('general.shippingMethods')">
     <button
       v-for="option in options"
       :key="option.id"

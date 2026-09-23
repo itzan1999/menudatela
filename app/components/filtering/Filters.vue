@@ -6,6 +6,7 @@ const { isFiltersActive, resetFilter, getFilter, setFilter } = useFiltering();
 const { removeBodyClass } = useHelpers();
 const runtimeConfig = useRuntimeConfig();
 const { storeSettings } = useAppConfig();
+const { t } = useI18n();
 
 const { hideCategories } = defineProps({ hideCategories: { type: Boolean, default: false } });
 
@@ -28,7 +29,7 @@ const activeBadges = computed(() => {
     const match = productCategoryTerms.find((t) => t.slug === slug);
     badges.push({
       key: 'category',
-      label: 'Categoría',
+      label: t('shop.category', 1),
       displayValue: match?.name || slug,
       rawValue: slug,
     });
@@ -53,8 +54,8 @@ const activeBadges = computed(() => {
   if (sale.length) {
     badges.push({
       key: 'sale',
-      label: 'Estado',
-      displayValue: 'En Oferta',
+      label: t('general.status'),
+      displayValue: t('shop.onSale'),
       rawValue: sale[0],
     });
   }
@@ -64,8 +65,8 @@ const activeBadges = computed(() => {
   if (rating.length) {
     badges.push({
       key: 'rating',
-      label: 'Calificación',
-      displayValue: `${rating[0]}★ o más`,
+      label: t('shop.rating', 1),
+      displayValue: t('shop.ratingAndUp', { n: rating[0] }),
       rawValue: rating[0],
     });
   }

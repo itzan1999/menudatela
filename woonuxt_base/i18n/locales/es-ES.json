@@ -12,6 +12,7 @@
     "shipping": "Envío",
     "shippingDetails": "Detalles de envío",
     "shippingSelect": "Seleccionar método de envío",
+    "shippingMethods": "Métodos de envío",
     "tax": "Impuesto",
     "myDetails": "Mis detalles",
     "home": "Inicio",
@@ -52,7 +53,12 @@
     "cancel": "Cancelar",
     "refresh": "Actualizar lista",
     "upTo": "Hasta",
-    "faq": "Preguntas frecuentes"
+    "faq": "Preguntas frecuentes",
+    "userAvatar": "Avatar de usuario",
+    "logo": "Logo",
+    "pagination": "Paginación",
+    "previous": "Anterior",
+    "next": "Siguiente"
   },
   "account": {
     "changePassword": "Cambiar contraseña",
@@ -103,7 +109,12 @@
     "passwordsMatch": "Las contraseñas coinciden",
     "signIn": "Iniciar sesión",
     "removeFilter": "Quitar filtro",
-    "languageSwitcher": "Selector de idioma"
+    "languageSwitcher": "Selector de idioma",
+    "showPassword": "Mostrar contraseña",
+    "hidePassword": "Ocultar contraseña",
+    "createAccountQuestion": "¿Crear una cuenta?",
+    "resetPasswordForAccount": "Introduce tu nueva contraseña para la cuenta {account}.",
+    "passwordUpdatedRedirecting": "¡Contraseña actualizada con éxito! Redirigiendo al inicio de sesión..."
   },
   "shop": {
     "shopByCategory": "Comprar por categoría",
@@ -189,9 +200,21 @@
     "decreaseQuantity": "Reducir cantidad",
     "increaseQuantity": "Aumentar cantidad",
     "quantity": "Cantidad",
+    "quantityShort": "Cant. {n}",
     "orderList": "Lista de pedidos",
     "productsLoadError": "No hemos podido cargar los productos. Actualiza la página e inténtalo de nuevo.",
     "perMeter": "/ metro",
+    "backToOrders": "Volver a pedidos",
+    "refreshOrder": "Actualizar pedido",
+    "downloadList": "Lista de descargas",
+    "never": "Nunca",
+    "productsCount": "{count} producto | {count} productos",
+    "previousImageFor": "Imagen anterior de {name}",
+    "nextImageFor": "Imagen siguiente de {name}",
+    "showImageFor": "Mostrar imagen de {name}",
+    "fiveStars": "5 Estrellas",
+    "andMore": "Y más",
+    "ratingAndUp": "{n}★ o más",
     "productResultCount": {
       "showing": "Mostrando de",
       "to": "a",
@@ -207,6 +230,7 @@
     "heroEyebrow": "Colección de otoño",
     "heroTitle": "Telas con carácter",
     "heroSubtitle": "Tejidos seleccionados uno a uno para dar vida a tus proyectos. Algodón, lino y texturas naturales.",
+    "heroImageAlt": "Telas MenudaTela",
     "viewCollection": "Ver colección",
     "trust": {
       "cottonLinen": "100% algodón y lino",
@@ -252,6 +276,148 @@
     "invalidPasswordResetLink": "El enlace de restablecimiento de contraseña no es válido.",
     "general": "Ha ocurrido un error",
     "noOrder": "No hemos podido encontrar tu pedido. Por favor, inténtalo de nuevo más tarde.",
-    "tryAgain": "Ha ocurrido un error. Inténtalo de nuevo."
+    "tryAgain": "Ha ocurrido un error. Inténtalo de nuevo.",
+    "title": "Error",
+    "invalidEmail": "Dirección de correo electrónico no válida",
+    "passwordRequired": "Por favor, introduce una nueva contraseña.",
+    "passwordResetLinkExpired": "El enlace de recuperación no es válido o ha expirado.",
+    "passwordUpdateFailed": "No se pudo actualizar la contraseña. Comprueba el enlace recibido.",
+    "passwordUpdateError": "Ocurrió un error al intentar actualizar la contraseña.",
+    "selectPaymentMethod": "Selecciona un método de pago antes de continuar.",
+    "paymentFailed": "No se pudo procesar el pago. Inténtalo de nuevo.",
+    "checkoutUnexpected": "Ha ocurrido un error inesperado durante el pago."
+  },
+  "checkout": {
+    "welcomeBack": "Bienvenido/a de nuevo, {name}",
+    "welcome": "Bienvenido/a",
+    "guestCheckoutTitle": "Compra como invitado",
+    "guestCheckoutText": "Usa la compra como invitado o inicia sesión para usar tus datos guardados.",
+    "customerId": "Nº de cliente"
+  },
+  "about": {
+    "title": "Acerca de MenudaTela",
+    "paragraph1": "{brand} es una tienda online especializada en la venta de telas y productos textiles. Nuestro objetivo es acercarte una selección cuidada de tejidos, pensada tanto para quienes cosen como afición como para quienes lo hacen de forma profesional.",
+    "paragraph2": "Creemos en un catálogo claro y bien organizado, con información honesta sobre cada tela para que puedas elegir con confianza sin necesidad de verla en persona. Detrás de cada pedido hay un proceso cuidado: preparamos y confirmamos cada envío de forma manual para asegurarnos de que todo llega en las condiciones esperadas.",
+    "paragraph3": "Si tienes cualquier duda sobre nuestro catálogo, un pedido o cualquier otra consulta, puedes escribirnos desde nuestra {link}.",
+    "contactLinkText": "página de contacto"
+  },
+  "contact": {
+    "intro": "¿Tienes alguna duda sobre un pedido, un producto o cualquier otra consulta? Escríbenos y te responderemos lo antes posible."
+  },
+  "faq": {
+    "title": "Preguntas Frecuentes",
+    "items": [
+      { "question": "¿Necesito crear una cuenta para comprar?", "answer": "Sí, es necesario registrarte con tu correo electrónico para poder realizar un pedido. Al crear tu cuenta recibirás un correo de confirmación y podrás consultar el estado de tus compras desde tu área de cliente." },
+      { "question": "¿Qué métodos de pago aceptáis?", "answer": "Procesamos todos los pagos de forma segura a través de Stripe, que admite las principales tarjetas de crédito y débito. No almacenamos los datos completos de tu tarjeta en ningún momento." },
+      { "question": "¿Cuándo se confirma mi pedido?", "answer": "Tras el pago recibirás un correo con el resumen de tu compra. Debido a nuestro proceso de gestión de stock, cada pedido se revisa y confirma manualmente por nuestro equipo antes de prepararlo para el envío; te avisaremos si hay cualquier cambio." },
+      { "question": "¿Cuánto tarda en llegar mi pedido?", "answer": "Preparamos los pedidos en 24-48h laborables tras su confirmación. El tiempo de entrega habitual es de 2 a 5 días desde el envío, dependiendo del destino." },
+      { "question": "¿Puedo devolver un pedido?", "answer": "Sí, dispones de 30 días desde la entrega para solicitar una devolución. Puedes gestionarla desde tu área de cliente en la página de Envíos y Devoluciones. Consulta también nuestra política de devoluciones en la sección legal." },
+      { "question": "¿Cómo puedo saber si una tela es adecuada para mi proyecto?", "answer": "En la ficha de cada producto encontrarás su composición, gramaje y recomendaciones de uso. Si tienes dudas sobre una tela en concreto, escríbenos y te ayudaremos a elegir la más adecuada." },
+      { "question": "¿Cómo puedo contactar con vosotros?", "answer": "Puedes escribirnos en cualquier momento a través de nuestra página de contacto y te responderemos por correo electrónico lo antes posible." }
+    ],
+    "footerCta": "¿No has encontrado lo que buscabas? Escríbenos a nuestro correo de contacto {email}."
+  },
+  "shippingReturns": {
+    "shippingTitle": "Envíos",
+    "shippingText": "Preparamos y enviamos los pedidos en 24-48h laborables. El plazo de entrega habitual es de 2 a 5 días desde el envío, según destino.",
+    "returnsTitle": "Devoluciones",
+    "returnsText": "Dispones de {days} desde la entrega de tu pedido para solicitar una devolución. Los artículos deben estar en su estado original, sin usar y con sus etiquetas. Una vez recibida y revisada la solicitud, gestionaremos el reembolso a través del mismo método de pago utilizado en la compra.",
+    "returnsDays": "30 días",
+    "loginPrompt": "Inicia sesión para ver tus pedidos y solicitar una devolución.",
+    "manageTitle": "Gestionar mis devoluciones",
+    "selectItemsPrompt": "Selecciona los artículos a devolver:",
+    "reasonLabel": "Motivo",
+    "reasonPlaceholder": "Selecciona un motivo",
+    "detailsLabel": "Detalles (opcional)",
+    "detailsPlaceholder": "Cuéntanos más...",
+    "submitting": "Enviando...",
+    "submitReturn": "Solicitar devolución",
+    "successMessage": "Solicitud de devolución enviada. Te avisaremos cuando la revisemos.",
+    "ongoingTitle": "Solicitudes en curso",
+    "noEligibleOrders": "No tienes pedidos elegibles para devolución en este momento.",
+    "reasons": {
+      "wrongItem": "Talla, color o artículo incorrecto",
+      "defective": "Producto defectuoso o dañado",
+      "notAsDescribed": "No coincide con la descripción",
+      "changedMind": "Ya no lo necesito",
+      "other": "Otro motivo"
+    },
+    "statuses": {
+      "pending": "Pendiente de revisión",
+      "approved": "Aprobada",
+      "rejected": "Rechazada"
+    },
+    "errorSelectItem": "Selecciona al menos un artículo.",
+    "errorSelectReason": "Selecciona un motivo.",
+    "errorGeneric": "No se pudo enviar la solicitud.",
+    "errorGenericRetry": "No se pudo enviar la solicitud. Inténtalo de nuevo."
+  },
+  "legal": {
+    "pageTitle": "Información Legal",
+    "tabs": {
+      "cookies": "Política de Cookies",
+      "terms": "Términos del Servicio",
+      "privacy": "Política de Privacidad",
+      "notice": "Aviso Legal"
+    },
+    "cookies": {
+      "intro": "En <strong>MenudaTela</strong> utilizamos cookies y tecnologías similares para facilitar la navegación por nuestra web (conectada mediante WooCommerce y Nuxt) y mejorar la experiencia de usuario.",
+      "whatTitle": "1. ¿Qué son las Cookies?",
+      "whatText": "Una cookie es un pequeño archivo de texto que se almacena en tu navegador cuando visitas casi cualquier página web. Su utilidad es que la web sea capaz de recordar tu visita cuando vuelvas a navegar por ella.",
+      "typesTitle": "2. Tipos de Cookies que utilizamos",
+      "typesTechnical": "<strong>Cookies Técnicas y de Sesión:</strong> Son estrictamente necesarias para el correcto funcionamiento de la web, permitiendo mantener la sesión del usuario una vez que ha iniciado sesión en su cuenta y gestionar el carrito de la compra.",
+      "typesAnalytics": "<strong>Cookies de Análisis / Terceros:</strong> Nos ayudan a medir y analizar el tráfico de la web para mejorar nuestros servicios y la oferta de telas.",
+      "managementTitle": "3. Gestión y Configuración de Cookies",
+      "managementIntro": "Puedes permitir, bloquear o eliminar las cookies instaladas en tu equipo mediante la configuración de las opciones del navegador instalado en tu dispositivo:",
+      "chromeLink": "Configuración para Google Chrome",
+      "firefoxLink": "Configuración para Mozilla Firefox",
+      "safariLink": "Configuración para Safari",
+      "managementNote": "Si desactivas las cookies técnicas, es posible que algunas funcionalidades de la tienda (como el inicio de sesión o el proceso de compra con WooCommerce) no funcionen correctamente."
+    },
+    "terms": {
+      "intro": "Las presentes condiciones generales regulan el uso del servicio de venta online de telas en <strong>MenudaTela</strong>. Al registrarte y realizar un pedido, aceptas expresamente estas condiciones.",
+      "purchaseTitle": "1. Proceso de Compra y Cuenta de Usuario",
+      "purchaseItem1": "Para realizar un pedido en MenudaTela, es <strong>obligatorio crear una cuenta de usuario</strong>. Tras el registro, recibirás un correo electrónico de confirmación.",
+      "purchaseItem2": "Al finalizar tu compra, procesaremos el pago de forma segura a través de <strong>Stripe</strong> y te enviaremos un correo electrónico con el resumen detallado del pedido.",
+      "purchaseItem3": "<strong>Confirmación manual:</strong> Debido a nuestro proceso de gestión y control de stock, los pedidos <strong>deben ser confirmados manualmente</strong> en nuestro sistema interno (WordPress) por nuestro equipo antes de proceder a su preparación y envío definitivo. Te notificaremos cualquier cambio de estado.",
+      "pricingTitle": "2. Precios y Envíos",
+      "pricingText": "Todos los precios indicados en la web incluyen el Impuesto sobre el Valor Añadido (IVA) aplicable en España. Los gastos de envío se especificarán de forma clara durante el proceso de pago antes de confirmar la compra.",
+      "returnsTitle": "3. Política de Devoluciones y Reembolsos",
+      "returnsItem1": "Tienes derecho a solicitar la devolución de un pedido dentro del plazo legal establecido (14 días naturales desde la recepción).",
+      "returnsItem2": "Para iniciar una devolución, debes ponerte en contacto con nosotros o solicitarlo desde tu área de cliente. Esta acción generará una nota interna en nuestro sistema de administración de WordPress para informar de que se debe realizar el reembolso correspondiente.",
+      "returnsItem3": "Una vez comprobado el estado de la tela y el cumplimiento de las condiciones de devolución, procederemos a efectuar el reembolso mediante el método de pago original o el canal acordado."
+    },
+    "privacy": {
+      "intro": "En {brand} nos tomamos muy en serio la privacidad de tus datos personales. De conformidad con el Reglamento General de Protección de Datos (RGPD UE 2016/679) y la Ley Orgánica 3/2018 (LOPDGDD), te informamos sobre cómo tratamos tus datos.",
+      "controllerTitle": "1. Responsable del Tratamiento",
+      "controllerOwner": "<strong>Titular:</strong> MenudaTela",
+      "controllerEmail": "<strong>Correo de contacto:</strong> privacidad@menudatela.com",
+      "dataTitle": "2. ¿Qué datos recopilamos y con qué finalidad?",
+      "dataIntro": "Para poder ofrecerte nuestros servicios de venta online a través de nuestra plataforma (desarrollada con WooCommerce y frontend en Nuxt), recopilamos los siguientes datos:",
+      "dataAccount": "<strong>Datos de registro y cuenta de usuario:</strong> Nombre, apellidos, correo electrónico y contraseña. Es obligatorio crear una cuenta para realizar pedidos (enviando correos de confirmación de registro).",
+      "dataOrder": "<strong>Datos de compra y envío:</strong> Dirección postal, teléfono y detalles de pago (procesados de forma segura a través de <strong>Stripe</strong>; MenudaTela no almacena los datos completos de tus tarjetas bancarias).",
+      "dataManagement": "<strong>Gestión de pedidos y devoluciones:</strong> Información sobre las compras realizadas, resúmenes de pedidos enviados por correo electrónico y notas internas generadas en nuestro sistema de gestión (WordPress) en caso de que solicites una devolución para la tramitación de tu reembolso.",
+      "legitimationTitle": "3. Legitimación para el tratamiento de datos",
+      "legitimationText": "La base legal para el tratamiento de tus datos es la ejecución del contrato de compraventa y la prestación de los servicios solicitados al crear tu cuenta de usuario y realizar pedidos.",
+      "retentionTitle": "4. Conservación de los datos",
+      "retentionText": "Los datos personales se conservarán mientras se mantenga la relación comercial o de usuario y, posteriormente, durante los plazos legalmente exigidos para atender posibles responsabilidades fiscales o legales.",
+      "rightsTitle": "5. Tus Derechos",
+      "rightsText": "Puedes ejercer en cualquier momento tus derechos de acceso, rectificación, supresión, limitación, portabilidad y oposición enviando un correo electrónico a privacidad@menudatela.com."
+    },
+    "notice": {
+      "intro": "En cumplimiento del artículo 10 de la Ley 34/2002, de 11 de julio, de Servicios de la Sociedad de la Información y de Comercio Electrónico (LSSI-CE), a continuación se exponen los datos identificativos de la titularidad de este sitio web:",
+      "owner": "<strong>Titular:</strong> MenudaTela (en adelante, \"la tienda\" o \"el sitio web\").",
+      "activity": "<strong>Actividad:</strong> Venta online de telas y productos textiles.",
+      "email": "<strong>Correo electrónico de contacto:</strong> contacto@menudatela.com",
+      "website": "<strong>Sitio Web:</strong> https://menudatela.com",
+      "purposeTitle": "1. Objeto",
+      "purposeText": "El presente aviso legal regula el uso del sitio web <code>https://menudatela.com</code>, que pone a disposición de los usuarios interesados en la adquisición de nuestros productos textiles.",
+      "ipTitle": "2. Propiedad Intelectual e Industrial",
+      "ipText": "Todos los contenidos del sitio web (textos, fotografías, gráficos, imágenes, tecnología, software, enlaces, diseño gráfico y código fuente, entre otros) son propiedad exclusiva de MenudaTela o de terceros, sin que puedan entenderse cedidos al usuario ningún derecho de explotación sobre los mismos más allá de lo estrictamente necesario para el correcto uso de la web.",
+      "usageTitle": "3. Condiciones de Uso",
+      "usageText": "El acceso y uso de este sitio web atribuye la condición de <strong>Usuario</strong>, el cual acepta, desde dicho acceso y uso, las condiciones aquí reflejadas. El usuario se compromete a hacer un uso adecuado de los contenidos y servicios que MenudaTela ofrece a través de su portal.",
+      "liabilityTitle": "4. Exclusión de Garantías y Responsabilidad",
+      "liabilityText": "MenudaTela no se hace responsable, en ningún caso, de los daños y perjuicios de cualquier naturaleza que pudieran ocasionar, a título enunciativo: errores u omisiones en los contenidos, falta de disponibilidad del portal o la transmisión de virus o programas maliciosos o lesivos en los contenidos, a pesar de haber adoptado todas las medidas tecnológicas necesarias para evitarlo."
+    }
   }
 }

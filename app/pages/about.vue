@@ -1,29 +1,25 @@
 <script setup lang="ts">
+const { t } = useI18n();
+
 useSeoMeta({
-  title: 'Acerca de',
+  title: () => t('about.title'),
 });
 </script>
 
 <template>
   <main class="container my-16 max-w-3xl">
-    <h1 class="heading-serif-lg mb-8">Acerca de MenudaTela</h1>
+    <h1 class="heading-serif-lg mb-8">{{ $t('about.title') }}</h1>
 
     <div class="about-prose">
-      <p>
-        <strong>MenudaTela</strong> es una tienda online especializada en la venta de telas y productos textiles. Nuestro objetivo es acercarte una selección
-        cuidada de tejidos, pensada tanto para quienes cosen como afición como para quienes lo hacen de forma profesional.
-      </p>
+      <i18n-t keypath="about.paragraph1" tag="p">
+        <template #brand><strong>MenudaTela</strong></template>
+      </i18n-t>
 
-      <p>
-        Creemos en un catálogo claro y bien organizado, con información honesta sobre cada tela para que puedas elegir con confianza sin necesidad de verla
-        en persona. Detrás de cada pedido hay un proceso cuidado: preparamos y confirmamos cada envío de forma manual para asegurarnos de que todo llega en
-        las condiciones esperadas.
-      </p>
+      <p>{{ $t('about.paragraph2') }}</p>
 
-      <p>
-        Si tienes cualquier duda sobre nuestro catálogo, un pedido o cualquier otra consulta, puedes escribirnos desde nuestra
-        <NuxtLink to="/contact">página de contacto</NuxtLink>.
-      </p>
+      <i18n-t keypath="about.paragraph3" tag="p">
+        <template #link><NuxtLink to="/contact">{{ $t('about.contactLinkText') }}</NuxtLink></template>
+      </i18n-t>
     </div>
   </main>
 </template>

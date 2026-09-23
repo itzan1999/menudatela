@@ -31,7 +31,7 @@ const viewerFirstName = computed<string>(() => customer.value?.billing?.firstNam
 const viewerLastName = computed<string>(() => customer.value?.billing?.lastName || viewerSummary.value?.lastName || '');
 const viewerGreeting = computed<string>(() => {
   const name = [viewerFirstName.value, viewerLastName.value].filter(Boolean).join(' ');
-  return name ? `Welcome back, ${name}` : 'Welcome';
+  return name ? t('checkout.welcomeBack', { name }) : t('checkout.welcome');
 });
 const isCheckoutDisabled = computed<boolean>(() => {
   if (isSubmitting.value || isProcessingOrder.value || isUpdatingCart.value || !selectedPaymentMethodId.value) return true;
@@ -141,16 +141,16 @@ const payNow = async () => {
     resetActiveGateway();
     orderInput.value.transactionId = '';
     if (!isActiveGatewayReady.value) {
-      throw new Error(getActiveGatewayDisabledMessage() || 'Please select a payment method before checking out.');
+      throw new Error(getActiveGatewayDisabledMessage() || t('error.selectPaymentMethod'));
     }
     const paymentResult = await processActiveGatewayPayment();
     if (!paymentResult.success) {
-      throw new Error(paymentResult.error || 'Payment processing failed. Please try again.');
+      throw new Error(paymentResult.error || t('error.paymentFailed'));
     }
     await processCheckout(paymentResult.isPaid);
   } catch (error) {
     console.error('Checkout error:', error);
-    checkoutError.value = error instanceof Error ? error.message : 'An unexpected error occurred during checkout';
+    checkoutError.value = error instanceof Error ? error.message : t('error.checkoutUnexpected');
   } finally {
     isSubmitting.value = false;
   }
@@ -187,21 +187,21 @@ useSeoMeta({
                 <h1 class="heading-serif-lg">{{ viewerGreeting }}</h1>
               </div>
               <p v-if="viewerEmail" class="flex flex-wrap items-center gap-2 text-sm mt-4 checkout-muted-text">
-                <span class="opacity-70">Email: </span>
+                <span class="opacity-70">{{ $t('billing.email') }}: </span>
                 <span class="truncate" :title="viewerEmail">{{ viewerEmail }}</span>
               </p>
               <p v-if="viewerSummary?.databaseId" class="flex flex-wrap items-center gap-2 text-sm checkout-muted-text">
-                <span class="opacity-70">Customer ID: </span>
+                <span class="opacity-70">{{ $t('checkout.customerId') }}: </span>
                 <span>#{{ viewerSummary.databaseId }}</span>
               </p>
             </div>
           </div>
 
           <div v-if="!viewer" class="checkout-section">
-            <h1 class="heading-serif-lg">Guest checkout</h1>
+            <h1 class="heading-serif-lg">{{ $t('checkout.guestCheckoutTitle') }}</h1>
             <div class="flex justify-between items-center gap-4 mt-3" @click="navigateToLogin(route.fullPath)">
-              <p class="text-sm checkout-muted-text">Use guest checkout, or sign in to use your saved details.</p>
-              <Button type="button" class="ml-auto tracking-wider uppercase text-xs font-medium" size="sm" variant="outline-charcoal"> Sign in </Button>
+              <p class="text-sm checkout-muted-text">{{ $t('checkout.guestCheckoutText') }}</p>
+              <Button type="button" class="ml-auto tracking-wider uppercase text-xs font-medium" size="sm" variant="outline-charcoal"> {{ $t('account.signIn') }} </Button>
             </div>
           </div>
 
@@ -226,7 +226,7 @@ useSeoMeta({
                 @blur="checkEmailOnBlur(customer.billing.email)"
                 @input="checkEmailOnInput(customer.billing.email)" />
               <Transition name="scale-y" mode="out-in">
-                <div v-if="isInvalidEmail" class="mt-1 text-sm text-red-500">Invalid email address</div>
+                <div v-if="isInvalidEmail" class="mt-1 text-sm text-red-500">{{ $t('error.invalidEmail') }}</div>
               </Transition>
             </div>
             <div v-if="!viewer && orderInput.createAccount" class="flex w-full mt-4 gap-4">
@@ -255,7 +255,7 @@ useSeoMeta({
             </div>
             <div v-if="!viewer" class="flex items-center gap-2 mt-4">
               <input id="creat-account" v-model="orderInput.createAccount" type="checkbox" name="creat-account" class="form-checkbox" />
-              <label for="creat-account">Create an account?</label>
+              <label for="creat-account">{{ $t('account.createAccountQuestion') }}</label>
             </div>
             <hr v-if="!viewer" class="flex-1 my-6 border-[var(--color-sand)]" />
 

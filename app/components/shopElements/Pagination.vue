@@ -28,7 +28,7 @@ const numberSrc = (pageNumber: number) => pageSrc(pageNumber);
 <template>
   <div class="flex justify-center mt-8 mb-16 col-span-full tabular-nums">
     <!-- Pagination -->
-    <nav v-if="numberOfPages && numberOfPages > 1" class="inline-flex items-center gap-1.5" aria-label="Pagination">
+    <nav v-if="numberOfPages && numberOfPages > 1" class="inline-flex items-center gap-1.5" :aria-label="$t('general.pagination')">
       <!-- PREV -->
       <NuxtLink
         :to="prevSrc(page)"
@@ -36,7 +36,7 @@ const numberSrc = (pageNumber: number) => pageSrc(pageNumber);
         :disabled="page == 1"
         :class="{ 'pointer-events-none opacity-30': page == 1 }"
         :aria-disabled="page == 1"
-        aria-label="Previous">
+        :aria-label="$t('general.previous')">
         <Icon name="ion:chevron-back-outline" size="16" class="w-4 h-4" />
       </NuxtLink>
 
@@ -57,7 +57,7 @@ const numberSrc = (pageNumber: number) => pageSrc(pageNumber);
         :disabled="page === numberOfPages"
         :class="{ 'pointer-events-none opacity-30': page === numberOfPages }"
         :aria-disabled="page === numberOfPages"
-        aria-label="Next">
+        :aria-label="$t('general.next')">
         <Icon name="ion:chevron-forward-outline" size="16" class="w-4 h-4" />
       </NuxtLink>
     </nav>

@@ -104,11 +104,11 @@ async function getOrder() {
       order.value = fetchedOrder;
       errorMessage.value = '';
     } else if (!order.value) {
-      errorMessage.value = 'Could not find order';
+      errorMessage.value = t('error.noOrder');
     }
   } catch (err: unknown) {
     if (!order.value) {
-      errorMessage.value = getErrorMessage(err) || 'Could not find order';
+      errorMessage.value = getErrorMessage(err) || t('error.noOrder');
     }
   }
   isLoaded.value = true;
@@ -133,7 +133,7 @@ useSeoMeta({
       <div v-if="order" class="w-full">
         <template v-if="isSummaryPage">
           <div class="flex items-center gap-4">
-            <NuxtLink to="/my-account?tab=orders" class="order-detail-icon-btn" title="Back to orders" aria-label="Back to orders">
+            <NuxtLink to="/my-account?tab=orders" class="order-detail-icon-btn" :title="$t('shop.backToOrders')" :aria-label="$t('shop.backToOrders')">
               <Icon name="ion:chevron-back-outline" size="16" class="h-4 w-4" />
             </NuxtLink>
             <h1 class="heading-serif-lg">{{ $t('shop.orderSummary') }}</h1>
@@ -146,8 +146,8 @@ useSeoMeta({
               v-if="orderIsNotCompleted"
               type="button"
               class="order-detail-icon-btn"
-              title="Refresh order"
-              aria-label="Refresh order"
+              :title="$t('shop.refreshOrder')"
+              :aria-label="$t('shop.refreshOrder')"
               @click="refreshOrder">
               <Icon name="ion:refresh-outline" size="16" class="h-4 w-4" />
             </button>
@@ -184,8 +184,8 @@ useSeoMeta({
               <NuxtLink v-if="item.product?.node" :to="`/product/${item.product.node.slug}`" class="order-detail-thumb shrink-0">
                 <NuxtPicture
                   :src="item.variation?.node?.image?.sourceUrl || item.product.node?.image?.sourceUrl || '/images/placeholder.png'"
-                  :alt="item.variation?.node?.image?.altText || item.product.node?.image?.altText || 'Product image'"
-                  :title="item.variation?.node?.image?.title || item.product.node?.image?.title || 'Product image'"
+                  :alt="item.variation?.node?.image?.altText || item.product.node?.image?.altText || $t('shop.productImage')"
+                  :title="item.variation?.node?.image?.title || item.product.node?.image?.title || $t('shop.productImage')"
                   width="64"
                   height="64"
                   loading="lazy"
@@ -194,7 +194,7 @@ useSeoMeta({
               <div class="order-detail-value flex-1 leading-tight">
                 {{ item.variation ? item.variation?.node?.name : item.product?.node.name! }}
               </div>
-              <div class="order-detail-muted-text text-sm">Qty. {{ item.quantity }}</div>
+              <div class="order-detail-muted-text text-sm">{{ $t('shop.quantityShort', { n: item.quantity }) }}</div>
               <span class="order-detail-value text-sm font-semibold" v-html="item.total || ''"></span>
             </div>
           </div>
@@ -233,7 +233,7 @@ useSeoMeta({
       </div>
       <div v-else-if="errorMessage" class="flex flex-col items-center justify-center flex-1 w-full gap-4 text-center">
         <Icon name="ion:sad-outline" size="72" style="color: var(--color-charcoal)" />
-        <h1 class="heading-serif-lg">Error</h1>
+        <h1 class="heading-serif-lg">{{ $t('error.title') }}</h1>
         <div v-if="errorMessage" class="order-detail-error text-sm" v-html="errorMessage"></div>
       </div>
     </template>

@@ -13,7 +13,7 @@ watch(locale, (newLocale) => {
 </script>
 
 <template>
-  <select id="language-switcher" :value="locale" :aria-label="$t('general.languageSwitcher')" class="lang-select" @change="switchLanguage($event.target.value)">
+  <select id="language-switcher" :value="locale" :aria-label="$t('account.languageSwitcher')" class="lang-select" @change="switchLanguage($event.target.value)">
     <option v-for="locale in locales" :key="locale" :value="locale.code" v-html="locale.name"></option>
   </select>
 </template>

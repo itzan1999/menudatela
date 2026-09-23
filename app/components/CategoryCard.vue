@@ -8,7 +8,7 @@ defineProps({
 <template>
   <NuxtLink v-if="node" :to="`/product-category/${decodeURIComponent(node.slug)}`" class="category-tile">
     <span class="category-name" v-html="node.name"></span>
-    <span v-if="node.count" class="category-count">{{ node.count }} productos</span>
+    <span v-if="node.count" class="category-count">{{ $t('shop.productsCount', node.count) }}</span>
   </NuxtLink>
 </template>
 

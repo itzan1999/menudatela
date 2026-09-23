@@ -1,18 +1,17 @@
 <script setup lang="ts">
 const CONTACT_EMAIL = 'dev@c3i.es';
+const { t } = useI18n();
 
 useSeoMeta({
-  title: 'Contacto',
+  title: () => t('general.contact'),
 });
 </script>
 
 <template>
   <main class="container my-16 flex justify-center">
     <div class="contact-card">
-      <h1 class="heading-serif-lg">Contacto</h1>
-      <p class="contact-text">
-        ¿Tienes alguna duda sobre un pedido, un producto o cualquier otra consulta? Escríbenos y te responderemos lo antes posible.
-      </p>
+      <h1 class="heading-serif-lg">{{ $t('general.contact') }}</h1>
+      <p class="contact-text">{{ $t('contact.intro') }}</p>
       <Button :href="`mailto:${CONTACT_EMAIL}`" variant="outline-charcoal" class="tracking-wider uppercase text-xs font-medium">
         {{ CONTACT_EMAIL }}
       </Button>

@@ -7,6 +7,7 @@ const props = defineProps<{
   paymentGateways: PaymentGateways;
 }>();
 
+const { t } = useI18n();
 const paymentMethod = toRef(props, 'modelValue');
 const emits = defineEmits<{
   'update:modelValue': [gateway: PaymentGateway];
@@ -27,7 +28,7 @@ const defaultGatewayOption = (gateway: PaymentGateway): PaymentGatewayOption => 
   return {
     id: gateway.id,
     gateway,
-    title: gateway.title || plugin?.name || 'Payment Method',
+    title: gateway.title || plugin?.name || t('general.paymentMethod'),
     description: gateway.description,
     icon,
     iconName: plugin?.iconName || 'ion:cash-outline',
@@ -81,7 +82,7 @@ watch(
 
 <template>
   <div class="w-full">
-    <div class="grid gap-3" role="radiogroup" aria-label="Payment options">
+    <div class="grid gap-3" role="radiogroup" :aria-label="$t('billing.paymentOptions')">
       <button
         v-for="option in paymentOptions"
         :key="option.id"
@@ -90,14 +91,14 @@ watch(
         :class="isOptionSelected(option) ? 'payment-option--active' : ''"
         role="radio"
         :aria-checked="isOptionSelected(option)"
-        :title="option.description || option.title || 'Payment Method'"
+        :title="option.description || option.title || $t('general.paymentMethod')"
         @click="updatePaymentMethod(option)">
         <span class="flex min-w-0 flex-1 items-center gap-3">
           <span class="grid h-6 w-6 flex-none place-items-center" aria-hidden="true">
             <NuxtImg
               v-if="option.icon"
               :src="option.icon"
-              :alt="option.title || 'Payment Method'"
+              :alt="option.title || $t('general.paymentMethod')"
               width="28"
               height="24"
               class="h-5 w-6 object-contain"

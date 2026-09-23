@@ -4,7 +4,7 @@
       width="1400"
       height="800"
       src="https://wordpress-dev-a546.up.railway.app/wp-content/uploads/2026/09/Totem_teja_detalle-1000x999-1.jpg"
-      alt="Telas MenudaTela"
+      :alt="$t('home.heroImageAlt')"
       loading="eager"
       sizes="sm:100vw md:100vw lg:100vw xl:100vw 2xl:1400px"
       :preload="{ fetchPriority: 'high' }"

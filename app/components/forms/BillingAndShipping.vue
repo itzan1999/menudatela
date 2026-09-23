@@ -204,7 +204,7 @@
 
           <div class="w-full space-y-2">
             <label for="shipping-company"
-              >Company <span class="opacity-60">({{ $t('general.optional') }})</span></label
+              >{{ $t('billing.company') }} <span class="opacity-60">({{ $t('general.optional') }})</span></label
             >
             <input
               id="shipping-company"

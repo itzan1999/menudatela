@@ -8,7 +8,7 @@ const logoUrl = runtimeConfig?.public?.LOGO ? img(runtimeConfig?.public?.LOGO) :
 
 <template>
   <NuxtLink to="/" class="inline-flex items-center">
-    <img v-if="logoUrl" :src="logoUrl" alt="Logo" class="object-contain h-10" />
+    <img v-if="logoUrl" :src="logoUrl" :alt="$t('general.logo')" class="object-contain h-10" />
     <span v-else class="wordmark">{{ siteName }}</span>
   </NuxtLink>
 </template>

@@ -98,7 +98,7 @@ const thumbnailButtonClasses = (galleryImg: ImageFragment) => [
         v-if="galleryImages.length > 1"
         class="absolute left-3 top-1/2 inline-flex size-9 -translate-y-1/2 items-center justify-center border border-[var(--color-sand)] bg-[var(--color-cream)]/90 text-[var(--color-charcoal)] opacity-0 transition-opacity hover:bg-[var(--color-cream)] group-hover:opacity-100 cursor-pointer"
         type="button"
-        :aria-label="`Previous image for ${node.name}`"
+        :aria-label="$t('shop.previousImageFor', { name: node.name })"
         @click="changeImageByOffset(-1)">
         <Icon name="ion:chevron-back-outline" size="20" />
       </button>
@@ -107,7 +107,7 @@ const thumbnailButtonClasses = (galleryImg: ImageFragment) => [
         v-if="galleryImages.length > 1"
         class="absolute right-3 top-1/2 inline-flex size-9 -translate-y-1/2 items-center justify-center border border-[var(--color-sand)] bg-[var(--color-cream)]/90 text-[var(--color-charcoal)] opacity-0 transition-opacity hover:bg-[var(--color-cream)] group-hover:opacity-100 cursor-pointer"
         type="button"
-        :aria-label="`Next image for ${node.name}`"
+        :aria-label="$t('shop.nextImageFor', { name: node.name })"
         @click="changeImageByOffset(1)">
         <Icon name="ion:chevron-forward-outline" size="20" />
       </button>
@@ -119,7 +119,7 @@ const thumbnailButtonClasses = (galleryImg: ImageFragment) => [
         :key="galleryImg.databaseId"
         :class="thumbnailButtonClasses(galleryImg)"
         type="button"
-        :aria-label="`Show image for ${node.name}`"
+        :aria-label="$t('shop.showImageFor', { name: node.name })"
         :aria-pressed="galleryImg.databaseId === imageToShow.databaseId"
         @click="changeImage(galleryImg)">
         <NuxtPicture

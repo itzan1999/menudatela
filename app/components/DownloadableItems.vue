@@ -11,7 +11,7 @@ const getDownloadHref = (item: DownloadableItem & { downloadUrl?: string | null 
 </script>
 
 <template>
-  <table class="w-full text-left table-auto" aria-label="Download List">
+  <table class="w-full text-left table-auto" :aria-label="$t('shop.downloadList')">
     <thead>
       <tr>
         <th>{{ $t('general.product') }}</th>
@@ -26,7 +26,7 @@ const getDownloadHref = (item: DownloadableItem & { downloadUrl?: string | null 
           <NuxtLink v-if="item.product" :to="`/product/${item.product.slug}`" class="download-link">{{ item.product.name }}</NuxtLink>
         </td>
         <td>{{ item.downloadsRemaining || '∞' }}</td>
-        <td>{{ item.accessExpires ? formatDate(item.accessExpires) : 'Never' }}</td>
+        <td>{{ item.accessExpires ? formatDate(item.accessExpires) : $t('shop.never') }}</td>
         <td v-if="getDownloadHref(item)">
           <a :href="getDownloadHref(item) || undefined" :download="item.name" class="download-link">{{ item.name }}</a>
         </td>

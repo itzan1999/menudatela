@@ -61,10 +61,12 @@
 
       <!-- Vista: Nueva Contraseña (Llegada desde enlace del correo) -->
       <template v-else-if="formView === FormView.RESET_PASSWORD">
-        <p class="mb-6 text-center font-sans text-xs leading-relaxed text-[var(--color-charcoal)]/70">
-          Introduce tu nueva contraseña para la cuenta <strong>{{ resetUser }}</strong
-          >.
-        </p>
+        <i18n-t
+          keypath="account.resetPasswordForAccount"
+          tag="p"
+          class="mb-6 text-center font-sans text-xs leading-relaxed text-[var(--color-charcoal)]/70">
+          <template #account><strong>{{ resetUser }}</strong></template>
+        </i18n-t>
         <div class="mb-6">
           <label class="mb-1.5 block font-sans text-[11px] font-medium tracking-wider uppercase text-[var(--color-charcoal)]/80" for="newPasswordInput">
             {{ $t('account.newPassword') }}
@@ -339,7 +341,7 @@ const resetPassword = async () => {
 
 const handleResetPassword = async () => {
   if (!newPassword.value) {
-    errorMessage.value = 'Por favor, introduce una nueva contraseña.';
+    errorMessage.value = t('error.passwordRequired');
     return;
   }
 
@@ -364,23 +366,23 @@ const handleResetPassword = async () => {
     });
 
     if (response?.errors && response.errors.length > 0) {
-      errorMessage.value = response.errors[0].message || 'El enlace de recuperación no es válido o ha expirado.';
+      errorMessage.value = response.errors[0].message || t('error.passwordResetLinkExpired');
       return;
     }
 
     if (response?.data?.resetUserPassword?.user) {
       errorMessage.value = '';
-      message.value = '¡Contraseña actualizada con éxito! Redirigiendo al inicio de sesión...';
+      message.value = t('account.passwordUpdatedRedirecting');
 
       setTimeout(() => {
         userInfo.value.username = resetUser.value;
         navigate(FormView.LOGIN);
       }, 2000);
     } else {
-      errorMessage.value = 'No se pudo actualizar la contraseña. Comprueba el enlace recibido.';
+      errorMessage.value = t('error.passwordUpdateFailed');
     }
   } catch (err: any) {
-    errorMessage.value = err?.data?.errors?.[0]?.message || err?.message || 'Ocurrió un error al intentar actualizar la contraseña.';
+    errorMessage.value = err?.data?.errors?.[0]?.message || err?.message || t('error.passwordUpdateError');
   }
 };
 
@@ -397,15 +399,15 @@ const navigate = (view: FormView) => {
 
 const pageTitle = computed(() => {
   if (formView.value === FormView.FORGOT_PASSWORD) return t('account.forgotPassword');
-  if (formView.value === FormView.RESET_PASSWORD) return 'Restablecer Contraseña';
-  return 'Mi Cuenta';
+  if (formView.value === FormView.RESET_PASSWORD) return t('account.resetPassword');
+  return t('account.myAccount');
 });
 
 const buttonText = computed(() => {
   if (formView.value === FormView.LOGIN) return t('account.login');
   if (formView.value === FormView.REGISTER) return t('account.register');
   if (formView.value === FormView.FORGOT_PASSWORD) return t('account.sendPasswordResetEmail');
-  if (formView.value === FormView.RESET_PASSWORD) return 'Actualizar Contraseña';
+  if (formView.value === FormView.RESET_PASSWORD) return t('account.updatePassword');
   return '';
 });
 

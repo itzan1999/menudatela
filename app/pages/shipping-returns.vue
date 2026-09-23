@@ -1,4 +1,5 @@
 <script setup lang="ts">
+const { t } = useI18n();
 const { viewer, getOrders, orders } = useAuth();
 const { cart } = useCart();
 const gql = useWooGraphQL();
@@ -17,13 +18,13 @@ const eligibleOrders = computed(() => (orders.value ?? []).filter((o) => o.retur
 const trackedOrders = computed(() => (orders.value ?? []).filter((o) => o.returnStatus));
 const eligibleOrdersWithForms = computed(() => eligibleOrders.value.map((order) => ({ order, form: getForm(order.databaseId!) })));
 
-const REASONS = [
-  { value: 'wrong_item', label: 'Talla, color o artículo incorrecto' },
-  { value: 'defective', label: 'Producto defectuoso o dañado' },
-  { value: 'not_as_described', label: 'No coincide con la descripción' },
-  { value: 'changed_mind', label: 'Ya no lo necesito' },
-  { value: 'other', label: 'Otro motivo' },
-];
+const REASONS = computed(() => [
+  { value: 'wrong_item', label: t('shippingReturns.reasons.wrongItem') },
+  { value: 'defective', label: t('shippingReturns.reasons.defective') },
+  { value: 'not_as_described', label: t('shippingReturns.reasons.notAsDescribed') },
+  { value: 'changed_mind', label: t('shippingReturns.reasons.changedMind') },
+  { value: 'other', label: t('shippingReturns.reasons.other') },
+]);
 
 type FormState = {
   open: boolean;
@@ -63,11 +64,11 @@ const submitReturn = async (orderId: number) => {
   }));
 
   if (!items.length) {
-    form.error = 'Selecciona al menos un artículo.';
+    form.error = t('shippingReturns.errorSelectItem');
     return;
   }
   if (!form.reason) {
-    form.error = 'Selecciona un motivo.';
+    form.error = t('shippingReturns.errorSelectReason');
     return;
   }
 
@@ -84,10 +85,10 @@ const submitReturn = async (orderId: number) => {
       form.open = false;
       await getOrders();
     } else {
-      form.error = requestOrderReturn?.message || 'No se pudo enviar la solicitud.';
+      form.error = requestOrderReturn?.message || t('shippingReturns.errorGeneric');
     }
   } catch (error: any) {
-    form.error = error?.gqlErrors?.[0]?.message || 'No se pudo enviar la solicitud. Inténtalo de nuevo.';
+    form.error = error?.gqlErrors?.[0]?.message || t('shippingReturns.errorGenericRetry');
   }
   form.submitting = false;
 };
@@ -95,18 +96,18 @@ const submitReturn = async (orderId: number) => {
 const statusLabel = (status: string | null | undefined) => {
   switch (status) {
     case 'pending':
-      return 'Pendiente de revisión';
+      return t('shippingReturns.statuses.pending');
     case 'approved':
-      return 'Aprobada';
+      return t('shippingReturns.statuses.approved');
     case 'rejected':
-      return 'Rechazada';
+      return t('shippingReturns.statuses.rejected');
     default:
       return status || '';
   }
 };
 
 useSeoMeta({
-  title: 'Envíos y Devoluciones',
+  title: () => t('general.shippingReturns'),
 });
 </script>
 
@@ -116,30 +117,28 @@ useSeoMeta({
       <LoadingIcon />
     </div>
     <template v-else>
-      <h1 class="font-heading text-2xl md:text-3xl mb-6" style="color: var(--color-charcoal)">Envíos y Devoluciones</h1>
+      <h1 class="font-heading text-2xl md:text-3xl mb-6" style="color: var(--color-charcoal)">{{ $t('general.shippingReturns') }}</h1>
 
       <!-- Static policy -->
       <div class="policy-prose">
-        <h2>Envíos</h2>
-        <p>Preparamos y enviamos los pedidos en 24-48h laborables. El plazo de entrega habitual es de 2 a 5 días desde el envío, según destino.</p>
+        <h2>{{ $t('shippingReturns.shippingTitle') }}</h2>
+        <p>{{ $t('shippingReturns.shippingText') }}</p>
 
-        <h2>Devoluciones</h2>
-        <p>
-          Dispones de <strong>30 días</strong> desde la entrega de tu pedido para solicitar una devolución. Los artículos deben estar en su estado original, sin
-          usar y con sus etiquetas. Una vez recibida y revisada la solicitud, gestionaremos el reembolso a través del mismo método de pago utilizado en la
-          compra.
-        </p>
+        <h2>{{ $t('shippingReturns.returnsTitle') }}</h2>
+        <i18n-t keypath="shippingReturns.returnsText" tag="p">
+          <template #days><strong>{{ $t('shippingReturns.returnsDays') }}</strong></template>
+        </i18n-t>
       </div>
 
       <!-- Not logged in -->
       <div v-if="!viewer" class="login-prompt mt-12">
-        <p>Inicia sesión para ver tus pedidos y solicitar una devolución.</p>
-        <NuxtLink to="/my-account" class="login-prompt-link">Iniciar sesión</NuxtLink>
+        <p>{{ $t('shippingReturns.loginPrompt') }}</p>
+        <NuxtLink to="/my-account" class="login-prompt-link">{{ $t('account.signIn') }}</NuxtLink>
       </div>
 
       <!-- Logged in: manage returns -->
       <div v-else class="mt-12">
-        <h2 class="font-heading text-xl mb-4" style="color: var(--color-charcoal)">Gestionar mis devoluciones</h2>
+        <h2 class="font-heading text-xl mb-4" style="color: var(--color-charcoal)">{{ $t('shippingReturns.manageTitle') }}</h2>
 
         <div v-if="!orders" class="flex justify-center py-8">
           <LoadingIcon />
@@ -151,16 +150,16 @@ useSeoMeta({
             <div v-for="{ order, form } in eligibleOrdersWithForms" :key="order.databaseId" class="return-order-card">
               <div class="return-order-header" @click="form.open = !form.open">
                 <div>
-                  <span class="font-medium" style="color: var(--color-charcoal)">Pedido #{{ order.orderNumber }}</span>
+                  <span class="font-medium" style="color: var(--color-charcoal)">{{ $t('shop.order', 1) }} #{{ order.orderNumber }}</span>
                   <span class="text-sm ml-2" style="color: color-mix(in oklab, var(--color-charcoal) 55%, transparent)">{{ order.date }}</span>
                 </div>
                 <Icon :name="form.open ? 'ion:chevron-up-outline' : 'ion:chevron-down-outline'" size="18" />
               </div>
 
-              <div v-if="form.success" class="return-success">Solicitud de devolución enviada. Te avisaremos cuando la revisemos.</div>
+              <div v-if="form.success" class="return-success">{{ $t('shippingReturns.successMessage') }}</div>
 
               <div v-if="form.open" class="return-order-body wn-form">
-                <p class="text-sm mb-3" style="color: color-mix(in oklab, var(--color-charcoal) 65%, transparent)">Selecciona los artículos a devolver:</p>
+                <p class="text-sm mb-3" style="color: color-mix(in oklab, var(--color-charcoal) 65%, transparent)">{{ $t('shippingReturns.selectItemsPrompt') }}</p>
                 <div class="space-y-3 mb-6">
                   <label v-for="item in order.lineItems?.nodes" :key="item.id" class="return-item-row">
                     <input
@@ -173,22 +172,22 @@ useSeoMeta({
 
                 <div class="grid gap-4 md:grid-cols-2 mb-4">
                   <div class="space-y-2">
-                    <label>Motivo</label>
+                    <label>{{ $t('shippingReturns.reasonLabel') }}</label>
                     <select v-model="form.reason">
-                      <option value="" disabled>Selecciona un motivo</option>
+                      <option value="" disabled>{{ $t('shippingReturns.reasonPlaceholder') }}</option>
                       <option v-for="r in REASONS" :key="r.value" :value="r.value">{{ r.label }}</option>
                     </select>
                   </div>
                   <div class="space-y-2">
-                    <label>Detalles (opcional)</label>
-                    <input v-model="form.details" type="text" placeholder="Cuéntanos más..." />
+                    <label>{{ $t('shippingReturns.detailsLabel') }}</label>
+                    <input v-model="form.details" type="text" :placeholder="$t('shippingReturns.detailsPlaceholder')" />
                   </div>
                 </div>
 
                 <p v-if="form.error" class="return-error">{{ form.error }}</p>
 
                 <button type="button" class="save-btn" :disabled="form.submitting" @click="submitReturn(order.databaseId!)">
-                  {{ form.submitting ? 'Enviando...' : 'Solicitar devolución' }}
+                  {{ form.submitting ? $t('shippingReturns.submitting') : $t('shippingReturns.submitReturn') }}
                 </button>
               </div>
             </div>
@@ -196,17 +195,17 @@ useSeoMeta({
 
           <!-- Tracked returns -->
           <div v-if="trackedOrders.length" class="mt-10">
-            <h3 class="font-heading text-base mb-3" style="color: var(--color-charcoal)">Solicitudes en curso</h3>
+            <h3 class="font-heading text-base mb-3" style="color: var(--color-charcoal)">{{ $t('shippingReturns.ongoingTitle') }}</h3>
             <div class="space-y-2">
               <div v-for="order in trackedOrders" :key="order.databaseId" class="tracked-row">
-                <span>Pedido #{{ order.orderNumber }}</span>
+                <span>{{ $t('shop.order', 1) }} #{{ order.orderNumber }}</span>
                 <span class="tracked-status" :class="`tracked-status--${order.returnStatus}`">{{ statusLabel(order.returnStatus) }}</span>
               </div>
             </div>
           </div>
 
           <p v-if="!eligibleOrders.length && !trackedOrders.length" class="text-sm" style="color: color-mix(in oklab, var(--color-charcoal) 55%, transparent)">
-            No tienes pedidos elegibles para devolución en este momento.
+            {{ $t('shippingReturns.noEligibleOrders') }}
           </p>
         </template>
       </div>
