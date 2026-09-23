@@ -24,22 +24,26 @@ const readableStatus = computed(() => {
 @reference "#tailwind";
 
 .order-status {
-  @apply border rounded-md font-semibold bg-gray-100    text-xs leading-none p-1.5 inline-block;
+  @apply inline-block border px-2 py-1 font-sans text-[10px] leading-none font-semibold tracking-widest uppercase;
+  background-color: transparent;
+  border-color: var(--color-sand);
+  color: color-mix(in oklab, var(--color-charcoal) 70%, transparent);
 }
 
 .order-COMPLETED {
-  @apply bg-green-50  border-green-100  text-green-600;
+  border-color: var(--color-charcoal);
+  background-color: var(--color-charcoal);
+  color: var(--color-cream);
 }
 
 .order-CANCELLED {
-  @apply bg-red-50  border-red-100  text-red-600;
+  border-color: var(--color-danger);
+  color: var(--color-danger);
 }
 
-.order-PENDING {
-  @apply bg-yellow-50  border-yellow-100  text-yellow-600;
-}
-
+.order-PENDING,
 .order-PROCESSING {
-  @apply bg-blue-50  border-blue-100  text-blue-600;
+  border-color: var(--color-charcoal);
+  color: var(--color-charcoal);
 }
 </style>

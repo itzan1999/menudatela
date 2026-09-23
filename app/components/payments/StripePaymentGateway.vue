@@ -38,13 +38,8 @@ const saveForFuture = computed({
       @update-element="(element) => emit('updateElement', element)" />
 
     <div v-if="shouldShowSavePaymentMethod" class="mt-3 flex items-start gap-2">
-      <input
-        id="save-payment-method"
-        v-model="saveForFuture"
-        type="checkbox"
-        name="save-payment-method"
-        class="mt-0.5 h-4 w-4 rounded-sm border-gray-300 bg-white text-primary focus:ring-3 focus:ring-primary" />
-      <label for="save-payment-method" class="text-sm font-medium text-gray-700">{{ $t('billing.savePaymentMethod') }}</label>
+      <input id="save-payment-method" v-model="saveForFuture" type="checkbox" name="save-payment-method" class="form-checkbox mt-0.5" />
+      <label for="save-payment-method" class="text-sm font-medium" style="color: var(--color-charcoal)">{{ $t('billing.savePaymentMethod') }}</label>
     </div>
   </div>
 </template>

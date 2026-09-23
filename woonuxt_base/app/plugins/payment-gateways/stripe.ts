@@ -3,7 +3,9 @@ import type { PaymentGatewayOption, PaymentGatewayPlugin } from '#types/payment-
 import type { Stripe, StripeElements } from '@stripe/stripe-js';
 
 import type { GetStripePaymentIntentQueryVariables } from '#gql/default';
-import StripePaymentGateway from '../../components/payments/StripePaymentGateway.vue';
+// Resolved through Nuxt's component registry (not a relative file import) so that a
+// same-named override in an extending layer's app/ directory takes effect here too.
+import { StripePaymentGateway } from '#components';
 import { StripePaymentMethodEnum } from '#gql/default';
 import { loadStripe } from '@stripe/stripe-js/pure';
 

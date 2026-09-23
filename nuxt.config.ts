@@ -1,3 +1,7 @@
+import { createResolver } from '@nuxt/kit';
+
+const { resolve } = createResolver(import.meta.url);
+
 export default defineNuxtConfig({
   // Get all the pages, components, composables and plugins from the parent theme
   extends: ['./woonuxt_base'],
@@ -7,7 +11,24 @@ export default defineNuxtConfig({
   components: [{ path: './components', pathPrefix: false }],
 
   alias: {
-    '#tailwind': './woonuxt_base/app/assets/css/main.css',
+    // Must resolve to an absolute path, or Vite treats each relative resolution
+    // as a distinct module and warns about duplicated modules for the same path.
+    '#tailwind': resolve('./woonuxt_base/app/assets/css/main.css'),
+  },
+
+  hooks: {
+    // woonuxt_base registers the order-received/order-summary routes itself via a
+    // pages:extend hook pinned to its own directory, bypassing the normal app/
+    // override-by-path resolution. Repoint them here so a same-named file in this
+    // layer's app/pages is used instead, without touching woonuxt_base's page.
+    'pages:extend'(pages) {
+      const overridePath = resolve('./app/pages/order-summary.vue');
+      for (const page of pages) {
+        if (page.name === 'order-received' || page.name === 'order-summary') {
+          page.file = overridePath;
+        }
+      }
+    },
   },
 
   /**
