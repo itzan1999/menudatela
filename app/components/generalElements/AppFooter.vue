@@ -21,14 +21,14 @@ const { wooNuxtVersionInfo } = useHelpers();
           <a href="https://woonuxt.com/faq" class="footer-link" rel="noreferrer" target="_blank">FAQ's</a>
         </div>
       </div>
-      <div class="w-[42.857%] lg:w-auto">
+      <!-- <div class="w-[42.857%] lg:w-auto">
         <div class="footer-heading">{{ $t('general.products') }}</div>
         <div class="footer-links">
           <NuxtLink to="/products" class="footer-link">{{ $t('shop.newArrivals') }}</NuxtLink>
           <NuxtLink to="/products?filter=sale[true]" class="footer-link">{{ $t('shop.onSale') }}</NuxtLink>
           <NuxtLink to="/products?orderby=rating&order=ASC&filter=rating[1]" class="footer-link">{{ $t('shop.topRated') }}</NuxtLink>
         </div>
-      </div>
+      </div> -->
       <div class="w-[42.857%] lg:w-auto">
         <div class="footer-heading">{{ $t('general.customerService') }}</div>
         <div class="footer-links">
@@ -36,14 +36,14 @@ const { wooNuxtVersionInfo } = useHelpers();
           <NuxtLink to="/shipping-returns" class="footer-link">{{ $t('general.shippingReturns') }}</NuxtLink>
         </div>
       </div>
-      <div class="w-[42.857%] lg:w-auto">
+      <!-- <div class="w-[42.857%] lg:w-auto">
         <div class="footer-heading">{{ $t('account.myAccount') }}</div>
         <div class="footer-links">
           <NuxtLink to="/my-account/" class="footer-link">{{ $t('account.myAccount') }}</NuxtLink>
           <NuxtLink to="/my-account/?tab=orders" class="footer-link">{{ $t('shop.orderHistory') }}</NuxtLink>
           <NuxtLink to="/wishlist" class="footer-link">{{ $t('shop.wishlist') }}</NuxtLink>
         </div>
-      </div>
+      </div> -->
       <div class="w-[42.857%] lg:w-auto">
         <div class="footer-heading">{{ $t('general.legal') }}</div>
         <div class="footer-links">
