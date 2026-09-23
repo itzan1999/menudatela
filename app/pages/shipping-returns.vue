@@ -2,6 +2,7 @@
 const { t } = useI18n();
 const { viewer, getOrders, orders } = useAuth();
 const { cart } = useCart();
+const { formatDate } = useHelpers();
 const gql = useWooGraphQL();
 
 const showLoader = computed(() => !cart.value && !viewer.value);
@@ -153,7 +154,7 @@ useSeoMeta({
               <div class="return-order-header" @click="form.open = !form.open">
                 <div>
                   <span class="font-medium" style="color: var(--color-charcoal)">{{ $t('shop.order', 1) }} #{{ order.orderNumber }}</span>
-                  <span class="text-sm ml-2" style="color: color-mix(in oklab, var(--color-charcoal) 55%, transparent)">{{ order.date }}</span>
+                  <span class="text-sm ml-2" style="color: color-mix(in oklab, var(--color-charcoal) 55%, transparent)">{{ formatDate(order.date) }}</span>
                 </div>
                 <Icon :name="form.open ? 'ion:chevron-up-outline' : 'ion:chevron-down-outline'" size="18" />
               </div>
