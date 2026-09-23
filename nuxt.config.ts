@@ -39,6 +39,19 @@ export default defineNuxtConfig({
    * @property {number} interval - How long to wait between prerendering pages
    * @property {boolean} failOnError - This stops the build from failing but the page will not be statically generated
    */
+  // Our es-ES/en-US locale files intentionally embed HTML (`<strong>`, `<code>`) in some
+  // messages (rendered via v-html in legal.vue) for inline emphasis. By default
+  // unplugin-vue-i18n's message compiler throws on HTML it detects in a message string
+  // instead of just warning, which crashes that module's Vite transform — the failed
+  // transform then serves as a 404 on any later request for the file, leaving affected
+  // pages permanently stuck showing raw translation keys until the dev server restarts.
+  // This opts into the permissive (warn-only) behavior the tool itself suggests.
+  i18n: {
+    compilation: {
+      strictMessage: false,
+    },
+  },
+
   nitro: {
     prerender: {
       concurrency: 10,

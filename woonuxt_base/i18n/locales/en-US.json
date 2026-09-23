@@ -391,7 +391,7 @@
       "intro": "At {brand} we take the privacy of your personal data very seriously. In accordance with the General Data Protection Regulation (GDPR EU 2016/679) and Spanish Organic Law 3/2018 (LOPDGDD), we inform you of how we handle your data.",
       "controllerTitle": "1. Data Controller",
       "controllerOwner": "<strong>Owner:</strong> MenudaTela",
-      "controllerEmail": "<strong>Contact email:</strong> privacidad@menudatela.com",
+      "controllerEmail": "<strong>Contact email:</strong> privacidad{'@'}menudatela.com",
       "dataTitle": "2. What Data Do We Collect and for What Purpose?",
       "dataIntro": "In order to provide our online sales services through our platform (built with WooCommerce and a Nuxt frontend), we collect the following data:",
       "dataAccount": "<strong>Registration and account data:</strong> First name, last name, email address and password. Creating an account is mandatory to place orders (registration confirmation emails are sent).",
@@ -402,13 +402,13 @@
       "retentionTitle": "4. Data Retention",
       "retentionText": "Personal data will be kept for as long as the commercial or user relationship is maintained and, afterwards, for the periods legally required to address any potential tax or legal liabilities.",
       "rightsTitle": "5. Your Rights",
-      "rightsText": "You can exercise your rights of access, rectification, erasure, restriction, portability and objection at any time by sending an email to privacidad@menudatela.com."
+      "rightsText": "You can exercise your rights of access, rectification, erasure, restriction, portability and objection at any time by sending an email to privacidad{'@'}menudatela.com."
     },
     "notice": {
       "intro": "In compliance with Article 10 of Spanish Law 34/2002, of July 11, on Information Society Services and Electronic Commerce (LSSI-CE), the identifying details of the ownership of this website are set out below:",
       "owner": "<strong>Owner:</strong> MenudaTela (hereinafter, \"the store\" or \"the website\").",
       "activity": "<strong>Activity:</strong> Online sale of fabrics and textile products.",
-      "email": "<strong>Contact email:</strong> contacto@menudatela.com",
+      "email": "<strong>Contact email:</strong> contacto{'@'}menudatela.com",
       "website": "<strong>Website:</strong> https://menudatela.com",
       "purposeTitle": "1. Purpose",
       "purposeText": "This legal notice governs the use of the website <code>https://menudatela.com</code>, made available to users interested in purchasing our textile products.",

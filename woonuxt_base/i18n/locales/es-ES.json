@@ -307,13 +307,34 @@
   "faq": {
     "title": "Preguntas Frecuentes",
     "items": [
-      { "question": "¿Necesito crear una cuenta para comprar?", "answer": "Sí, es necesario registrarte con tu correo electrónico para poder realizar un pedido. Al crear tu cuenta recibirás un correo de confirmación y podrás consultar el estado de tus compras desde tu área de cliente." },
-      { "question": "¿Qué métodos de pago aceptáis?", "answer": "Procesamos todos los pagos de forma segura a través de Stripe, que admite las principales tarjetas de crédito y débito. No almacenamos los datos completos de tu tarjeta en ningún momento." },
-      { "question": "¿Cuándo se confirma mi pedido?", "answer": "Tras el pago recibirás un correo con el resumen de tu compra. Debido a nuestro proceso de gestión de stock, cada pedido se revisa y confirma manualmente por nuestro equipo antes de prepararlo para el envío; te avisaremos si hay cualquier cambio." },
-      { "question": "¿Cuánto tarda en llegar mi pedido?", "answer": "Preparamos los pedidos en 24-48h laborables tras su confirmación. El tiempo de entrega habitual es de 2 a 5 días desde el envío, dependiendo del destino." },
-      { "question": "¿Puedo devolver un pedido?", "answer": "Sí, dispones de 30 días desde la entrega para solicitar una devolución. Puedes gestionarla desde tu área de cliente en la página de Envíos y Devoluciones. Consulta también nuestra política de devoluciones en la sección legal." },
-      { "question": "¿Cómo puedo saber si una tela es adecuada para mi proyecto?", "answer": "En la ficha de cada producto encontrarás su composición, gramaje y recomendaciones de uso. Si tienes dudas sobre una tela en concreto, escríbenos y te ayudaremos a elegir la más adecuada." },
-      { "question": "¿Cómo puedo contactar con vosotros?", "answer": "Puedes escribirnos en cualquier momento a través de nuestra página de contacto y te responderemos por correo electrónico lo antes posible." }
+      {
+        "question": "¿Necesito crear una cuenta para comprar?",
+        "answer": "Sí, es necesario registrarte con tu correo electrónico para poder realizar un pedido. Al crear tu cuenta recibirás un correo de confirmación y podrás consultar el estado de tus compras desde tu área de cliente."
+      },
+      {
+        "question": "¿Qué métodos de pago aceptáis?",
+        "answer": "Procesamos todos los pagos de forma segura a través de Stripe, que admite las principales tarjetas de crédito y débito. No almacenamos los datos completos de tu tarjeta en ningún momento."
+      },
+      {
+        "question": "¿Cuándo se confirma mi pedido?",
+        "answer": "Tras el pago recibirás un correo con el resumen de tu compra. Debido a nuestro proceso de gestión de stock, cada pedido se revisa y confirma manualmente por nuestro equipo antes de prepararlo para el envío; te avisaremos si hay cualquier cambio."
+      },
+      {
+        "question": "¿Cuánto tarda en llegar mi pedido?",
+        "answer": "Preparamos los pedidos en 24-48h laborables tras su confirmación. El tiempo de entrega habitual es de 2 a 5 días desde el envío, dependiendo del destino."
+      },
+      {
+        "question": "¿Puedo devolver un pedido?",
+        "answer": "Sí, dispones de 30 días desde la entrega para solicitar una devolución. Puedes gestionarla desde tu área de cliente en la página de Envíos y Devoluciones. Consulta también nuestra política de devoluciones en la sección legal."
+      },
+      {
+        "question": "¿Cómo puedo saber si una tela es adecuada para mi proyecto?",
+        "answer": "En la ficha de cada producto encontrarás su composición, gramaje y recomendaciones de uso. Si tienes dudas sobre una tela en concreto, escríbenos y te ayudaremos a elegir la más adecuada."
+      },
+      {
+        "question": "¿Cómo puedo contactar con vosotros?",
+        "answer": "Puedes escribirnos en cualquier momento a través de nuestra página de contacto y te responderemos por correo electrónico lo antes posible."
+      }
     ],
     "footerCta": "¿No has encontrado lo que buscabas? Escríbenos a nuestro correo de contacto {email}."
   },
@@ -391,7 +412,7 @@
       "intro": "En {brand} nos tomamos muy en serio la privacidad de tus datos personales. De conformidad con el Reglamento General de Protección de Datos (RGPD UE 2016/679) y la Ley Orgánica 3/2018 (LOPDGDD), te informamos sobre cómo tratamos tus datos.",
       "controllerTitle": "1. Responsable del Tratamiento",
       "controllerOwner": "<strong>Titular:</strong> MenudaTela",
-      "controllerEmail": "<strong>Correo de contacto:</strong> privacidad@menudatela.com",
+      "controllerEmail": "<strong>Correo de contacto:</strong> dev{'@'}c3i.es",
       "dataTitle": "2. ¿Qué datos recopilamos y con qué finalidad?",
       "dataIntro": "Para poder ofrecerte nuestros servicios de venta online a través de nuestra plataforma (desarrollada con WooCommerce y frontend en Nuxt), recopilamos los siguientes datos:",
       "dataAccount": "<strong>Datos de registro y cuenta de usuario:</strong> Nombre, apellidos, correo electrónico y contraseña. Es obligatorio crear una cuenta para realizar pedidos (enviando correos de confirmación de registro).",
@@ -402,13 +423,13 @@
       "retentionTitle": "4. Conservación de los datos",
       "retentionText": "Los datos personales se conservarán mientras se mantenga la relación comercial o de usuario y, posteriormente, durante los plazos legalmente exigidos para atender posibles responsabilidades fiscales o legales.",
       "rightsTitle": "5. Tus Derechos",
-      "rightsText": "Puedes ejercer en cualquier momento tus derechos de acceso, rectificación, supresión, limitación, portabilidad y oposición enviando un correo electrónico a privacidad@menudatela.com."
+      "rightsText": "Puedes ejercer en cualquier momento tus derechos de acceso, rectificación, supresión, limitación, portabilidad y oposición enviando un correo electrónico a dev{'@'}c3i.es."
     },
     "notice": {
       "intro": "En cumplimiento del artículo 10 de la Ley 34/2002, de 11 de julio, de Servicios de la Sociedad de la Información y de Comercio Electrónico (LSSI-CE), a continuación se exponen los datos identificativos de la titularidad de este sitio web:",
       "owner": "<strong>Titular:</strong> MenudaTela (en adelante, \"la tienda\" o \"el sitio web\").",
       "activity": "<strong>Actividad:</strong> Venta online de telas y productos textiles.",
-      "email": "<strong>Correo electrónico de contacto:</strong> contacto@menudatela.com",
+      "email": "<strong>Correo electrónico de contacto:</strong> dev{'@'}c3i.es",
       "website": "<strong>Sitio Web:</strong> https://menudatela.com",
       "purposeTitle": "1. Objeto",
       "purposeText": "El presente aviso legal regula el uso del sitio web <code>https://menudatela.com</code>, que pone a disposición de los usuarios interesados en la adquisición de nuestros productos textiles.",
