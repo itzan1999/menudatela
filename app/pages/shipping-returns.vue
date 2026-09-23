@@ -126,7 +126,9 @@ useSeoMeta({
 
         <h2>{{ $t('shippingReturns.returnsTitle') }}</h2>
         <i18n-t keypath="shippingReturns.returnsText" tag="p">
-          <template #days><strong>{{ $t('shippingReturns.returnsDays') }}</strong></template>
+          <template #days
+            ><strong>{{ $t('shippingReturns.returnsDays') }}</strong></template
+          >
         </i18n-t>
       </div>
 
@@ -159,11 +161,14 @@ useSeoMeta({
               <div v-if="form.success" class="return-success">{{ $t('shippingReturns.successMessage') }}</div>
 
               <div v-if="form.open" class="return-order-body wn-form">
-                <p class="text-sm mb-3" style="color: color-mix(in oklab, var(--color-charcoal) 65%, transparent)">{{ $t('shippingReturns.selectItemsPrompt') }}</p>
+                <p class="text-sm mb-3" style="color: color-mix(in oklab, var(--color-charcoal) 65%, transparent)">
+                  {{ $t('shippingReturns.selectItemsPrompt') }}
+                </p>
                 <div class="space-y-3 mb-6">
                   <label v-for="item in order.lineItems?.nodes" :key="item.id" class="return-item-row">
                     <input
                       type="checkbox"
+                      class="form-checkbox"
                       @change="toggleItem(order.databaseId!, item.databaseId!, item.quantity || 1, ($event.target as HTMLInputElement).checked)" />
                     <span class="flex-1">{{ item.product?.node?.name || item.variation?.node?.name }}</span>
                     <span class="text-sm" style="color: color-mix(in oklab, var(--color-charcoal) 55%, transparent)">x{{ item.quantity }}</span>
