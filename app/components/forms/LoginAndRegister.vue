@@ -350,7 +350,7 @@ const handleResetPassword = async () => {
 
     const endpoint = wpGraphQLHost.endsWith('/graphql') ? wpGraphQLHost : `${wpGraphQLHost.replace(/\/$/, '')}/graphql`;
 
-    const response: any = await $fetch(endpoint, {
+    const response = await $fetch<{ errors?: { message?: string }[]; data?: { resetUserPassword?: { user?: unknown } } }>(endpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -381,8 +381,9 @@ const handleResetPassword = async () => {
     } else {
       errorMessage.value = t('error.passwordUpdateFailed');
     }
-  } catch (err: any) {
-    errorMessage.value = err?.data?.errors?.[0]?.message || err?.message || t('error.passwordUpdateError');
+  } catch (err) {
+    const fetchError = err as { data?: { errors?: { message?: string }[] }; message?: string };
+    errorMessage.value = fetchError?.data?.errors?.[0]?.message || fetchError?.message || t('error.passwordUpdateError');
   }
 };
 

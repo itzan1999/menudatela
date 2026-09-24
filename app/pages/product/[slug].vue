@@ -401,8 +401,8 @@ const refreshStockStatus = async (): Promise<void> => {
   try {
     const { product } = await gql.getStockStatus({ slug });
     if (product) mergeLiveStockStatus(product as ProductDetail);
-  } catch (error: any) {
-    const errorMessage = error?.gqlErrors?.[0]?.message;
+  } catch (error) {
+    const errorMessage = (error as { gqlErrors?: { message?: string }[] })?.gqlErrors?.[0]?.message;
     if (errorMessage) console.error(errorMessage);
   }
 };

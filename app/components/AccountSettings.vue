@@ -17,7 +17,7 @@ const settings = ref({
 });
 
 const languages = computed(() => {
-  return locales.value.map((loc: any) => ({
+  return locales.value.map((loc) => ({
     value: loc.code,
     label: loc.name,
   }));

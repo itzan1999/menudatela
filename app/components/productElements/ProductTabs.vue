@@ -5,7 +5,6 @@ const { product } = defineProps({
   product: { type: Object as PropType<Product>, required: true },
 });
 const { storeSettings } = useAppConfig();
-const { t } = useI18n();
 
 const reviewCount = computed(() => ('reviewCount' in product ? (product.reviewCount ?? undefined) : undefined));
 

@@ -134,7 +134,8 @@ const setItemQuantity = (orderId: number, lineItemId: number, quantity: number, 
   if (clamped > 0) {
     form.selected[lineItemId] = clamped;
   } else {
-    delete form.selected[lineItemId];
+    const { [lineItemId]: _removed, ...rest } = form.selected;
+    form.selected = rest;
   }
 };
 
@@ -173,8 +174,8 @@ const submitReturn = async (orderId: number) => {
     } else {
       form.error = requestOrderReturn?.message || t('shippingReturns.errorGeneric');
     }
-  } catch (error: any) {
-    form.error = error?.gqlErrors?.[0]?.message || t('shippingReturns.errorGenericRetry');
+  } catch (error) {
+    form.error = (error as { gqlErrors?: { message?: string }[] })?.gqlErrors?.[0]?.message || t('shippingReturns.errorGenericRetry');
   }
   form.submitting = false;
 };

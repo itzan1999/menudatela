@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Appearance, Stripe, StripeElements } from '@stripe/stripe-js';
+import type { Appearance, Stripe, StripeElements, StripeElementsOptionsClientSecret, StripePaymentElement } from '@stripe/stripe-js';
 
 const props = defineProps<{
   stripe: Stripe;
@@ -12,7 +12,7 @@ const props = defineProps<{
 const emit = defineEmits(['updateElement']);
 const { siteName } = useAppConfig();
 let elements: StripeElements | null = null;
-let paymentElement: any = null;
+let paymentElement: StripePaymentElement | null = null;
 let elementsMode: 'intent' | 'deferred' | null = null;
 
 const isReloading = ref(false);
@@ -114,7 +114,7 @@ const createStripeElements = async () => {
   resetStripeElements();
 
   if (props.clientSecret) {
-    const elementsOptions: any = {
+    const elementsOptions: StripeElementsOptionsClientSecret = {
       clientSecret: props.clientSecret,
       appearance: stripeAppearance.value,
     };
@@ -201,7 +201,7 @@ onUnmounted(() => {
   <div ref="containerEl" class="stripe-elements-container" :style="isReloading && reservedHeight ? { minHeight: `${reservedHeight}px` } : undefined">
     <div id="payment-element" class="stripe-element"></div>
     <div v-if="isReloading" class="stripe-reloading-overlay">
-      <span class="stripe-reloading-spinner" />
+      <span class="stripe-reloading-spinner"></span>
     </div>
   </div>
 </template>

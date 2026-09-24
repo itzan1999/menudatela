@@ -14,6 +14,8 @@ const props = withDefaults(defineProps<Props>(), {
   variant: 'primary',
   size: 'md',
   loading: false,
+  to: undefined,
+  icon: undefined,
   iconPosition: 'left',
 });
 
@@ -73,7 +75,7 @@ const buttonClasses = computed(() => twMerge(baseClasses, variantClasses.value, 
 // Component attrs - merge $attrs with our custom attrs, excluding class (handled separately)
 const componentAttrs = computed(() => {
   const { class: _, ...restAttrs } = attrs;
-  const componentAttrs: Record<string, any> = { ...restAttrs };
+  const componentAttrs: Record<string, unknown> = { ...restAttrs };
 
   if (componentType.value === 'button') {
     // Default type to 'button' if not provided

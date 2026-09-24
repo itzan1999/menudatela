@@ -9,15 +9,27 @@ const showForm = ref(false);
 
 const averageRating = computed(() => ('averageRating' in props.product ? (props.product.averageRating ?? 0) : 0));
 
+type ReviewEdge = {
+  rating?: number | string | null;
+  node?: {
+    id?: string | null;
+    databaseId?: number | null;
+    author?: { node?: { name?: string | null } | null; name?: string | null } | null;
+    date?: string | null;
+    content?: string | null;
+    rating?: number | string | null;
+  } | null;
+};
+
 // En WooNuxt/WooGraphQL, reviews.edges es un array de objetos { rating, node }
-const rawEdges = computed(() => (props.product?.reviews as any)?.edges ?? []);
+const rawEdges = computed<ReviewEdge[]>(() => (props.product?.reviews as { edges?: ReviewEdge[] } | undefined)?.edges ?? []);
 
 // Calculamos el total de opiniones basándonos en la cantidad de edges
 const reviewCount = computed(() => rawEdges.value.length);
 
 // Mapeamos los edges extraídos de la query GraphQL
 const reviews = computed(() => {
-  return rawEdges.value.map((edge: any) => {
+  return rawEdges.value.map((edge) => {
     const node = edge?.node ?? {};
     const rawRating = edge?.rating ?? node?.rating ?? 5;
     const rating = typeof rawRating === 'number' ? rawRating : Number.parseInt(String(rawRating), 10) || 5;
