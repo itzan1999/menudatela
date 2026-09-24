@@ -255,6 +255,7 @@ const incrementQuantity = (): void => {
 const primaryActionLoading = computed(() => (isOptimisticCartMode.value ? false : isUpdatingCart.value || isAddingToCart.value));
 
 const primaryActionLabel = computed(() => {
+  if (isOutOfStock.value) return t('shop.outOfStockAction');
   if (!isInCart.value) return t('shop.addToCart');
   return quantityMatchesCart.value ? t('shop.inCart') : t('shop.updateQuantity');
 });
@@ -514,10 +515,7 @@ const disabledAddToCart = computed(() => {
               class="fixed bottom-0 left-0 z-10 flex items-center w-full p-4 bg-[var(--color-cream)] border-t border-[var(--color-sand)] shadow-lg md:static md:bg-transparent md:p-0 md:shadow-none md:border-t-0 md:mt-8">
               <!-- Selector de Cantidad Minimalista -->
               <div class="flex items-center mr-3 border border-[var(--color-sand)] bg-[var(--color-cream)] text-[var(--color-charcoal)]">
-                <button
-                  type="button"
-                  class="px-3 py-2 text-sm hover:bg-[var(--color-sand)]/30 transition-colors cursor-pointer"
-                  @click="decrementQuantity">
+                <button type="button" class="px-3 py-2 text-sm hover:bg-[var(--color-sand)]/30 transition-colors cursor-pointer" @click="decrementQuantity">
                   -
                 </button>
                 <input
@@ -527,14 +525,16 @@ const disabledAddToCart = computed(() => {
                   aria-label="Cantidad"
                   class="w-12 text-center bg-transparent py-2 font-sans text-xs font-semibold text-[var(--color-charcoal)] focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   @input="onQuantityChanged" />
-                <button type="button" class="px-3 py-2 text-sm hover:bg-[var(--color-sand)]/30 transition-colors cursor-pointer" @click="incrementQuantity">+</button>
+                <button type="button" class="px-3 py-2 text-sm hover:bg-[var(--color-sand)]/30 transition-colors cursor-pointer" @click="incrementQuantity">
+                  +
+                </button>
               </div>
 
               <!-- Botón Estilo Filtro (Borde claro como los filtros) -->
               <button
                 type="submit"
                 :disabled="disabledAddToCart"
-                class="flex-1 border border-[var(--color-sand)] bg-transparent py-3 px-6 font-sans text-xs font-semibold tracking-widest uppercase text-[var(--color-charcoal)] transition-all duration-300 hover:border-[var(--color-charcoal)] hover:bg-[var(--color-charcoal)] hover:text-[var(--color-cream)] disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-[var(--color-charcoal)] disabled:hover:border-[var(--color-sand)] cursor-pointer flex items-center justify-center gap-2">
+                class="flex-1 border border-[var(--color-sand)] bg-transparent py-3 px-6 font-sans text-xs font-semibold tracking-widest uppercase text-[var(--color-charcoal)] transition-all duration-300 hover:border-[var(--color-charcoal)] hover:bg-[var(--color-charcoal)] hover:text-[var(--color-cream)] disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-[var(--color-charcoal)] disabled:hover:border-[var(--color-sand)] cursor-pointer disabled:cursor-default flex items-center justify-center gap-2">
                 <Icon v-if="primaryActionLoading" name="ion:load-a" class="animate-spin h-4 w-4" />
                 <Icon v-else-if="isInCart && quantityMatchesCart" name="ion:checkmark" class="h-4 w-4" />
                 <span>{{ primaryActionLabel }}</span>
@@ -552,7 +552,7 @@ const disabledAddToCart = computed(() => {
                   :disabled="primaryActionLoading"
                   :aria-label="$t('shop.removeFromCart')"
                   :title="$t('shop.removeFromCart')"
-                  class="remove-from-cart-btn shrink-0 w-[42px] h-[42px] ml-3 shadow-[inset_0_0_0_1px_var(--color-sand)] bg-transparent text-[var(--color-charcoal)] transition-all duration-300 hover:shadow-[inset_0_0_0_1px_var(--color-charcoal)] hover:bg-[var(--color-charcoal)] hover:text-[var(--color-cream)] disabled:opacity-40 cursor-pointer flex items-center justify-center"
+                  class="remove-from-cart-btn shrink-0 w-[42px] h-[42px] ml-3 shadow-[inset_0_0_0_1px_var(--color-sand)] bg-transparent text-[var(--color-charcoal)] transition-all duration-300 hover:shadow-[inset_0_0_0_1px_var(--color-charcoal)] hover:bg-[var(--color-charcoal)] hover:text-[var(--color-cream)] disabled:opacity-40 cursor-pointer disabled:cursor-not-allowed flex items-center justify-center"
                   @click="handleRemoveFromCart">
                   <Icon name="ion:trash-outline" class="h-4 w-4 shrink-0" />
                 </button>

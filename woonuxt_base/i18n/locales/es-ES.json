@@ -133,6 +133,7 @@
     "wishlistNoItems": "No tienes ningún producto en tu lista de deseos",
     "addToCart": "Agregar al carrito",
     "adding": "Agregando...",
+    "outOfStockAction": "Producto agotado",
     "inCart": "En el carrito",
     "updateQuantity": "Modificar cantidad",
     "updatingQuantity": "Actualizando...",

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { StockStatusEnum } from '#gql/default';
 import type { ImageFragment, Product, Variation } from '#types/gql';
 
 const { FALLBACK_IMG } = useHelpers();
@@ -13,6 +14,8 @@ const props = defineProps({
   node: { type: Object as PropType<Product | Variation>, required: true },
   activeVariation: { type: Object as PropType<Variation | null>, default: null },
 });
+
+const isOutOfStock = computed(() => props.node?.stockStatus === StockStatusEnum.OutOfStock);
 
 const primaryImage = computed<ImageFragment>(() => ({
   sourceUrl: props.mainImage.sourceUrl || FALLBACK_IMG,
@@ -83,7 +86,14 @@ const thumbnailButtonClasses = (galleryImg: ImageFragment) => [
 <template>
   <div :class="galleryRootClasses">
     <div class="relative group aspect-square w-full min-w-0 overflow-hidden bg-[var(--color-cream)] border border-[var(--color-sand)]">
-      <SaleBadge :node class="absolute top-3 left-3 z-10" />
+      <div class="absolute top-3 left-3 z-10 flex flex-col items-start gap-1">
+        <SaleBadge :node />
+        <span
+          v-if="isOutOfStock"
+          class="inline-block border-2 border-charcoal bg-stone-300 px-2.5 py-1 font-sans text-[10px] font-semibold tracking-widest uppercase text-charcoal">
+          {{ $t('shop.outOfStock') }}
+        </span>
+      </div>
       <NuxtPicture
         :width="imgWidth"
         :height="imgWidth"
