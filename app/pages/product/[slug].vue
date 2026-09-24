@@ -4,7 +4,7 @@ import type { ExternalProduct, ProductDetail, Variation, VariationAttribute } fr
 
 const route = useRoute();
 const { storeSettings } = useAppConfig();
-const { addToCart, isUpdatingCart, isAddingToCart, isOptimisticCartMode } = useCart();
+const { cart, addToCart, removeItem, updateItemQuantity, isUpdatingCart, isAddingToCart, isOptimisticCartMode } = useCart();
 const { frontEndUrl, getErrorMessage } = useHelpers();
 const { t } = useI18n();
 const gql = useWooGraphQL();
@@ -201,9 +201,156 @@ const selectProductInput = computed<AddToCartInput>(() => {
   return input;
 });
 
+// Whether the currently-displayed product/variation is already in the cart, and, if so, which
+// cart line it corresponds to (needed to target updateItemQuantity/removeItem by cart item key).
+const cartItem = computed(() => {
+  const nodes = cart.value?.contents?.nodes ?? [];
+  if (isVariableProduct.value) {
+    const variationId = activeVariation.value?.databaseId;
+    if (!variationId) return null;
+    return nodes.find((node) => node.variation?.node?.databaseId === variationId) ?? null;
+  }
+  const productId = product.value?.databaseId;
+  if (!productId) return null;
+  return nodes.find((node) => !node.variation?.node && node.product?.node?.databaseId === productId) ?? null;
+});
+
+const isInCart = computed(() => !!cartItem.value);
+const cartItemQuantity = computed(() => cartItem.value?.quantity ?? 0);
+const quantityMatchesCart = computed(() => isInCart.value && quantity.value === cartItemQuantity.value);
+
+// Tracks whether the user has touched the quantity field since it was last synced from the cart,
+// so we know whether to keep defaulting it to the cart's quantity or leave the user's edit alone.
+const userEditedQuantity = ref(false);
+
+watch(
+  cartItem,
+  (item) => {
+    if (userEditedQuantity.value) return;
+    quantity.value = item?.quantity ?? 1;
+  },
+  { immediate: true },
+);
+
+// Switching variation targets a different (or no) cart line, so the quantity field should default
+// again from that new target's cart quantity instead of keeping whatever was typed for the old one.
+watch(activeVariation, () => {
+  userEditedQuantity.value = false;
+});
+
+const onQuantityChanged = (): void => {
+  userEditedQuantity.value = true;
+};
+
+const decrementQuantity = (): void => {
+  quantity.value = Math.max(1, quantity.value - 1);
+  onQuantityChanged();
+};
+
+const incrementQuantity = (): void => {
+  quantity.value++;
+  onQuantityChanged();
+};
+
+const primaryActionLoading = computed(() => (isOptimisticCartMode.value ? false : isUpdatingCart.value || isAddingToCart.value));
+
+const primaryActionLabel = computed(() => {
+  if (!isInCart.value) return t('shop.addToCart');
+  return quantityMatchesCart.value ? t('shop.inCart') : t('shop.updateQuantity');
+});
+
 const handleAddToCart = (): void => {
   if (!product.value) return;
   void addToCart(selectProductInput.value, { product: product.value, variation: activeVariation.value });
+  userEditedQuantity.value = false;
+};
+
+const handleUpdateQuantity = async (): Promise<void> => {
+  if (!cartItem.value) return;
+  await updateItemQuantity(cartItem.value.key, quantity.value);
+  userEditedQuantity.value = false;
+};
+
+const handleRemoveFromCart = async (): Promise<void> => {
+  if (!cartItem.value) return;
+  await removeItem(cartItem.value.key);
+  userEditedQuantity.value = false;
+  quantity.value = 1;
+};
+
+// Collapses/expands the "remove from cart" button smoothly instead of it popping in/out. The
+// target width is a fixed constant (matching the button's own w-11 Tailwind class) rather than
+// measured live via getBoundingClientRect: the icon inside it (`ion:trash-outline`) is loaded
+// asynchronously by @nuxt/icon, so a measurement taken before the icon has finished loading
+// under-reports the button's true resting width. That under-measurement made the animation
+// visibly stall partway through and then jump to the real size once the icon finally loaded —
+// a fixed, known target sidesteps the race entirely.
+const REMOVE_BTN_WIDTH_PX = 42; // Matches the w-[42px] class on .remove-from-cart-btn below (same height as the primary button).
+// Border-width was tried and dropped: with box-sizing: border-box, a real 1px border keeps
+// rendering right up until the browser's pixel-snapping rounds it away, so it doesn't fade
+// smoothly like width/opacity do — it jumps from 1px to 0 in a single frame near the very end.
+// The button's border is drawn with an inset box-shadow instead (see the template class below),
+// which doesn't take up any box-model space, so there's no border contribution to collapse at all.
+const REMOVE_BTN_TRANSITION = 'width 0.25s ease, opacity 0.2s ease, margin-left 0.25s ease';
+
+const onRemoveBtnTransitionEnd = (button: HTMLElement, done: () => void) => {
+  const handler = (event: TransitionEvent): void => {
+    if (event.target !== button || event.propertyName !== 'width') return;
+    button.removeEventListener('transitionend', handler);
+    done();
+  };
+  button.addEventListener('transitionend', handler);
+};
+
+const onRemoveBtnBeforeEnter = (el: Element): void => {
+  const button = el as HTMLElement;
+  button.style.transition = 'none';
+  button.style.overflow = 'hidden';
+  button.style.width = '0px';
+  button.style.opacity = '0';
+  button.style.marginLeft = '0px';
+};
+
+const onRemoveBtnEnter = (el: Element, done: () => void): void => {
+  const button = el as HTMLElement;
+  requestAnimationFrame(() => {
+    button.style.transition = REMOVE_BTN_TRANSITION;
+    button.style.width = `${REMOVE_BTN_WIDTH_PX}px`;
+    button.style.opacity = '1';
+    button.style.marginLeft = '';
+  });
+
+  onRemoveBtnTransitionEnd(button, () => {
+    button.style.width = '';
+    button.style.overflow = '';
+    button.style.transition = '';
+    done();
+  });
+};
+
+const onRemoveBtnLeave = (el: Element, done: () => void): void => {
+  const button = el as HTMLElement;
+  button.style.width = `${REMOVE_BTN_WIDTH_PX}px`;
+  button.style.overflow = 'hidden';
+  void button.offsetWidth; // Force a reflow so the explicit width is committed before animating away from it.
+
+  requestAnimationFrame(() => {
+    button.style.transition = REMOVE_BTN_TRANSITION;
+    button.style.width = '0px';
+    button.style.opacity = '0';
+    button.style.marginLeft = '0px';
+  });
+
+  onRemoveBtnTransitionEnd(button, done);
+};
+
+const handlePrimaryAction = (): void => {
+  if (!isInCart.value) {
+    handleAddToCart();
+    return;
+  }
+  if (quantityMatchesCart.value) return;
+  void handleUpdateQuantity();
 };
 
 const updateSelectedVariations = (variations: VariationAttribute[]): void => {
@@ -277,10 +424,9 @@ const disabledAddToCart = computed(() => {
   const isInvalidType = !displayProduct.value;
   const isCartUpdating = isOptimisticCartMode.value ? false : isUpdatingCart.value || isAddingToCart.value;
   const hasValidVariation = !isVariableProduct.value || !!activeVariation.value;
-  return !canPurchaseWithCurrentStock || isCartUpdating || !hasValidVariation || isInvalidType;
+  const nothingToSubmit = isInCart.value && quantityMatchesCart.value;
+  return !canPurchaseWithCurrentStock || isCartUpdating || !hasValidVariation || isInvalidType || nothingToSubmit;
 });
-
-const addToCartLoading = computed(() => (isOptimisticCartMode.value ? false : isUpdatingCart.value));
 </script>
 
 <template>
@@ -354,7 +500,7 @@ const addToCartLoading = computed(() => (isOptimisticCartMode.value ? false : is
 
           <hr class="border-[var(--color-sand)]/60 my-6" />
 
-          <form @submit.prevent="handleAddToCart">
+          <form @submit.prevent="handlePrimaryAction">
             <AttributeSelections
               v-if="isVariableProduct && product?.attributes?.nodes?.length && product?.variations"
               class="mt-4 mb-8"
@@ -365,13 +511,13 @@ const addToCartLoading = computed(() => (isOptimisticCartMode.value ? false : is
 
             <div
               v-if="isVariableProduct || isSimpleProduct"
-              class="fixed bottom-0 left-0 z-10 flex items-center w-full gap-3 p-4 bg-[var(--color-cream)] border-t border-[var(--color-sand)] shadow-lg md:static md:bg-transparent md:p-0 md:shadow-none md:border-t-0 md:mt-8">
+              class="fixed bottom-0 left-0 z-10 flex items-center w-full p-4 bg-[var(--color-cream)] border-t border-[var(--color-sand)] shadow-lg md:static md:bg-transparent md:p-0 md:shadow-none md:border-t-0 md:mt-8">
               <!-- Selector de Cantidad Minimalista -->
-              <div class="flex items-center border border-[var(--color-sand)] bg-[var(--color-cream)] text-[var(--color-charcoal)]">
+              <div class="flex items-center mr-3 border border-[var(--color-sand)] bg-[var(--color-cream)] text-[var(--color-charcoal)]">
                 <button
                   type="button"
                   class="px-3 py-2 text-sm hover:bg-[var(--color-sand)]/30 transition-colors cursor-pointer"
-                  @click="quantity = Math.max(1, quantity - 1)">
+                  @click="decrementQuantity">
                   -
                 </button>
                 <input
@@ -379,8 +525,9 @@ const addToCartLoading = computed(() => (isOptimisticCartMode.value ? false : is
                   type="number"
                   min="1"
                   aria-label="Cantidad"
-                  class="w-12 text-center bg-transparent py-2 font-sans text-xs font-semibold text-[var(--color-charcoal)] focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
-                <button type="button" class="px-3 py-2 text-sm hover:bg-[var(--color-sand)]/30 transition-colors cursor-pointer" @click="quantity++">+</button>
+                  class="w-12 text-center bg-transparent py-2 font-sans text-xs font-semibold text-[var(--color-charcoal)] focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                  @input="onQuantityChanged" />
+                <button type="button" class="px-3 py-2 text-sm hover:bg-[var(--color-sand)]/30 transition-colors cursor-pointer" @click="incrementQuantity">+</button>
               </div>
 
               <!-- Botón Estilo Filtro (Borde claro como los filtros) -->
@@ -388,9 +535,28 @@ const addToCartLoading = computed(() => (isOptimisticCartMode.value ? false : is
                 type="submit"
                 :disabled="disabledAddToCart"
                 class="flex-1 border border-[var(--color-sand)] bg-transparent py-3 px-6 font-sans text-xs font-semibold tracking-widest uppercase text-[var(--color-charcoal)] transition-all duration-300 hover:border-[var(--color-charcoal)] hover:bg-[var(--color-charcoal)] hover:text-[var(--color-cream)] disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-[var(--color-charcoal)] disabled:hover:border-[var(--color-sand)] cursor-pointer flex items-center justify-center gap-2">
-                <Icon v-if="addToCartLoading" name="ion:load-a" class="animate-spin h-4 w-4" />
-                <span>{{ $t('shop.addToCart') }}</span>
+                <Icon v-if="primaryActionLoading" name="ion:load-a" class="animate-spin h-4 w-4" />
+                <Icon v-else-if="isInCart && quantityMatchesCart" name="ion:checkmark" class="h-4 w-4" />
+                <span>{{ primaryActionLabel }}</span>
               </button>
+
+              <!-- Pequeño botón para eliminar el producto del carrito -->
+              <Transition
+                :css="false"
+                @before-enter="(el) => onRemoveBtnBeforeEnter(el)"
+                @enter="(el, done) => onRemoveBtnEnter(el, done)"
+                @leave="(el, done) => onRemoveBtnLeave(el, done)">
+                <button
+                  v-if="isInCart"
+                  type="button"
+                  :disabled="primaryActionLoading"
+                  :aria-label="$t('shop.removeFromCart')"
+                  :title="$t('shop.removeFromCart')"
+                  class="remove-from-cart-btn shrink-0 w-[42px] h-[42px] ml-3 shadow-[inset_0_0_0_1px_var(--color-sand)] bg-transparent text-[var(--color-charcoal)] transition-all duration-300 hover:shadow-[inset_0_0_0_1px_var(--color-charcoal)] hover:bg-[var(--color-charcoal)] hover:text-[var(--color-cream)] disabled:opacity-40 cursor-pointer flex items-center justify-center"
+                  @click="handleRemoveFromCart">
+                  <Icon name="ion:trash-outline" class="h-4 w-4 shrink-0" />
+                </button>
+              </Transition>
             </div>
 
             <a
@@ -446,4 +612,9 @@ const addToCartLoading = computed(() => (isOptimisticCartMode.value ? false : is
 .product-categories > a:last-child .comma {
   display: none;
 }
+
+/* The "remove from cart" button's enter/leave animation is driven entirely by the JS transition
+   hooks (onRemoveBtnBeforeEnter/Enter/Leave) in the script block, which measure the button's real
+   rendered width and animate that exact pixel value via inline styles — see the comment there for
+   why a CSS-only max-width/grid-track guess isn't used instead. */
 </style>
