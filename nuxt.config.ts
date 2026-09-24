@@ -29,6 +29,16 @@ export default defineNuxtConfig({
         }
       }
     },
+    // woonuxt_base registers its payment-gateway plugins with hardcoded absolute paths in its
+    // own nuxt.config.ts `plugins` array, bypassing the normal app/ override-by-path
+    // resolution (unlike auto-scanned app/plugins/*.ts files). Repoint the Stripe one here so
+    // this layer's app/plugins/payment-gateways/stripe.ts is used instead, without touching
+    // woonuxt_base's copy.
+    'app:resolve'(app) {
+      const overridePath = resolve('./app/plugins/payment-gateways/stripe.ts');
+      const plugin = app.plugins.find((p) => p.src.endsWith('/payment-gateways/stripe.ts'));
+      if (plugin) plugin.src = overridePath;
+    },
   },
 
   /**

@@ -18,6 +18,8 @@ fragment LineItemVariation on ProductVariation {
 fragment LineItem on LineItem {
   quantity
   total
+  rawTotal: total(format: RAW)
+  rawTotalTax: totalTax(format: RAW)
   id
   databaseId
   product {

@@ -47,4 +47,12 @@ fragment OrderFragment on Order {
     lineItemId
     quantity
   }
+  refunds {
+    nodes {
+      databaseId
+      amount
+      date
+      reason
+    }
+  }
 }

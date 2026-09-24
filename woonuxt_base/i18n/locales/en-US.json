@@ -350,7 +350,14 @@
     "errorSelectItem": "Select at least one item.",
     "errorSelectReason": "Select a reason.",
     "errorGeneric": "We couldn't submit your request.",
-    "errorGenericRetry": "We couldn't submit your request. Please try again."
+    "errorGenericRetry": "We couldn't submit your request. Please try again.",
+    "summaryTitle": "Your request summary",
+    "summaryItemsLabel": "Items",
+    "summaryAmountLabel": "Estimated refund amount",
+    "summaryCommentLabel": "Customer comment",
+    "summaryEmpty": "Select the items and a reason to see the summary.",
+    "alreadyRequested": "Already requested",
+    "refundedOn": "Refunded {amount} on {date}"
   },
   "legal": {
     "pageTitle": "Legal Information",

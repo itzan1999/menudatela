@@ -2,7 +2,7 @@
 const { t } = useI18n();
 const { viewer, getOrders, orders } = useAuth();
 const { cart } = useCart();
-const { formatDate } = useHelpers();
+const { formatDate, formatPrice } = useHelpers();
 const gql = useWooGraphQL();
 
 const showLoader = computed(() => !cart.value && !viewer.value);
@@ -15,9 +15,91 @@ watch(
   { immediate: true },
 );
 
+type OrderLineItem = {
+  databaseId?: number | null;
+  quantity?: number | null;
+  rawTotal?: string | null;
+  rawTotalTax?: string | null;
+  product?: { node?: { name?: string | null } | null } | null;
+  variation?: { node?: { name?: string | null } | null } | null;
+};
+
+// Per-unit price including tax, so a partial return of a multi-unit line item is estimated
+// proportionally to the quantity actually selected rather than the full line's total.
+const lineItemUnitAmount = (item: OrderLineItem): number => {
+  const total = Number.parseFloat(item.rawTotal || '0') || 0;
+  const tax = Number.parseFloat(item.rawTotalTax || '0') || 0;
+  const quantity = item.quantity || 1;
+  return (total + tax) / quantity;
+};
+
+type OrderWithReturns = {
+  returnItems?: ({ lineItemId?: number | null; quantity?: number | null } | null)[] | null;
+  lineItems?: { nodes?: OrderLineItem[] | null } | null;
+};
+
+// Quantities from earlier return requests for this same order, so a partial return doesn't
+// block requesting the remaining, not-yet-returned units of the same item later.
+const alreadyRequestedQty = (order: OrderWithReturns, lineItemId: number): number =>
+  order.returnItems?.find((ri) => ri?.lineItemId === lineItemId)?.quantity ?? 0;
+
+const maxSelectableQty = (order: OrderWithReturns, item: OrderLineItem): number =>
+  Math.max(0, (item.quantity ?? 0) - alreadyRequestedQty(order, item.databaseId ?? -1));
+
+// NOTE: the backend flips returnEligible to false as soon as any return has been requested for
+// the order, even a partial one, and the requestOrderReturn mutation itself rejects with "This
+// order is not eligible for a return" if we try to submit again — so this can't be worked around
+// from the frontend alone. Fixing it requires the WordPress resolver to allow further requests
+// while the order still has line items that haven't been fully covered by a previous request.
 const eligibleOrders = computed(() => (orders.value ?? []).filter((o) => o.returnEligible));
-const trackedOrders = computed(() => (orders.value ?? []).filter((o) => o.returnStatus));
+const trackedOrders = computed(() => (orders.value ?? []).filter((o) => o.returnStatus || o.refunds?.nodes?.length));
 const eligibleOrdersWithForms = computed(() => eligibleOrders.value.map((order) => ({ order, form: getForm(order.databaseId!) })));
+
+const refundInfo = (order: { refunds?: { nodes?: { amount?: number | null; date?: string | null }[] | null } | null }) => {
+  const refund = order.refunds?.nodes?.[0];
+  if (!refund) return null;
+  return {
+    amount: formatPrice(Math.abs(Number.parseFloat(String(refund.amount ?? 0)))),
+    date: formatDate(refund.date),
+  };
+};
+
+const selectedLineItems = (order: { lineItems?: { nodes?: OrderLineItem[] | null } | null }, form: FormState) =>
+  (order.lineItems?.nodes ?? []).filter((item) => item.databaseId != null && form.selected[item.databaseId] !== undefined);
+
+const selectedAmountRaw = (order: { lineItems?: { nodes?: OrderLineItem[] | null } | null }, form: FormState): number =>
+  selectedLineItems(order, form).reduce((sum, item) => {
+    const selectedQty = item.databaseId != null ? (form.selected[item.databaseId] ?? 0) : 0;
+    return sum + lineItemUnitAmount(item) * selectedQty;
+  }, 0);
+
+const returnSummary = (order: { lineItems?: { nodes?: OrderLineItem[] | null } | null }, form: FormState) => {
+  const items = selectedLineItems(order, form).map((item) => ({
+    name: item.variation?.node?.name || item.product?.node?.name || '',
+    quantity: item.databaseId != null ? form.selected[item.databaseId] : 0,
+  }));
+  const reasonLabel = REASONS.value.find((r) => r.value === form.reason)?.label ?? '';
+  return { items, reasonLabel, amount: formatPrice(selectedAmountRaw(order, form)) };
+};
+
+const buildReturnDetails = (order: { lineItems?: { nodes?: OrderLineItem[] | null } | null }, form: FormState): string => {
+  const summary = returnSummary(order, form);
+  const itemsList = summary.items.map((item) => `- ${item.name} x${item.quantity}`).join('\n');
+  const sections = [
+    `${t('shippingReturns.summaryItemsLabel')}:\n${itemsList}`,
+    `${t('shippingReturns.reasonLabel')}: ${summary.reasonLabel}`,
+    `${t('shippingReturns.summaryAmountLabel')}: ${summary.amount}`,
+  ];
+  if (form.details.trim()) {
+    sections.push(`${t('shippingReturns.summaryCommentLabel')}: ${form.details.trim()}`);
+  }
+  // A plain blank line (\n\n) isn't enough here: WordPress's note display collapses runs of
+  // newlines down to a single line break, so consecutive sections would end up glued together
+  // with no visible gap. A literal separator line survives that collapsing.
+  // The leading \n pushes our first section onto its own line, since WordPress prepends
+  // "Details: " directly before this string with no separator of its own.
+  return '\n' + sections.join('\n———\n');
+};
 
 const REASONS = computed(() => [
   { value: 'wrong_item', label: t('shippingReturns.reasons.wrongItem') },
@@ -46,10 +128,11 @@ const getForm = (orderId: number): FormState => {
   return forms[orderId];
 };
 
-const toggleItem = (orderId: number, lineItemId: number, quantity: number, checked: boolean) => {
+const setItemQuantity = (orderId: number, lineItemId: number, quantity: number, max: number) => {
   const form = getForm(orderId);
-  if (checked) {
-    form.selected[lineItemId] = quantity;
+  const clamped = Math.max(0, Math.min(quantity, max));
+  if (clamped > 0) {
+    form.selected[lineItemId] = clamped;
   } else {
     delete form.selected[lineItemId];
   }
@@ -58,6 +141,8 @@ const toggleItem = (orderId: number, lineItemId: number, quantity: number, check
 const submitReturn = async (orderId: number) => {
   const form = getForm(orderId);
   form.error = '';
+
+  const order = eligibleOrders.value.find((o) => o.databaseId === orderId);
 
   const items = Object.entries(form.selected).map(([lineItemId, quantity]) => ({
     lineItemId: Number(lineItemId),
@@ -78,7 +163,7 @@ const submitReturn = async (orderId: number) => {
     const { requestOrderReturn } = await gql.requestOrderReturn({
       orderId,
       reason: form.reason,
-      details: form.details || undefined,
+      details: order ? buildReturnDetails(order, form) : form.details || undefined,
       items,
     });
     if (requestOrderReturn?.success) {
@@ -166,14 +251,48 @@ useSeoMeta({
                   {{ $t('shippingReturns.selectItemsPrompt') }}
                 </p>
                 <div class="space-y-3 mb-6">
-                  <label v-for="item in order.lineItems?.nodes" :key="item.id" class="return-item-row">
-                    <input
-                      type="checkbox"
-                      class="form-checkbox"
-                      @change="toggleItem(order.databaseId!, item.databaseId!, item.quantity || 1, ($event.target as HTMLInputElement).checked)" />
+                  <div v-for="item in order.lineItems?.nodes" :key="item.id" class="return-item-row">
                     <span class="flex-1">{{ item.product?.node?.name || item.variation?.node?.name }}</span>
-                    <span class="text-sm" style="color: color-mix(in oklab, var(--color-charcoal) 55%, transparent)">x{{ item.quantity }}</span>
-                  </label>
+                    <span
+                      v-if="maxSelectableQty(order, item) <= 0"
+                      class="text-xs"
+                      style="color: color-mix(in oklab, var(--color-charcoal) 55%, transparent)">
+                      {{ $t('shippingReturns.alreadyRequested') }}
+                    </span>
+                    <template v-else>
+                      <div class="qty-input">
+                        <button
+                          type="button"
+                          class="qty-btn"
+                          :title="$t('shop.decreaseQuantity')"
+                          :aria-label="$t('shop.decreaseQuantity')"
+                          :disabled="(form.selected[item.databaseId!] ?? 0) <= 0"
+                          @click="setItemQuantity(order.databaseId!, item.databaseId!, (form.selected[item.databaseId!] ?? 0) - 1, maxSelectableQty(order, item))">
+                          <Icon name="ion:remove" size="13" />
+                        </button>
+                        <input
+                          type="number"
+                          class="qty-field"
+                          min="0"
+                          :max="maxSelectableQty(order, item)"
+                          :aria-label="$t('shop.quantity')"
+                          :value="form.selected[item.databaseId!] ?? 0"
+                          @change="setItemQuantity(order.databaseId!, item.databaseId!, Number(($event.target as HTMLInputElement).value), maxSelectableQty(order, item))" />
+                        <button
+                          type="button"
+                          class="qty-btn"
+                          :title="$t('shop.increaseQuantity')"
+                          :aria-label="$t('shop.increaseQuantity')"
+                          :disabled="(form.selected[item.databaseId!] ?? 0) >= maxSelectableQty(order, item)"
+                          @click="setItemQuantity(order.databaseId!, item.databaseId!, (form.selected[item.databaseId!] ?? 0) + 1, maxSelectableQty(order, item))">
+                          <Icon name="ion:add" size="13" />
+                        </button>
+                      </div>
+                      <span class="text-sm" style="color: color-mix(in oklab, var(--color-charcoal) 55%, transparent)"
+                        >/ {{ maxSelectableQty(order, item) }}</span
+                      >
+                    </template>
+                  </div>
                 </div>
 
                 <div class="grid gap-4 md:grid-cols-2 mb-4">
@@ -188,6 +307,21 @@ useSeoMeta({
                     <label>{{ $t('shippingReturns.detailsLabel') }}</label>
                     <input v-model="form.details" type="text" :placeholder="$t('shippingReturns.detailsPlaceholder')" />
                   </div>
+                </div>
+
+                <div class="return-summary mb-4">
+                  <div class="return-summary-title">{{ $t('shippingReturns.summaryTitle') }}</div>
+                  <template v-if="returnSummary(order, form).items.length && form.reason">
+                    <p class="return-summary-line"><strong>{{ $t('shippingReturns.summaryItemsLabel') }}:</strong></p>
+                    <ul class="return-summary-items">
+                      <li v-for="item in returnSummary(order, form).items" :key="item.name">{{ item.name }} x{{ item.quantity }}</li>
+                    </ul>
+                    <p class="return-summary-line return-summary-section"><strong>{{ $t('shippingReturns.reasonLabel') }}:</strong> {{ returnSummary(order, form).reasonLabel }}</p>
+                    <p class="return-summary-line return-summary-section">
+                      <strong>{{ $t('shippingReturns.summaryAmountLabel') }}:</strong> {{ returnSummary(order, form).amount }}
+                    </p>
+                  </template>
+                  <p v-else class="return-summary-line return-summary-empty">{{ $t('shippingReturns.summaryEmpty') }}</p>
                 </div>
 
                 <p v-if="form.error" class="return-error">{{ form.error }}</p>
@@ -205,7 +339,10 @@ useSeoMeta({
             <div class="space-y-2">
               <div v-for="order in trackedOrders" :key="order.databaseId" class="tracked-row">
                 <span>{{ $t('shop.order', 1) }} #{{ order.orderNumber }}</span>
-                <span class="tracked-status" :class="`tracked-status--${order.returnStatus}`">{{ statusLabel(order.returnStatus) }}</span>
+                <span v-if="refundInfo(order)" class="tracked-status tracked-status--approved">
+                  {{ $t('shippingReturns.refundedOn', { amount: refundInfo(order)!.amount, date: refundInfo(order)!.date }) }}
+                </span>
+                <span v-else class="tracked-status" :class="`tracked-status--${order.returnStatus}`">{{ statusLabel(order.returnStatus) }}</span>
               </div>
             </div>
           </div>
@@ -295,7 +432,99 @@ useSeoMeta({
   gap: 0.75rem;
   font-size: 0.875rem;
   color: var(--color-charcoal);
-  cursor: pointer;
+}
+
+.qty-input {
+  display: flex;
+  align-items: stretch;
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  line-height: 1;
+  border: 1px solid var(--color-sand);
+}
+
+.qty-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  color: var(--color-charcoal);
+  background-color: transparent;
+  transition: background-color 0.15s ease;
+}
+
+.qty-btn:hover:not(:disabled) {
+  background-color: var(--color-sand);
+}
+
+.qty-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.qty-field {
+  width: 2.5rem;
+  padding: 0 0.25rem;
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--color-charcoal);
+  background-color: transparent;
+  border-left: 1px solid var(--color-sand);
+  border-right: 1px solid var(--color-sand);
+  outline: none;
+}
+
+.qty-field::-webkit-inner-spin-button,
+.qty-field::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.qty-field {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.return-summary {
+  padding: 0.875rem 1rem;
+  background-color: var(--color-cream);
+  border: 1px solid var(--color-sand);
+}
+
+.return-summary-title {
+  margin-bottom: 0.375rem;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: color-mix(in oklab, var(--color-charcoal) 55%, transparent);
+}
+
+.return-summary-line {
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: color-mix(in oklab, var(--color-charcoal) 80%, transparent);
+}
+
+.return-summary-line strong {
+  color: var(--color-charcoal);
+}
+
+.return-summary-section {
+  margin-top: 0.625rem;
+}
+
+.return-summary-items {
+  margin: 0.25rem 0 0 1.125rem;
+  list-style: disc;
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  color: color-mix(in oklab, var(--color-charcoal) 80%, transparent);
+}
+
+.return-summary-empty {
+  color: color-mix(in oklab, var(--color-charcoal) 55%, transparent);
 }
 
 .return-error {

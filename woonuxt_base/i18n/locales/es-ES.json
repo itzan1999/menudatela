@@ -371,7 +371,14 @@
     "errorSelectItem": "Selecciona al menos un artículo.",
     "errorSelectReason": "Selecciona un motivo.",
     "errorGeneric": "No se pudo enviar la solicitud.",
-    "errorGenericRetry": "No se pudo enviar la solicitud. Inténtalo de nuevo."
+    "errorGenericRetry": "No se pudo enviar la solicitud. Inténtalo de nuevo.",
+    "summaryTitle": "Resumen de tu solicitud",
+    "summaryItemsLabel": "Artículos",
+    "summaryAmountLabel": "Importe estimado a reembolsar",
+    "summaryCommentLabel": "Comentario del cliente",
+    "summaryEmpty": "Selecciona los artículos y el motivo para ver el resumen.",
+    "alreadyRequested": "Ya solicitada",
+    "refundedOn": "Reembolsado {amount} el {date}"
   },
   "legal": {
     "pageTitle": "Información Legal",
