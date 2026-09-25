@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ProductsOrderByEnum } from '#gql/default';
-const { siteName, description, shortDescription, siteImage } = useAppConfig();
+const { siteName, siteImage } = useAppConfig();
+const { t } = useI18n();
 
 const [{ data }, { data: productData }] = await Promise.all([
   useAsyncGql('getProductCategories', { first: 6 }),
@@ -13,8 +14,8 @@ const popularProducts = productData.value?.products?.nodes || [];
 useSeoMeta({
   title: `Home`,
   ogTitle: siteName,
-  description: description,
-  ogDescription: shortDescription,
+  description: () => t('general.siteDescription'),
+  ogDescription: () => t('general.siteShortDescription'),
   ogImage: siteImage,
   twitterCard: `summary_large_image`,
 });
