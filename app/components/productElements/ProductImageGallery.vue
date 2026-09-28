@@ -102,7 +102,7 @@ const thumbnailButtonClasses = (galleryImg: ImageFragment) => [
         :title="imageToShow.title || node.name"
         :src="imageToShow.sourceUrl || FALLBACK_IMG"
         :preload="{ fetchPriority: 'high' }"
-        :img-attrs="{ class: 'h-full w-full object-cover' }" />
+        :img-attrs="{ class: 'h-full w-full object-contain' }" />
 
       <button
         v-if="galleryImages.length > 1"
