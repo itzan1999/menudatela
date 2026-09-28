@@ -12,7 +12,10 @@ const paymentMethod = toRef(props, 'modelValue');
 const emits = defineEmits<{
   'update:modelValue': [gateway: PaymentGateway];
 }>();
-const gateways = computed<PaymentGateway[]>(() => props.paymentGateways?.nodes || []);
+// Amazon Pay is disabled for this store; filtered out here in case it's ever re-enabled
+// in WooCommerce before someone remembers to remove it from the payment settings there too.
+const isAmazonPayGateway = (gateway: PaymentGateway): boolean => /amazon/i.test(gateway.id) || /amazon/i.test(gateway.title || '');
+const gateways = computed<PaymentGateway[]>(() => (props.paymentGateways?.nodes || []).filter((gateway) => !isAmazonPayGateway(gateway)));
 const { getGateway } = usePaymentGateways();
 
 const selectedGatewayId = computed<string>(() => {
