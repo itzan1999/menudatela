@@ -2,6 +2,10 @@ import { createResolver } from '@nuxt/kit';
 
 const { resolve } = createResolver(import.meta.url);
 
+// Same TTL woonuxt_base uses for the other catalog routes (CATALOG_ISR_TTL env var, defaults to 1h).
+const parsedHomeIsrTtl = Number.parseInt(process.env.CATALOG_ISR_TTL || '3600', 10);
+const homeIsrTtl = Number.isFinite(parsedHomeIsrTtl) && parsedHomeIsrTtl > 0 ? parsedHomeIsrTtl : 3600;
+
 export default defineNuxtConfig({
   // Get all the pages, components, composables and plugins from the parent theme
   extends: ['./woonuxt_base'],
@@ -67,6 +71,13 @@ export default defineNuxtConfig({
       concurrency: 10,
       interval: 1000,
       failOnError: false,
+    },
+    routeRules: {
+      // woonuxt_base fully prerenders '/' at build time for LCP speed, which means a category or
+      // product added after the last deploy never shows up in the homepage's "Shop by category"
+      // section (or popular products) until the next rebuild. Switch it to ISR instead, so it still
+      // serves from cache but revalidates on the same schedule as the rest of the catalog routes.
+      '/': { prerender: false, isr: homeIsrTtl },
     },
   },
 });
