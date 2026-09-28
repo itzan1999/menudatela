@@ -474,7 +474,6 @@ const disabledAddToCart = computed(() => {
                   class="text-2xl font-serif text-[var(--color-charcoal)]"
                   :sale-price="priceTarget?.salePrice"
                   :regular-price="priceTarget?.regularPrice" />
-                <span class="ml-1 font-sans text-xs uppercase tracking-wider text-[var(--color-charcoal)]/60">{{ $t('shop.perMeter') }}</span>
               </div>
             </div>
 

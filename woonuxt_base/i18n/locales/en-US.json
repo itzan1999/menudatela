@@ -211,7 +211,6 @@
     "quantityShort": "Qty. {n}",
     "orderList": "Order list",
     "productsLoadError": "We couldn't load products right now. Please refresh and try again.",
-    "perMeter": "/ meter",
     "backToOrders": "Back to orders",
     "refreshOrder": "Refresh order",
     "downloadList": "Download List",

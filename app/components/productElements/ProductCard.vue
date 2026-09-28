@@ -309,13 +309,11 @@ onMounted(() => {
           class="mt-1 flex justify-center text-xs" />
       </div>
 
-      <!-- Precio con indicación "/ metro" -->
       <div class="mt-3 flex items-baseline justify-center gap-1.5 border-t border-[var(--color-sand)]/40 pt-2.5">
         <ProductPrice
           class="font-sans text-sm font-semibold tracking-tight text-[var(--color-charcoal)]"
           :sale-price="node.salePrice ?? undefined"
           :regular-price="node.regularPrice ?? undefined" />
-        <span class="font-sans text-[11px] font-normal text-[var(--color-charcoal)]/60"> / metro </span>
       </div>
     </div>
   </div>
