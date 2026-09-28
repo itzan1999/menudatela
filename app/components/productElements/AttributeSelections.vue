@@ -323,11 +323,13 @@ watch(
       <div v-if="attr.scope == 'LOCAL'" class="flex flex-col gap-2">
         <div class="attr-label">
           {{ attr.label || attr.name }}
-          <span v-if="selections[attr.name || '']">: <span class="attr-value">{{ getSelectedName(attr, selections[attr.name || '']) }}</span></span>
+          <span v-if="selections[attr.name || '']"
+            >: <span class="attr-value">{{ getSelectedName(attr, selections[attr.name || '']) }}</span></span
+          >
         </div>
-        <div v-if="getSelectionHint(attr)" class="attr-hint">
+        <!-- <div v-if="getSelectionHint(attr)" class="attr-hint">
           {{ getSelectionHint(attr) }}
-        </div>
+        </div> -->
         <div class="flex flex-wrap gap-2">
           <span v-for="(option, index) in (attr.options || []).filter((option): option is string => !!option)" :key="index">
             <label :for="`${option}_${index}`">
@@ -356,7 +358,9 @@ watch(
       <div v-else-if="attr.name == 'pa_color' || attr.name == 'color'" class="flex flex-col gap-2">
         <div class="attr-label">
           {{ $t('general.color') }}
-          <span v-if="selections[attr.name || '']">: <span class="attr-value">{{ getSelectedName(attr, selections[attr.name || '']) }}</span></span>
+          <span v-if="selections[attr.name || '']"
+            >: <span class="attr-value">{{ getSelectedName(attr, selections[attr.name || '']) }}</span></span
+          >
         </div>
         <div v-if="getSelectionHint(attr)" class="attr-hint">
           {{ getSelectionHint(attr) }}
@@ -391,7 +395,9 @@ watch(
       <div v-else-if="'terms' in attr && (attr.terms?.nodes?.length || 0) > 8" class="flex flex-col gap-2">
         <div class="attr-label">
           {{ attr.label || attr.name }}
-          <span v-if="selections[attr.name || '']">: <span class="attr-value">{{ getSelectedName(attr, selections[attr.name || '']) }}</span></span>
+          <span v-if="selections[attr.name || '']"
+            >: <span class="attr-value">{{ getSelectedName(attr, selections[attr.name || '']) }}</span></span
+          >
         </div>
         <div v-if="getSelectionHint(attr)" class="attr-hint">
           {{ getSelectionHint(attr) }}
@@ -417,7 +423,9 @@ watch(
       <div v-else class="flex flex-col gap-2">
         <div class="attr-label">
           {{ attr.label || attr.name }}
-          <span v-if="selections[attr.name || '']">: <span class="attr-value">{{ getSelectedName(attr, selections[attr.name || '']) }}</span></span>
+          <span v-if="selections[attr.name || '']"
+            >: <span class="attr-value">{{ getSelectedName(attr, selections[attr.name || '']) }}</span></span
+          >
         </div>
         <div v-if="getSelectionHint(attr)" class="attr-hint">
           {{ getSelectionHint(attr) }}
@@ -510,7 +518,9 @@ input[type='radio']:checked ~ .variant-option {
 
 input[type='radio']:checked ~ .variant-swatch {
   border-color: var(--color-charcoal);
-  box-shadow: 0 0 0 2px var(--color-cream), 0 0 0 3px var(--color-charcoal);
+  box-shadow:
+    0 0 0 2px var(--color-cream),
+    0 0 0 3px var(--color-charcoal);
 }
 
 .color-green {
