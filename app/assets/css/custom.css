@@ -12,6 +12,8 @@
   --color-sand: #dcd3c4;
   --color-danger: #b3382c;
   --color-positive: #6b7a4f;
+  /* Terracota tomada directamente de la franja roja del tejido del hero (hero-totem-teja.jpg) */
+  --color-terracotta: #8a4226;
 
   /* Sobreescribe las variables base que ya usa app.vue para html/body */
   --color-gray-100: #f7f2ea;

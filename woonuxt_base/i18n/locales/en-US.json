@@ -234,13 +234,12 @@
     }
   },
   "home": {
-    "heroEyebrow": "Autumn collection",
-    "heroTitle": "Fabrics with character",
-    "heroSubtitle": "Hand-selected fabrics to bring your projects to life. Cotton, linen, and natural textures.",
-    "heroImageAlt": "MenudaTela fabrics",
+    "heroTitle": "Textures you feel before you see them.",
+    "heroSubtitle": "Robes, curtains, and bath textiles, chosen one by one for their feel and drape.",
+    "heroImageAlt": "Close-up of the Totem striped weave, in terracotta",
     "viewCollection": "View collection",
     "trust": {
-      "cottonLinen": "100% cotton and linen",
+      "allFabrics": "All kinds of fabrics",
       "fastShipping": "Shipping in 24-48h",
       "freeReturns": "Free returns",
       "securePayment": "100% secure payment"

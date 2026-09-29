@@ -234,13 +234,12 @@
     }
   },
   "home": {
-    "heroEyebrow": "Colección de otoño",
-    "heroTitle": "Telas con carácter",
-    "heroSubtitle": "Tejidos seleccionados uno a uno para dar vida a tus proyectos. Algodón, lino y texturas naturales.",
-    "heroImageAlt": "Telas MenudaTela",
+    "heroTitle": "Texturas que se sienten antes de verse.",
+    "heroSubtitle": "Albornoces, cortinas y textiles de baño elegidos uno a uno por su tacto y su caída.",
+    "heroImageAlt": "Detalle del tejido a rayas de Totem, en teja",
     "viewCollection": "Ver colección",
     "trust": {
-      "cottonLinen": "100% algodón y lino",
+      "allFabrics": "Todo tipo de telas",
       "fastShipping": "Envíos en 24-48 h",
       "freeReturns": "Devolución gratuita",
       "securePayment": "Pago 100% seguro"

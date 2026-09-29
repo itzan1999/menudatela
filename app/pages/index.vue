@@ -28,8 +28,8 @@ useSeoMeta({
     <section class="trust-bar">
       <div class="container trust-bar-grid">
         <div class="trust-item">
-          <Icon name="ion:leaf-outline" size="20" />
-          <span>{{ $t('home.trust.cottonLinen') }}</span>
+          <Icon name="ion:color-palette-outline" size="20" />
+          <span>{{ $t('home.trust.allFabrics') }}</span>
         </div>
         <div class="trust-item">
           <Icon name="ion:cube-outline" size="20" />
