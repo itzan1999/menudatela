@@ -1,11 +1,25 @@
 <script setup lang="ts">
 const { t } = useI18n();
 const { viewer, getOrders, orders } = useAuth();
-const { cart } = useCart();
+const { cart, refreshCart } = useCart();
 const { formatDate, formatPrice } = useHelpers();
 const gql = useWooGraphQL();
 
-const showLoader = computed(() => !cart.value && !viewer.value);
+// The global init plugin only does a full cart/viewer fetch up front for a small page allowlist
+// (checkout/my-account/order-summary), to avoid that cost on every route — this page needs to
+// know the visitor's auth state too, so it can't just wait on `cart`/`viewer` state the plugin
+// was never going to populate here. Trigger the same fetch directly instead, and track whether
+// it's actually finished rather than inferring that from `cart`/`viewer` still being null, which
+// is exactly as true for "haven't checked yet" as for "checked — this is a guest".
+const authChecked = ref(!!cart.value || !!viewer.value);
+onMounted(async () => {
+  if (!authChecked.value) {
+    await refreshCart();
+    authChecked.value = true;
+  }
+});
+
+const showLoader = computed(() => !authChecked.value);
 
 watch(
   viewer,
