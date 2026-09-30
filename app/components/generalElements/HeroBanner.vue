@@ -28,8 +28,7 @@ const observeHeaderHeight = () => {
 onMounted(() => {
   observeHeaderHeight();
 
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (prefersReducedMotion || !panelEl.value || !seamEl.value || !mediaEl.value) return;
+  if (prefersReducedMotion() || !panelEl.value || !seamEl.value || !mediaEl.value) return;
 
   const contentEls = panelEl.value.querySelectorAll('.hero-title, .hero-subtitle, .hero-cta');
 

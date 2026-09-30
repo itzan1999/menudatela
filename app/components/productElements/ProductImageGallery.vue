@@ -4,6 +4,7 @@ import type { ImageFragment, Product, Variation } from '#types/gql';
 
 const { FALLBACK_IMG } = useHelpers();
 const { storeSettings } = useAppConfig();
+const { resolve: resolveImageTransition, clear: clearImageTransition, hasPending: hasPendingImageTransition } = useProductImageTransition();
 
 type Gallery = { nodes: ImageFragment[] };
 type ThumbnailPosition = 'bottom' | 'left';
@@ -13,6 +14,9 @@ const props = defineProps({
   gallery: { type: Object as PropType<Gallery>, required: true },
   node: { type: Object as PropType<Product | Variation>, required: true },
   activeVariation: { type: Object as PropType<Variation | null>, default: null },
+  // Set when arriving from a listing card click, so the gallery can open on the same photo that
+  // was showing there instead of always defaulting to the primary image.
+  initialImageId: { type: Number as PropType<number | null>, default: null },
 });
 
 const isOutOfStock = computed(() => props.node?.stockStatus === StockStatusEnum.OutOfStock);
@@ -24,11 +28,15 @@ const primaryImage = computed<ImageFragment>(() => ({
   databaseId: props.mainImage.databaseId,
 }));
 
-const imageToShow = ref<ImageFragment>(primaryImage.value);
-
 const galleryImages = computed<ImageFragment[]>(() => {
   return [primaryImage.value, ...(props.gallery.nodes || [])].filter((img, index, self) => index === self.findIndex((t) => t?.databaseId === img?.databaseId));
 });
+
+const initialImage = computed<ImageFragment>(
+  () => galleryImages.value.find((img) => img?.databaseId === props.initialImageId) ?? primaryImage.value,
+);
+
+const imageToShow = ref<ImageFragment>(initialImage.value);
 
 const changeImage = (image: ImageFragment) => {
   if (image) imageToShow.value = image;
@@ -81,11 +89,30 @@ const thumbnailButtonClasses = (galleryImg: ImageFragment) => [
     ? 'border-[var(--color-charcoal)]'
     : 'border-[var(--color-sand)] hover:border-[var(--color-charcoal)]/50',
 ];
+
+const mainImageBoxEl = ref<HTMLElement | null>(null);
+// Stays true (image shown right away) for a normal page load; only goes false when arriving via
+// a card's zoom-in, so the real image doesn't sit there fully visible while the flying copy is
+// still on its way to the same spot. No transition on the reveal itself: by the time it happens
+// the flying copy is already sitting exactly on top of this same image, so the swap is a no-op
+// visually — a fade here would only re-introduce a gap (of dimmed image) of its own.
+const imageRevealed = ref(true);
+
+onMounted(async () => {
+  const willAnimate = hasPendingImageTransition();
+  if (willAnimate) imageRevealed.value = false;
+  await resolveImageTransition(mainImageBoxEl.value);
+  // Reveal the real image *before* the flying copy is removed — otherwise there's a frame where
+  // neither is visible (the removal happens synchronously inside GSAP's onComplete, a whole
+  // microtask before this `await` continuation runs), which shows as a flicker.
+  imageRevealed.value = true;
+  clearImageTransition();
+});
 </script>
 
 <template>
   <div :class="galleryRootClasses">
-    <div class="relative group aspect-square w-full min-w-0 overflow-hidden bg-[var(--color-cream)] border border-[var(--color-sand)]">
+    <div ref="mainImageBoxEl" class="relative group aspect-square w-full min-w-0 overflow-hidden bg-[var(--color-cream)] border border-[var(--color-sand)]">
       <div class="absolute top-3 left-3 z-10 flex flex-col items-start gap-1">
         <SaleBadge :node />
         <span
@@ -102,7 +129,7 @@ const thumbnailButtonClasses = (galleryImg: ImageFragment) => [
         :title="imageToShow.title || node.name"
         :src="imageToShow.sourceUrl || FALLBACK_IMG"
         :preload="{ fetchPriority: 'high' }"
-        :img-attrs="{ class: 'h-full w-full object-contain' }" />
+        :img-attrs="{ class: ['h-full w-full object-contain', imageRevealed ? 'opacity-100' : 'opacity-0'] }" />
 
       <button
         v-if="galleryImages.length > 1"

@@ -7,6 +7,15 @@ const NAVBAR_ROUTES = ['/', '/products', '/categories', '/contact'];
 
 const DEFAULT_TRANSITION = { name: 'page', mode: 'default' as const };
 
+// Listing pages (products/categories/home) <-> a product detail page: the site's normal
+// transition is a near-instant opacity blip (20ms + 200ms), tuned for a plain page swap — next to
+// the product image's own multi-hundred-ms zoom-in, that made the rest of the page (title, price,
+// description...) look like it just snapped into place while the image was still arriving.
+// `out-in` (not simultaneous) so the old content is fully gone before the new content starts
+// fading in, matching the same reasoning as the navbar SLIDE_TRANSITION below.
+const SOFT_FADE_TRANSITION = { name: 'fade-soft', mode: 'out-in' as const };
+const isProductRoute = (path: string): boolean => path.startsWith('/product/');
+
 // Read by the hooks below at the moment they actually run, rather than being baked into a new
 // transition object per navigation. Nuxt/Vue Router keep `pageTransition` on each route's own
 // (persistent) meta, so the *leaving* page's transition object is whatever was last written to
@@ -68,6 +77,12 @@ export default defineNuxtRouteMiddleware((to, from) => {
   const toIndex = NAVBAR_ROUTES.indexOf(to.path);
   const bothOnNavbar = fromIndex !== -1 && toIndex !== -1 && fromIndex !== toIndex;
 
-  if (bothOnNavbar) currentDirection = toIndex > fromIndex ? 1 : -1;
-  to.meta.pageTransition = bothOnNavbar ? SLIDE_TRANSITION : DEFAULT_TRANSITION;
+  if (bothOnNavbar) {
+    currentDirection = toIndex > fromIndex ? 1 : -1;
+    to.meta.pageTransition = SLIDE_TRANSITION;
+  } else if (isProductRoute(from.path) || isProductRoute(to.path)) {
+    to.meta.pageTransition = SOFT_FADE_TRANSITION;
+  } else {
+    to.meta.pageTransition = DEFAULT_TRANSITION;
+  }
 });

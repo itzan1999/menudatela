@@ -186,6 +186,14 @@ const displayProduct = computed<ProductDetail | Variation>(() => activeVariation
 const priceTarget = computed<ProductDetail | Variation>(() => activeVariation.value || product.value!);
 const productImage = computed(() => product.value?.image || null);
 const productGallery = computed(() => ({ nodes: product.value?.galleryImages?.nodes ?? [] }));
+
+// Set only when arriving from a listing card click (?img=<databaseId>), so the gallery opens on
+// whichever photo was showing on the card instead of always defaulting to the primary image.
+const initialImageId = computed<number | null>(() => {
+  const raw = Array.isArray(route.query.img) ? route.query.img[0] : route.query.img;
+  const parsed = raw != null ? Number.parseInt(String(raw), 10) : NaN;
+  return Number.isNaN(parsed) ? null : parsed;
+});
 const averageRating = computed(() => product.value?.averageRating ?? 0);
 const reviewCount = computed(() => product.value?.reviewCount ?? 0);
 
@@ -443,7 +451,8 @@ const disabledAddToCart = computed(() => {
           :main-image="productImage"
           :gallery="productGallery"
           :node="displayProduct"
-          :active-variation="activeVariation" />
+          :active-variation="activeVariation"
+          :initial-image-id="initialImageId" />
         <NuxtImg
           v-else
           class="relative aspect-square w-full min-w-0 rounded-none object-contain skeleton bg-[var(--color-cream)]"

@@ -14,10 +14,13 @@ type ProductImage = {
   alt: string;
   title: string;
   key: string;
+  databaseId: number | null;
 };
 
-// Proporción 3:4 elegante para las imágenes
-const imgWidth = 300;
+// Cuadrado, como el hueco que ocupará la imagen en la ficha de producto — con object-contain para
+// que ambas muestren la foto entera con su propia proporción, en vez de recortarla de formas
+// distintas en cada sitio.
+const imgWidth = 400;
 const imgHeight = 400;
 const isFirstProduct = computed(() => props.index === 0);
 
@@ -40,7 +43,13 @@ const placeholderImage = '/images/placeholder.jpg';
 const sliderRef = ref<HTMLElement | null>(null);
 const currentSlide = ref(0);
 
-const mainImage = computed<string>(() => props.node?.image?.productCardSourceUrl || props.node?.image?.sourceUrl || placeholderImage);
+// Prefers the same full-size sourceUrl the product detail page's gallery uses (rather than the
+// server-cropped productCardSourceUrl variant) — they need to be the exact same file for the
+// zoom-in transition's proportions to line up; a separately-cropped thumbnail never will.
+const preferredSrc = (image?: { sourceUrl?: string | null; productCardSourceUrl?: string | null } | null): string | undefined =>
+  image?.sourceUrl || image?.productCardSourceUrl || undefined;
+
+const mainImage = computed<string>(() => preferredSrc(props.node?.image) || placeholderImage);
 
 const matchesSelectedColor = (variation: ProductVariationFragment) => {
   if (!paColor.value.length) return false;
@@ -60,13 +69,14 @@ const sliderImages = computed<ProductImage[]>(() => {
     images.push(image);
   };
   const addVariationImage = (variation: ProductVariationFragment) => {
-    const src = variation?.image?.productCardSourceUrl || variation?.image?.sourceUrl;
+    const src = preferredSrc(variation?.image);
     if (!src) return;
     addImage({
       src,
       alt: variation?.image?.altText || props.node?.name || 'Product image',
       title: variation?.image?.title || props.node?.name || 'Product image',
       key: `variation-${variation?.databaseId || src}`,
+      databaseId: variation?.image?.databaseId ?? null,
     });
   };
   const addGalleryImage = (image: ImageFragment) => {
@@ -76,6 +86,7 @@ const sliderImages = computed<ProductImage[]>(() => {
       alt: image?.altText || props.node?.name || 'Product image',
       title: image?.title || props.node?.name || 'Product image',
       key: `gallery-${image?.databaseId || image?.sourceUrl}`,
+      databaseId: image?.databaseId ?? null,
     });
   };
 
@@ -86,12 +97,13 @@ const sliderImages = computed<ProductImage[]>(() => {
     alt: props.node?.image?.altText || props.node?.name || 'Product image',
     title: props.node?.image?.title || props.node?.name || 'Product image',
     key: `main-${props.node?.image?.databaseId || mainImage.value}`,
+    databaseId: props.node?.image?.databaseId ?? null,
   };
 
   if (paColor.value.length) {
     const matching = variations.filter((variation: ProductVariationFragment) => matchesSelectedColor(variation));
     if (matching.length) {
-      if (matching.some((variation: ProductVariationFragment) => (variation?.image?.productCardSourceUrl || variation?.image?.sourceUrl) === main.src)) {
+      if (matching.some((variation: ProductVariationFragment) => preferredSrc(variation?.image) === main.src)) {
         addImage(main);
       }
       matching.forEach(addVariationImage);
@@ -113,7 +125,7 @@ const activeVariationImageSrc = computed<string | null>(() => {
   if (!paColor.value.length) return null;
   const variations = props.node?.variations?.nodes || [];
   const activeColorImage = variations.filter((variation: ProductVariationFragment) => matchesSelectedColor(variation));
-  if (activeColorImage?.length) return activeColorImage[0]?.image?.productCardSourceUrl || activeColorImage[0]?.image?.sourceUrl || null;
+  if (activeColorImage?.length) return preferredSrc(activeColorImage[0]?.image) || null;
   return null;
 });
 
@@ -123,13 +135,19 @@ const activeImageIndex = computed<number>(() => {
   return Math.max(index, 0);
 });
 
-const productLink = computed<string>(() => {
+// Appends `img=<databaseId>` so the detail page opens showing the same photo that was visible on
+// the card, not always its default/primary one — used both per-slide and for the title/"ver
+// detalle" links, which point at whichever slide is currently in view.
+const productLinkFor = (imageId?: number | null): string => {
   const baseUrl = `/product/${decodeURIComponent(props.node.slug || '')}`;
-  if (paColor.value.length) {
-    return `${baseUrl}?pa_color=${paColor.value[0]}`;
-  }
-  return baseUrl;
-});
+  const params = new URLSearchParams();
+  if (paColor.value[0]) params.set('pa_color', paColor.value[0]);
+  if (imageId != null) params.set('img', String(imageId));
+  const query = params.toString();
+  return query ? `${baseUrl}?${query}` : baseUrl;
+};
+
+const productLink = computed<string>(() => productLinkFor(sliderImages.value[currentSlide.value]?.databaseId));
 
 const updateCurrentSlide = () => {
   const container = sliderRef.value;
@@ -189,6 +207,20 @@ onMounted(() => {
 
   watch(() => [activeImageIndex.value, sliderImages.value.length], syncActiveSlide);
 });
+
+// Only the current slide is ever actually on screen (the rest are scrolled out of view behind
+// the snap-scroll), so whichever link inside the card was clicked — image, title or "ver
+// detalle" — it's always this same image that should grow into the detail page's one.
+const { capture } = useProductImageTransition();
+
+const handleNavigateClick = () => {
+  const container = sliderRef.value;
+  const activeImage = sliderImages.value[currentSlide.value];
+  if (!container || !activeImage) return;
+
+  const activeImgEl = container.querySelector(`[data-index="${currentSlide.value}"] img`);
+  capture(activeImage.src, activeImgEl);
+};
 </script>
 
 <template>
@@ -208,7 +240,8 @@ onMounted(() => {
         </span>
       </div>
 
-      <!-- Slider de Imágenes con Aspect Ratio 3:4 y Zoom Sutil -->
+      <!-- Slider de Imágenes: cuadrado + object-contain, igual que la ficha de producto, así la
+           foto siempre se ve completa y con su propia proporción en ambos sitios. -->
       <div
         ref="sliderRef"
         class="no-slider flex gap-3 overflow-x-auto snap-x snap-mandatory scroll-smooth touch-pan-x overscroll-x-contain overscroll-y-auto [-webkit-overflow-scrolling:touch]"
@@ -216,9 +249,10 @@ onMounted(() => {
         <template v-for="(image, slideIndex) in sliderImages" :key="image.key">
           <NuxtLink
             v-if="node.slug"
-            class="product-card-slide block flex-[0_0_100%] snap-start snap-always aspect-[3/4] overflow-hidden rounded-sm"
+            class="product-card-slide block flex-[0_0_100%] snap-start snap-always aspect-square overflow-hidden rounded-sm bg-[var(--color-cream)]"
             :data-index="slideIndex"
-            :to="productLink">
+            :to="productLinkFor(image.databaseId)"
+            @click="handleNavigateClick">
             <NuxtPicture
               :width="imgWidth"
               :height="imgHeight"
@@ -229,11 +263,14 @@ onMounted(() => {
               :preload="slideIndex === 0 && isFirstProduct ? { fetchPriority: 'high' } : false"
               :sizes="`sm:${imgWidth / 2}px md:${imgWidth}px`"
               :img-attrs="{
-                class: 'object-cover object-center w-full h-full rounded-sm transition-transform duration-700 ease-out group-hover:scale-105',
+                class: 'object-contain object-center w-full h-full rounded-sm transition-transform duration-700 ease-out group-hover:scale-105',
                 fetchpriority: slideIndex === 0 && isFirstProduct ? 'high' : undefined,
               }" />
           </NuxtLink>
-          <div v-else class="product-card-slide block flex-[0_0_100%] snap-start snap-always aspect-[3/4] overflow-hidden rounded-sm" :data-index="slideIndex">
+          <div
+            v-else
+            class="product-card-slide block flex-[0_0_100%] snap-start snap-always aspect-square overflow-hidden rounded-sm bg-[var(--color-cream)]"
+            :data-index="slideIndex">
             <NuxtPicture
               :width="imgWidth"
               :height="imgHeight"
@@ -244,7 +281,7 @@ onMounted(() => {
               :preload="slideIndex === 0 && isFirstProduct ? { fetchPriority: 'high' } : false"
               :sizes="`sm:${imgWidth / 2}px md:${imgWidth}px`"
               :img-attrs="{
-                class: 'object-cover object-center w-full h-full rounded-sm transition-transform duration-700 ease-out group-hover:scale-105',
+                class: 'object-contain object-center w-full h-full rounded-sm transition-transform duration-700 ease-out group-hover:scale-105',
                 fetchpriority: slideIndex === 0 && isFirstProduct ? 'high' : undefined,
               }" />
           </div>
@@ -278,7 +315,8 @@ onMounted(() => {
       <NuxtLink
         v-if="node.slug"
         :to="productLink"
-        class="absolute inset-x-0 bottom-0 z-10 flex translate-y-full transform items-center justify-center bg-gradient-to-t from-[var(--color-charcoal)]/50 to-transparent p-4 transition-transform duration-300 ease-in-out group-hover:translate-y-0">
+        class="absolute inset-x-0 bottom-0 z-10 flex translate-y-full transform items-center justify-center bg-gradient-to-t from-[var(--color-charcoal)]/50 to-transparent p-4 transition-transform duration-300 ease-in-out group-hover:translate-y-0"
+        @click="handleNavigateClick">
         <span
           class="inline-block border border-[var(--color-cream)] bg-[var(--color-cream)] px-5 py-2 font-sans text-xs font-medium tracking-widest uppercase text-[var(--color-charcoal)] shadow-sm transition-colors hover:bg-[var(--color-charcoal)] hover:text-[var(--color-cream)]">
           Ver Detalle
@@ -295,7 +333,7 @@ onMounted(() => {
         </p>
 
         <!-- Título con Tipografía Serif (Fraunces) -->
-        <NuxtLink v-if="node.slug" :to="productLink" :title="node.name || undefined">
+        <NuxtLink v-if="node.slug" :to="productLink" :title="node.name || undefined" @click="handleNavigateClick">
           <h3 class="mt-1 font-serif text-base font-normal leading-tight text-[var(--color-charcoal)] transition-colors group-hover:opacity-75">
             {{ node.name }}
           </h3>

@@ -202,6 +202,19 @@ pre {
   animation-duration: 200ms;
 }
 
+/* Fade-soft: listing <-> product detail. Slower and plainer than .page's near-instant blip, so
+   the rest of the page (title, price, description...) doesn't look like it just snapped into
+   place while the product image is still mid-flight from the card it was clicked from. */
+.fade-soft-enter-active,
+.fade-soft-leave-active {
+  transition: opacity 280ms ease;
+}
+
+.fade-soft-enter-from,
+.fade-soft-leave-to {
+  opacity: 0;
+}
+
 @keyframes skelaton {
   0% {
     background-position: 200% 0;
