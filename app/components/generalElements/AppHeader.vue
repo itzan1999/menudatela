@@ -16,6 +16,7 @@ const { isShowingSearch } = useSearching();
       <div class="flex justify-end items-center w-40 flex-1 ml-auto gap-4 md:gap-6">
         <ProductSearch class="hidden sm:inline-flex max-w-80 w-[60%]" />
         <SearchTrigger />
+        <CategoriesTrigger />
         <div class="flex gap-4 items-center">
           <SignInLink />
           <CartTrigger />

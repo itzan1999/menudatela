@@ -2,6 +2,7 @@
 const route = useRoute();
 const { isShowingCart, toggleCart } = useCart();
 const { isShowingMobileMenu, toggleMobileMenu, addBodyClass, removeBodyClass } = useHelpers();
+const { isShowingCategories, toggleCategories } = useCategoriesDrawer();
 const { siteName } = useAppConfig();
 const config = useRuntimeConfig();
 
@@ -11,18 +12,21 @@ const safePrimaryColor = computed(() => {
   return /^#[0-9a-f]{6}$/i.test(color) || /^#[0-9a-f]{3}$/i.test(color) ? color : '#7f54b2';
 });
 
-const closeCartAndMenu = () => {
+const closeAllPanels = () => {
   toggleCart(false);
   toggleMobileMenu(false);
+  toggleCategories(false);
 };
 
-watch([isShowingCart, isShowingMobileMenu], () => {
-  isShowingCart.value || isShowingMobileMenu.value ? addBodyClass('overflow-hidden') : removeBodyClass('overflow-hidden');
+watch([isShowingCart, isShowingMobileMenu, isShowingCategories], () => {
+  isShowingCart.value || isShowingMobileMenu.value || isShowingCategories.value
+    ? addBodyClass('overflow-hidden')
+    : removeBodyClass('overflow-hidden');
 });
 
 watch(
   () => route.path,
-  () => closeCartAndMenu(),
+  () => closeAllPanels(),
 );
 
 useHead({
@@ -49,6 +53,10 @@ useHead({
       <LazyMobileMenu v-if="isShowingMobileMenu" />
     </Transition>
 
+    <Transition name="slide-from-right">
+      <LazyCategoriesDrawer v-if="isShowingCategories" />
+    </Transition>
+
     <!-- Positioned + clipped so the outgoing page (set to position:absolute by the nav-transition
          middleware's GSAP hooks) slides out from under the incoming one instead of pushing the
          footer down or spilling a horizontal scrollbar during the animation. -->
@@ -57,7 +65,7 @@ useHead({
     </div>
 
     <Transition name="fade">
-      <div v-if="isShowingCart || isShowingMobileMenu" class="bg-black opacity-25 inset-0 z-40 fixed" @click="closeCartAndMenu"></div>
+      <div v-if="isShowingCart || isShowingMobileMenu || isShowingCategories" class="bg-black opacity-25 inset-0 z-40 fixed" @click="closeAllPanels"></div>
     </Transition>
 
     <AppFooter />

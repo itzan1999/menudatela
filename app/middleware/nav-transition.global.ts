@@ -3,7 +3,7 @@ import gsap from 'gsap';
 // The primary navbar tabs, in their on-screen left-to-right order. Only used to compute a
 // slide direction — everything else (legal pages, product pages, checkout, etc.) keeps the
 // site's normal page transition.
-const NAVBAR_ROUTES = ['/', '/products', '/categories', '/contact'];
+const NAVBAR_ROUTES = ['/', '/products', '/shipping-returns', '/contact'];
 
 const DEFAULT_TRANSITION = { name: 'page', mode: 'default' as const };
 
