@@ -197,7 +197,12 @@ export function useProductImageTransition() {
     // would just delay the correction the user can see.
     const imageReady = waitForImageReady(targetImg);
     await waitForSinglePage();
-    window.scrollTo(0, 0);
+    // `behavior: 'instant'` is load-bearing: the site sets `scroll-behavior: smooth` globally
+    // (app.vue), which the plain 2-argument scrollTo(0, 0) silently inherits — instead of jumping,
+    // it *animates* the scroll over several hundred ms. Measuring mid-animation reads whatever
+    // intermediate scrollY the easing happened to be at, which is exactly what was sending the
+    // overlay flying to a scroll-height-sized wrong position instead of the gallery's real spot.
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
     await imageReady;
     await nextPaint();
 
@@ -205,6 +210,13 @@ export function useProductImageTransition() {
     // stomp on whatever it started. (capture()/clear() always flip `animating` back to false, so
     // checking it alone is enough to detect either.)
     if (!animating) return false;
+
+    // Re-assert right before measuring: between the reset above and here, up to ~1.5s can have
+    // passed (the image-decode wait) — long enough for something else (the router's own scroll
+    // restoration, scroll anchoring from other images loading in) to have scrolled the page again.
+    // Measuring against a stale scroll position is what sends the overlay flying to a spot from a
+    // whole page-height away instead of the gallery's actual resting place.
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
 
     const targetRect = getContentRect(targetImg);
     const offset = getFixedOffset();

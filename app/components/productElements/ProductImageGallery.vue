@@ -17,6 +17,9 @@ const props = defineProps({
   // Set when arriving from a listing card click, so the gallery can open on the same photo that
   // was showing there instead of always defaulting to the primary image.
   initialImageId: { type: Number as PropType<number | null>, default: null },
+  // A listing card's slider also shows each color variation's own image, which isn't part of
+  // this product's own gallery — needed so initialImageId can still resolve to one of those.
+  variationImages: { type: Array as PropType<ImageFragment[]>, default: () => [] },
 });
 
 const isOutOfStock = computed(() => props.node?.stockStatus === StockStatusEnum.OutOfStock);
@@ -32,9 +35,12 @@ const galleryImages = computed<ImageFragment[]>(() => {
   return [primaryImage.value, ...(props.gallery.nodes || [])].filter((img, index, self) => index === self.findIndex((t) => t?.databaseId === img?.databaseId));
 });
 
-const initialImage = computed<ImageFragment>(
-  () => galleryImages.value.find((img) => img?.databaseId === props.initialImageId) ?? primaryImage.value,
-);
+const initialImage = computed<ImageFragment>(() => {
+  if (props.initialImageId == null) return primaryImage.value;
+  const inGallery = galleryImages.value.find((img) => img?.databaseId === props.initialImageId);
+  const inVariations = props.variationImages.find((img) => img?.databaseId === props.initialImageId);
+  return inGallery ?? inVariations ?? primaryImage.value;
+});
 
 const imageToShow = ref<ImageFragment>(initialImage.value);
 

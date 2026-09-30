@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { StockStatusEnum, ProductTypesEnum, type AddToCartInput, type ProductAttributeInput } from '#gql/default';
-import type { ExternalProduct, ProductDetail, Variation, VariationAttribute } from '#types/gql';
+import type { ExternalProduct, ImageFragment, ProductDetail, Variation, VariationAttribute } from '#types/gql';
 
 const route = useRoute();
 const { storeSettings } = useAppConfig();
@@ -186,6 +186,19 @@ const displayProduct = computed<ProductDetail | Variation>(() => activeVariation
 const priceTarget = computed<ProductDetail | Variation>(() => activeVariation.value || product.value!);
 const productImage = computed(() => product.value?.image || null);
 const productGallery = computed(() => ({ nodes: product.value?.galleryImages?.nodes ?? [] }));
+// A listing card's slider also shows each color variation's own image (see ProductCard.vue's
+// addVariationImage) — those aren't part of the product's own gallery, so ?img=<databaseId>
+// needs this separate list to find a match when the card was showing one of them.
+const productVariationImages = computed<ImageFragment[]>(
+  () => (product.value?.variations?.nodes ?? []).map((v) => v?.image).filter((image) => !!image) as ImageFragment[],
+);
+
+// WooCommerce's related-products algorithm (shared categories/tags) can include the product being
+// viewed itself — clicking it would "navigate" to the same route, which never remounts the page,
+// so the click's flying image never gets resolved/cleared and is left stuck on screen.
+const relatedProducts = computed(() =>
+  (product.value?.related?.nodes ?? []).filter((related) => (related as { slug?: string | null } | null)?.slug !== product.value?.slug),
+);
 
 // Set only when arriving from a listing card click (?img=<databaseId>), so the gallery opens on
 // whichever photo was showing on the card instead of always defaulting to the primary image.
@@ -452,7 +465,8 @@ const disabledAddToCart = computed(() => {
           :gallery="productGallery"
           :node="displayProduct"
           :active-variation="activeVariation"
-          :initial-image-id="initialImageId" />
+          :initial-image-id="initialImageId"
+          :variation-images="productVariationImages" />
         <NuxtImg
           v-else
           class="relative aspect-square w-full min-w-0 rounded-none object-contain skeleton bg-[var(--color-cream)]"
@@ -605,9 +619,9 @@ const disabledAddToCart = computed(() => {
         <HookOutlet name="product.tabs.after" :ctx="{ product }" as="div" />
       </div>
 
-      <div v-if="product.related && storeSettings.showRelatedProducts" class="mt-24 border-t border-[var(--color-sand)] pt-12">
+      <div v-if="relatedProducts.length && storeSettings.showRelatedProducts" class="mt-24 border-t border-[var(--color-sand)] pt-12">
         <div class="mb-8 font-serif text-2xl text-[var(--color-charcoal)] text-center">{{ $t('shop.youMayLike') }}</div>
-        <LazyProductRow :products="product.related.nodes" class="grid-cols-2 md:grid-cols-4 lg:grid-cols-5" />
+        <LazyProductRow :products="relatedProducts" class="grid-cols-2 md:grid-cols-4 lg:grid-cols-5" />
       </div>
     </div>
     <div v-else class="my-24 text-center text-gray-500">
