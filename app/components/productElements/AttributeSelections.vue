@@ -209,6 +209,11 @@ const applyVariationSelections = (variation: ProductVariationFragment, source: R
   return next;
 };
 
+const getAttributeOptions = (attr: ProductAttribute): string[] =>
+  attr.scope === 'LOCAL'
+    ? (attr.options ?? []).filter((option): option is string => !!option)
+    : ('terms' in attr ? (attr.terms?.nodes ?? []) : []).map((term) => term?.slug).filter((slug): slug is string => !!slug);
+
 const resolveInvalidSelections = (source: Record<string, string>, options: { allowEmpty?: boolean; preferClear?: boolean } = {}): Record<string, string> => {
   const allowEmpty = options.allowEmpty ?? true;
   const preferClear = options.preferClear ?? true;
@@ -228,12 +233,7 @@ const resolveInvalidSelections = (source: Record<string, string>, options: { all
       if (currentValue && isOptionEnabled(key, currentValue, next)) return;
       if (!currentValue && allowEmpty) return;
 
-      const options =
-        attr.scope === 'LOCAL'
-          ? (attr.options ?? []).filter((option): option is string => !!option)
-          : ('terms' in attr ? (attr.terms?.nodes ?? []) : []).map((term) => term?.slug).filter((slug): slug is string => !!slug);
-
-      const fallback = options.find((option) => isOptionEnabled(key, option, next)) ?? '';
+      const fallback = getAttributeOptions(attr).find((option) => isOptionEnabled(key, option, next)) ?? '';
       const nextValue = preferClear && currentValue ? '' : fallback;
       if (nextValue !== currentValue) {
         next = { ...next, [key]: nextValue };
@@ -293,6 +293,14 @@ const setInitialSelections = () => {
     if (defaultValue !== undefined) {
       nextSelections[key] = defaultValue ?? '';
       return;
+    }
+
+    // No admin-configured default for this attribute — if it only ever offered a single option
+    // (e.g. a product that only comes in one color), there's nothing to actually choose between,
+    // so pick it automatically instead of leaving that picker sitting unselected.
+    const options = getAttributeOptions(attr);
+    if (options.length === 1) {
+      nextSelections[key] = options[0] ?? '';
     }
   });
 

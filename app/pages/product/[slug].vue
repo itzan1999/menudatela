@@ -441,11 +441,23 @@ const stockStatus = computed(() => {
 
 const isOutOfStock = computed(() => stockStatus.value === StockStatusEnum.OutOfStock);
 
+// Matching a variation only requires the attributes a shopper HAS picked to agree with it (see
+// findMatchingVariation above) — it was never meant to also confirm every attribute has been
+// picked, so a product with one attribute still unset could still land on a (wrong) match. Add
+// to Cart needs that stronger guarantee: a value for every attribute the picker shows, not just
+// an absence of conflict among whichever ones happen to be set.
+const hasAllAttributesSelected = computed(() => {
+  if (!isVariableProduct.value) return true;
+  const totalAttrs = product.value?.attributes?.nodes?.length ?? 0;
+  if (!totalAttrs) return true;
+  return variation.value.length === totalAttrs && variation.value.every((attr) => !!attr.value);
+});
+
 const disabledAddToCart = computed(() => {
   const canPurchaseWithCurrentStock = stockStatus.value === StockStatusEnum.InStock || stockStatus.value === StockStatusEnum.OnBackorder;
   const isInvalidType = !displayProduct.value;
   const isCartUpdating = isOptimisticCartMode.value ? false : isUpdatingCart.value || isAddingToCart.value;
-  const hasValidVariation = !isVariableProduct.value || !!activeVariation.value;
+  const hasValidVariation = !isVariableProduct.value || (hasAllAttributesSelected.value && !!activeVariation.value);
   const nothingToSubmit = isInCart.value && quantityMatchesCart.value;
   return !canPurchaseWithCurrentStock || isCartUpdating || !hasValidVariation || isInvalidType || nothingToSubmit;
 });
