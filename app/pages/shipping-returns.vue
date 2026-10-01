@@ -69,6 +69,20 @@ const eligibleOrders = computed(() => (orders.value ?? []).filter((o) => o.retur
 const trackedOrders = computed(() => (orders.value ?? []).filter((o) => o.returnStatus || o.refunds?.nodes?.length));
 const eligibleOrdersWithForms = computed(() => eligibleOrders.value.map((order) => ({ order, form: getForm(order.databaseId!) })));
 
+const TRACKED_ORDERS_PER_PAGE = 20;
+const trackedOrdersPage = ref(1);
+const trackedOrdersTotalPages = computed(() => Math.max(1, Math.ceil(trackedOrders.value.length / TRACKED_ORDERS_PER_PAGE)));
+const trackedOrdersPaged = computed(() => {
+  const start = (trackedOrdersPage.value - 1) * TRACKED_ORDERS_PER_PAGE;
+  return trackedOrders.value.slice(start, start + TRACKED_ORDERS_PER_PAGE);
+});
+// The full list can only shrink after the initial load (nothing here adds new return requests to
+// it), but never grow — so clamping down is the only direction that can ever be needed, e.g. if a
+// customer was sitting on a later page and their order history came back shorter on a refresh.
+watch(trackedOrdersTotalPages, (total) => {
+  if (trackedOrdersPage.value > total) trackedOrdersPage.value = total;
+});
+
 const refundInfo = (order: { refunds?: { nodes?: { amount?: number | null; date?: string | null }[] | null } | null }) => {
   const refund = order.refunds?.nodes?.[0];
   if (!refund) return null;
@@ -77,6 +91,30 @@ const refundInfo = (order: { refunds?: { nodes?: { amount?: number | null; date?
     date: formatDate(refund.date),
   };
 };
+
+// Which past return requests are expanded to show their own detail (which items, how many, why)
+// instead of just the order number — keyed by order id, same lazy "only the ones you opened"
+// approach as `forms` above, just without needing a whole FormState for a read-only panel.
+const trackedExpanded = reactive<Record<number, boolean>>({});
+const toggleTrackedExpanded = (orderId: number): void => {
+  trackedExpanded[orderId] = !trackedExpanded[orderId];
+};
+
+// returnItems only carries {lineItemId, quantity} — resolve each back to the order's own
+// lineItems to show what was actually returned, the same join alreadyRequestedQty() already does.
+const returnedLineItems = (order: OrderWithReturns): { name: string; quantity: number }[] => {
+  const lineItemsById = new Map((order.lineItems?.nodes ?? []).filter((item) => item.databaseId != null).map((item) => [item.databaseId, item]));
+  return (order.returnItems ?? [])
+    .map((returnItem) => {
+      if (returnItem?.lineItemId == null) return null;
+      const lineItem = lineItemsById.get(returnItem.lineItemId);
+      if (!lineItem) return null;
+      return { name: lineItem.variation?.node?.name || lineItem.product?.node?.name || '', quantity: returnItem.quantity ?? 0 };
+    })
+    .filter((item): item is { name: string; quantity: number } => !!item);
+};
+
+const reasonLabelFor = (value?: string | null): string => REASONS.value.find((r) => r.value === value)?.label ?? value ?? '';
 
 const selectedLineItems = (order: { lineItems?: { nodes?: OrderLineItem[] | null } | null }, form: FormState) =>
   (order.lineItems?.nodes ?? []).filter((item) => item.databaseId != null && form.selected[item.databaseId] !== undefined);
@@ -352,14 +390,69 @@ useSeoMeta({
           <div v-if="trackedOrders.length" class="mt-10">
             <h3 class="font-heading text-base mb-3" style="color: var(--color-charcoal)">{{ $t('shippingReturns.ongoingTitle') }}</h3>
             <div class="space-y-2">
-              <div v-for="order in trackedOrders" :key="order.databaseId" class="tracked-row">
-                <span>{{ $t('shop.order', 1) }} #{{ order.orderNumber }}</span>
-                <span v-if="refundInfo(order)" class="tracked-status tracked-status--approved">
-                  {{ $t('shippingReturns.refundedOn', { amount: refundInfo(order)!.amount, date: refundInfo(order)!.date }) }}
-                </span>
-                <span v-else class="tracked-status" :class="`tracked-status--${order.returnStatus}`">{{ statusLabel(order.returnStatus) }}</span>
+              <div v-for="order in trackedOrdersPaged" :key="order.databaseId" class="return-order-card">
+                <div class="return-order-header" @click="toggleTrackedExpanded(order.databaseId!)">
+                  <div>
+                    <span class="font-medium" style="color: var(--color-charcoal)">{{ $t('shop.order', 1) }} #{{ order.orderNumber }}</span>
+                    <span v-if="refundInfo(order)" class="tracked-status tracked-status--approved ml-2">
+                      {{ $t('shippingReturns.refundedOn', { amount: refundInfo(order)!.amount, date: refundInfo(order)!.date }) }}
+                    </span>
+                    <span v-else class="tracked-status ml-2" :class="`tracked-status--${order.returnStatus}`">{{ statusLabel(order.returnStatus) }}</span>
+                  </div>
+                  <Icon :name="trackedExpanded[order.databaseId!] ? 'ion:chevron-up-outline' : 'ion:chevron-down-outline'" size="18" />
+                </div>
+
+                <div v-if="trackedExpanded[order.databaseId!]" class="return-order-body">
+                  <p v-if="order.returnRequestedAt" class="text-sm mb-3" style="color: color-mix(in oklab, var(--color-charcoal) 65%, transparent)">
+                    {{ $t('shippingReturns.requestedOn', { date: formatDate(order.returnRequestedAt) }) }}
+                  </p>
+
+                  <div class="return-summary mb-3">
+                    <div class="return-summary-title">{{ $t('shippingReturns.summaryItemsLabel') }}</div>
+                    <ul class="return-summary-items">
+                      <li v-for="item in returnedLineItems(order)" :key="item.name">{{ item.name }} x{{ item.quantity }}</li>
+                    </ul>
+                  </div>
+
+                  <p v-if="order.returnReason" class="return-summary-line">
+                    <strong>{{ $t('shippingReturns.reasonLabel') }}:</strong> {{ reasonLabelFor(order.returnReason) }}
+                  </p>
+                </div>
               </div>
             </div>
+
+            <nav
+              v-if="trackedOrdersTotalPages > 1"
+              class="tracked-pagination"
+              :aria-label="$t('general.pagination')">
+              <button
+                type="button"
+                class="prev"
+                :disabled="trackedOrdersPage === 1"
+                :aria-label="$t('general.previous')"
+                @click="trackedOrdersPage -= 1">
+                <Icon name="ion:chevron-back-outline" size="16" class="w-4 h-4" />
+              </button>
+
+              <button
+                v-for="pageNumber in trackedOrdersTotalPages"
+                :key="pageNumber"
+                type="button"
+                class="page-number"
+                :aria-current="pageNumber === trackedOrdersPage ? 'page' : undefined"
+                @click="trackedOrdersPage = pageNumber">
+                {{ pageNumber }}
+              </button>
+
+              <button
+                type="button"
+                class="next"
+                :disabled="trackedOrdersPage === trackedOrdersTotalPages"
+                :aria-label="$t('general.next')"
+                @click="trackedOrdersPage += 1">
+                <Icon name="ion:chevron-forward-outline" size="16" class="w-4 h-4" />
+              </button>
+            </nav>
           </div>
 
           <p v-if="!eligibleOrders.length && !trackedOrders.length" class="text-sm" style="color: color-mix(in oklab, var(--color-charcoal) 55%, transparent)">
@@ -581,16 +674,6 @@ useSeoMeta({
   cursor: not-allowed;
 }
 
-.tracked-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.75rem 1rem;
-  font-size: 0.875rem;
-  color: var(--color-charcoal);
-  border: 1px solid var(--color-sand);
-}
-
 .tracked-status {
   display: inline-block;
   border: 1px solid var(--color-sand);
@@ -617,5 +700,53 @@ useSeoMeta({
 .tracked-status--rejected {
   border-color: var(--color-danger);
   color: var(--color-danger);
+}
+
+.tracked-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.375rem;
+  margin-top: 1.5rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.tracked-pagination .prev,
+.tracked-pagination .next,
+.tracked-pagination .page-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 2.25rem;
+  width: 2.25rem;
+  border: 1px solid var(--color-sand);
+  background-color: transparent;
+  font-size: 0.75rem;
+  letter-spacing: 0.03em;
+  color: color-mix(in oklab, var(--color-charcoal) 70%, transparent);
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.tracked-pagination .prev:hover:not(:disabled),
+.tracked-pagination .next:hover:not(:disabled),
+.tracked-pagination .page-number:hover {
+  border-color: var(--color-charcoal);
+  color: var(--color-charcoal);
+}
+
+.tracked-pagination .prev:disabled,
+.tracked-pagination .next:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.tracked-pagination .page-number[aria-current='page'] {
+  border-color: var(--color-charcoal);
+  background-color: var(--color-charcoal);
+  color: var(--color-cream);
+  font-weight: 500;
 }
 </style>

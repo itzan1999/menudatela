@@ -361,6 +361,7 @@
     "submitReturn": "Solicitar devolución",
     "successMessage": "Solicitud de devolución enviada. Te avisaremos cuando la revisemos.",
     "ongoingTitle": "Solicitudes en curso",
+    "requestedOn": "Solicitada el {date}",
     "noEligibleOrders": "No tienes pedidos elegibles para devolución en este momento.",
     "reasons": {
       "wrongItem": "Talla, color o artículo incorrecto",

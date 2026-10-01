@@ -340,6 +340,7 @@
     "submitReturn": "Request return",
     "successMessage": "Return request sent. We'll let you know once we've reviewed it.",
     "ongoingTitle": "Ongoing requests",
+    "requestedOn": "Requested on {date}",
     "noEligibleOrders": "You have no orders eligible for return at this time.",
     "reasons": {
       "wrongItem": "Wrong size, color or item",
