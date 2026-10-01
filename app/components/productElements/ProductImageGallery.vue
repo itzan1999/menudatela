@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import gsap from 'gsap';
 import { StockStatusEnum } from '#gql/default';
 import type { ImageFragment, Product, Variation } from '#types/gql';
 
@@ -44,8 +45,20 @@ const initialImage = computed<ImageFragment>(() => {
 
 const imageToShow = ref<ImageFragment>(initialImage.value);
 
-const changeImage = (image: ImageFragment) => {
-  if (image) imageToShow.value = image;
+// Read by onImageEnter/onImageLeave at the moment they actually fire, rather than captured in a
+// closure per call — a plain variable is enough since, unlike the navbar's page transition, only
+// one gallery image ever changes at a time (no cross-navigation staleness to guard against).
+let slideDirection: 1 | -1 = 1;
+
+// Thumbnail clicks / a variation's own photo don't carry an explicit direction — infer one from
+// how the clicked image's position compares to the current one, so the slide still reads as
+// "forward" or "back" instead of always sliding the same way.
+const indexOf = (image: ImageFragment): number => galleryImages.value.findIndex((img) => img.databaseId === image.databaseId);
+
+const changeImage = (image: ImageFragment, direction?: 1 | -1) => {
+  if (!image || image.databaseId === imageToShow.value.databaseId) return;
+  slideDirection = direction ?? (indexOf(image) >= indexOf(imageToShow.value) ? 1 : -1);
+  imageToShow.value = image;
 };
 
 const changeImageByOffset = (offset: number) => {
@@ -57,10 +70,31 @@ const changeImageByOffset = (offset: number) => {
   const nextIndex = currentIndex === -1 ? fallbackIndex : (currentIndex + offset + images.length) % images.length;
   const nextImage = images[nextIndex];
   if (nextImage) {
-    changeImage(nextImage);
+    // Explicit, rather than inferred from indices: wrapping from the last image back to the
+    // first is still "next" as far as the arrow the user clicked is concerned, even though the
+    // index itself goes down.
+    changeImage(nextImage, offset > 0 ? 1 : -1);
     return true;
   }
   return false;
+};
+
+const SLIDE_DURATION = 0.4;
+
+const onImageEnter = (el: Element, done: () => void) => {
+  if (prefersReducedMotion()) {
+    done();
+    return;
+  }
+  gsap.fromTo(el, { xPercent: slideDirection * 100 }, { xPercent: 0, duration: SLIDE_DURATION, ease: 'power2.out', onComplete: done });
+};
+
+const onImageLeave = (el: Element, done: () => void) => {
+  if (prefersReducedMotion()) {
+    done();
+    return;
+  }
+  gsap.to(el, { xPercent: slideDirection * -100, duration: SLIDE_DURATION, ease: 'power2.out', onComplete: done });
 };
 
 watch(
@@ -68,7 +102,7 @@ watch(
   (newVal) => {
     if (newVal?.image) {
       const foundImage = galleryImages.value.find((img) => img.sourceUrl && img.sourceUrl === newVal.image?.sourceUrl);
-      if (foundImage) imageToShow.value = foundImage;
+      if (foundImage) changeImage(foundImage);
     }
   },
 );
@@ -127,15 +161,19 @@ onMounted(async () => {
           {{ $t('shop.outOfStock') }}
         </span>
       </div>
-      <NuxtPicture
-        :width="imgWidth"
-        :height="imgWidth"
-        sizes="412px:100vw sm:100vw md:50vw lg:50vw xl:640px"
-        :alt="imageToShow.altText || node.name"
-        :title="imageToShow.title || node.name"
-        :src="imageToShow.sourceUrl || FALLBACK_IMG"
-        :preload="{ fetchPriority: 'high' }"
-        :img-attrs="{ class: ['h-full w-full object-contain', imageRevealed ? 'opacity-100' : 'opacity-0'] }" />
+      <Transition :css="false" @enter="onImageEnter" @leave="onImageLeave">
+        <div :key="imageToShow.databaseId" class="absolute inset-0">
+          <NuxtPicture
+            :width="imgWidth"
+            :height="imgWidth"
+            sizes="412px:100vw sm:100vw md:50vw lg:50vw xl:640px"
+            :alt="imageToShow.altText || node.name"
+            :title="imageToShow.title || node.name"
+            :src="imageToShow.sourceUrl || FALLBACK_IMG"
+            :preload="{ fetchPriority: 'high' }"
+            :img-attrs="{ class: ['h-full w-full object-contain', imageRevealed ? 'opacity-100' : 'opacity-0'] }" />
+        </div>
+      </Transition>
 
       <button
         v-if="galleryImages.length > 1"
