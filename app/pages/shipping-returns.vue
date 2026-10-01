@@ -393,11 +393,18 @@ useSeoMeta({
               <div v-for="order in trackedOrdersPaged" :key="order.databaseId" class="return-order-card">
                 <div class="return-order-header" @click="toggleTrackedExpanded(order.databaseId!)">
                   <div>
-                    <span class="font-medium" style="color: var(--color-charcoal)">{{ $t('shop.order', 1) }} #{{ order.orderNumber }}</span>
-                    <span v-if="refundInfo(order)" class="tracked-status tracked-status--approved ml-2">
+                    <div>
+                      <span class="font-medium" style="color: var(--color-charcoal)">{{ $t('shop.order', 1) }} #{{ order.orderNumber }}</span>
+                      <span v-if="!refundInfo(order)" class="tracked-status ml-2" :class="`tracked-status--${order.returnStatus}`">{{
+                        statusLabel(order.returnStatus)
+                      }}</span>
+                    </div>
+                    <!-- A full sentence (amount + date) reads as a shouted block in the all-caps badge
+                         that fits a single status word — plain quiet text on its own line instead. -->
+                    <p v-if="refundInfo(order)" class="refund-note">
+                      <Icon name="ion:checkmark-circle-outline" size="14" class="refund-note-icon" />
                       {{ $t('shippingReturns.refundedOn', { amount: refundInfo(order)!.amount, date: refundInfo(order)!.date }) }}
-                    </span>
-                    <span v-else class="tracked-status ml-2" :class="`tracked-status--${order.returnStatus}`">{{ statusLabel(order.returnStatus) }}</span>
+                    </p>
                   </div>
                   <Icon :name="trackedExpanded[order.databaseId!] ? 'ion:chevron-up-outline' : 'ion:chevron-down-outline'" size="18" />
                 </div>
@@ -672,6 +679,19 @@ useSeoMeta({
 .save-btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+.refund-note {
+  margin-top: 0.25rem;
+  font-size: 0.8125rem;
+  color: color-mix(in oklab, var(--color-charcoal) 70%, transparent);
+}
+
+.refund-note-icon {
+  display: inline-block;
+  margin-right: 0.25rem;
+  margin-bottom: -0.0625rem;
+  color: var(--color-positive);
 }
 
 .tracked-status {
