@@ -69,19 +69,7 @@ const eligibleOrders = computed(() => (orders.value ?? []).filter((o) => o.retur
 const trackedOrders = computed(() => (orders.value ?? []).filter((o) => o.returnStatus || o.refunds?.nodes?.length));
 const eligibleOrdersWithForms = computed(() => eligibleOrders.value.map((order) => ({ order, form: getForm(order.databaseId!) })));
 
-const TRACKED_ORDERS_PER_PAGE = 20;
-const trackedOrdersPage = ref(1);
-const trackedOrdersTotalPages = computed(() => Math.max(1, Math.ceil(trackedOrders.value.length / TRACKED_ORDERS_PER_PAGE)));
-const trackedOrdersPaged = computed(() => {
-  const start = (trackedOrdersPage.value - 1) * TRACKED_ORDERS_PER_PAGE;
-  return trackedOrders.value.slice(start, start + TRACKED_ORDERS_PER_PAGE);
-});
-// The full list can only shrink after the initial load (nothing here adds new return requests to
-// it), but never grow — so clamping down is the only direction that can ever be needed, e.g. if a
-// customer was sitting on a later page and their order history came back shorter on a refresh.
-watch(trackedOrdersTotalPages, (total) => {
-  if (trackedOrdersPage.value > total) trackedOrdersPage.value = total;
-});
+const { page: trackedOrdersPage, totalPages: trackedOrdersTotalPages, paged: trackedOrdersPaged } = usePagination(trackedOrders, 20);
 
 const refundInfo = (order: { refunds?: { nodes?: { amount?: number | null; date?: string | null }[] | null } | null }) => {
   const refund = order.refunds?.nodes?.[0];
@@ -91,6 +79,10 @@ const refundInfo = (order: { refunds?: { nodes?: { amount?: number | null; date?
     date: formatDate(refund.date),
   };
 };
+
+// Computed once per row here instead of calling refundInfo(order) from the template (the status
+// badge, the refund note, and its amount/date interpolation would otherwise each reinvoke it).
+const trackedOrdersWithRefund = computed(() => trackedOrdersPaged.value.map((order) => ({ order, refund: refundInfo(order) })));
 
 // Which past return requests are expanded to show their own detail (which items, how many, why)
 // instead of just the order number — keyed by order id, same lazy "only the ones you opened"
@@ -102,17 +94,13 @@ const toggleTrackedExpanded = (orderId: number): void => {
 
 // returnItems only carries {lineItemId, quantity} — resolve each back to the order's own
 // lineItems to show what was actually returned, the same join alreadyRequestedQty() already does.
-const returnedLineItems = (order: OrderWithReturns): { name: string; quantity: number }[] => {
-  const lineItemsById = new Map((order.lineItems?.nodes ?? []).filter((item) => item.databaseId != null).map((item) => [item.databaseId, item]));
-  return (order.returnItems ?? [])
-    .map((returnItem) => {
-      if (returnItem?.lineItemId == null) return null;
-      const lineItem = lineItemsById.get(returnItem.lineItemId);
-      if (!lineItem) return null;
-      return { name: lineItem.variation?.node?.name || lineItem.product?.node?.name || '', quantity: returnItem.quantity ?? 0 };
-    })
-    .filter((item): item is { name: string; quantity: number } => !!item);
-};
+// A handful of items per order at most, so a plain find() per item beats building a lookup Map.
+const returnedLineItems = (order: OrderWithReturns): { name: string; quantity: number }[] =>
+  (order.returnItems ?? []).flatMap((returnItem) => {
+    const lineItem = order.lineItems?.nodes?.find((item) => item.databaseId === returnItem?.lineItemId);
+    if (!lineItem) return [];
+    return [{ name: lineItem.variation?.node?.name || lineItem.product?.node?.name || '', quantity: returnItem?.quantity ?? 0 }];
+  });
 
 const reasonLabelFor = (value?: string | null): string => REASONS.value.find((r) => r.value === value)?.label ?? value ?? '';
 
@@ -130,7 +118,7 @@ const returnSummary = (order: { lineItems?: { nodes?: OrderLineItem[] | null } |
     name: item.variation?.node?.name || item.product?.node?.name || '',
     quantity: item.databaseId != null ? form.selected[item.databaseId] : 0,
   }));
-  const reasonLabel = REASONS.value.find((r) => r.value === form.reason)?.label ?? '';
+  const reasonLabel = reasonLabelFor(form.reason);
   return { items, reasonLabel, amount: formatPrice(selectedAmountRaw(order, form)) };
 };
 
@@ -390,20 +378,20 @@ useSeoMeta({
           <div v-if="trackedOrders.length" class="mt-10">
             <h3 class="font-heading text-base mb-3" style="color: var(--color-charcoal)">{{ $t('shippingReturns.ongoingTitle') }}</h3>
             <div class="space-y-2">
-              <div v-for="order in trackedOrdersPaged" :key="order.databaseId" class="return-order-card">
+              <div v-for="{ order, refund } in trackedOrdersWithRefund" :key="order.databaseId" class="return-order-card">
                 <div class="return-order-header" @click="toggleTrackedExpanded(order.databaseId!)">
                   <div>
                     <div>
                       <span class="font-medium" style="color: var(--color-charcoal)">{{ $t('shop.order', 1) }} #{{ order.orderNumber }}</span>
-                      <span v-if="!refundInfo(order)" class="tracked-status ml-2" :class="`tracked-status--${order.returnStatus}`">{{
+                      <span v-if="!refund" class="tracked-status ml-2" :class="`tracked-status--${order.returnStatus}`">{{
                         statusLabel(order.returnStatus)
                       }}</span>
                     </div>
                     <!-- A full sentence (amount + date) reads as a shouted block in the all-caps badge
                          that fits a single status word — plain quiet text on its own line instead. -->
-                    <p v-if="refundInfo(order)" class="refund-note">
+                    <p v-if="refund" class="refund-note">
                       <Icon name="ion:checkmark-circle-outline" size="14" class="refund-note-icon" />
-                      {{ $t('shippingReturns.refundedOn', { amount: refundInfo(order)!.amount, date: refundInfo(order)!.date }) }}
+                      {{ $t('shippingReturns.refundedOn', { amount: refund.amount, date: refund.date }) }}
                     </p>
                   </div>
                   <Icon :name="trackedExpanded[order.databaseId!] ? 'ion:chevron-up-outline' : 'ion:chevron-down-outline'" size="18" />
@@ -428,38 +416,7 @@ useSeoMeta({
               </div>
             </div>
 
-            <nav
-              v-if="trackedOrdersTotalPages > 1"
-              class="tracked-pagination"
-              :aria-label="$t('general.pagination')">
-              <button
-                type="button"
-                class="prev"
-                :disabled="trackedOrdersPage === 1"
-                :aria-label="$t('general.previous')"
-                @click="trackedOrdersPage -= 1">
-                <Icon name="ion:chevron-back-outline" size="16" class="w-4 h-4" />
-              </button>
-
-              <button
-                v-for="pageNumber in trackedOrdersTotalPages"
-                :key="pageNumber"
-                type="button"
-                class="page-number"
-                :aria-current="pageNumber === trackedOrdersPage ? 'page' : undefined"
-                @click="trackedOrdersPage = pageNumber">
-                {{ pageNumber }}
-              </button>
-
-              <button
-                type="button"
-                class="next"
-                :disabled="trackedOrdersPage === trackedOrdersTotalPages"
-                :aria-label="$t('general.next')"
-                @click="trackedOrdersPage += 1">
-                <Icon name="ion:chevron-forward-outline" size="16" class="w-4 h-4" />
-              </button>
-            </nav>
+            <SimplePagination :page="trackedOrdersPage" :total-pages="trackedOrdersTotalPages" @update:page="trackedOrdersPage = $event" />
           </div>
 
           <p v-if="!eligibleOrders.length && !trackedOrders.length" class="text-sm" style="color: color-mix(in oklab, var(--color-charcoal) 55%, transparent)">
@@ -720,53 +677,5 @@ useSeoMeta({
 .tracked-status--rejected {
   border-color: var(--color-danger);
   color: var(--color-danger);
-}
-
-.tracked-pagination {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 0.375rem;
-  margin-top: 1.5rem;
-  font-variant-numeric: tabular-nums;
-}
-
-.tracked-pagination .prev,
-.tracked-pagination .next,
-.tracked-pagination .page-number {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 2.25rem;
-  width: 2.25rem;
-  border: 1px solid var(--color-sand);
-  background-color: transparent;
-  font-size: 0.75rem;
-  letter-spacing: 0.03em;
-  color: color-mix(in oklab, var(--color-charcoal) 70%, transparent);
-  transition:
-    border-color 0.2s ease,
-    color 0.2s ease,
-    background-color 0.2s ease;
-}
-
-.tracked-pagination .prev:hover:not(:disabled),
-.tracked-pagination .next:hover:not(:disabled),
-.tracked-pagination .page-number:hover {
-  border-color: var(--color-charcoal);
-  color: var(--color-charcoal);
-}
-
-.tracked-pagination .prev:disabled,
-.tracked-pagination .next:disabled {
-  opacity: 0.3;
-  cursor: not-allowed;
-}
-
-.tracked-pagination .page-number[aria-current='page'] {
-  border-color: var(--color-charcoal);
-  background-color: var(--color-charcoal);
-  color: var(--color-cream);
-  font-weight: 500;
 }
 </style>

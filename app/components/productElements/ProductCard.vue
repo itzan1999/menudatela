@@ -229,6 +229,9 @@ const handleNavigateClick = () => {
     <!-- Contenedor Principal de Imagen con Slider -->
     <div class="relative block overflow-hidden rounded-sm">
       <!-- Badges de Estado (Oferta / Agotado) -->
+      <!-- Top-right is a reserved corner: WishListItem.vue overlays its own remove button there
+           (outside this component, since ProductCard has no slot for it) — keep status badges
+           confined to top-left so a future one here doesn't collide. -->
       <div class="absolute left-3 top-3 z-20 flex flex-col gap-1 pointer-events-none">
         <span
           v-if="node.onSale"
