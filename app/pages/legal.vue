@@ -9,15 +9,51 @@ const TABS = [
   { slug: 'aviso-legal', labelKey: 'legal.tabs.notice' },
 ] as const;
 
+const indexOfTab = (slug: string) => TABS.findIndex((tab) => tab.slug === slug);
+
 const activeTab = computed(() => {
   const requested = route.query.tab;
   return TABS.some((tab) => tab.slug === requested) ? (requested as string) : TABS[0].slug;
 });
 
-const activeTabLabel = computed(() => t(TABS.find((tab) => tab.slug === activeTab.value)?.labelKey ?? TABS[0].labelKey));
+const activeTabLabel = computed(() => t(TABS[indexOfTab(activeTab.value)]?.labelKey ?? TABS[0].labelKey));
 
 useSeoMeta({
   title: () => activeTabLabel.value,
+});
+
+// The tabs' labels vary in width, so (unlike a fixed two-tab toggle) the active-tab underline's
+// position and width need to be measured from the real DOM rather than expressed as a CSS
+// percentage — null until the first measurement lands so it never flashes in at (0, 0).
+// NuxtLink is a component, so its template ref is the component instance, not the <a> itself —
+// `.$el` is what actually has layout to measure.
+const tabRefs = ref<{ $el: HTMLElement }[]>([]);
+const indicatorStyle = ref<{ left: string; width: string } | null>(null);
+
+const updateIndicator = () => {
+  const el = tabRefs.value[indexOfTab(activeTab.value)]?.$el as HTMLElement | undefined;
+  if (!el) return;
+  indicatorStyle.value = { left: `${el.offsetLeft}px`, width: `${el.offsetWidth}px` };
+};
+
+// A resize fires far more often than the layout actually needs re-measuring — coalesce to at
+// most once per frame instead of recomputing (and reflowing) on every single event.
+let resizeFrame: number | null = null;
+const onResize = () => {
+  if (resizeFrame != null) return;
+  resizeFrame = requestAnimationFrame(() => {
+    resizeFrame = null;
+    updateIndicator();
+  });
+};
+
+onMounted(() => {
+  updateIndicator();
+  window.addEventListener('resize', onResize);
+});
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', onResize);
+  if (resizeFrame != null) cancelAnimationFrame(resizeFrame);
 });
 
 // Read by onContentEnter/onContentLeave at the moment they actually fire — the tabs sit in a
@@ -25,35 +61,10 @@ useSeoMeta({
 // step through that row would, and back otherwise.
 let slideDirection: 1 | -1 = 1;
 watch(activeTab, (newSlug, oldSlug) => {
-  const newIndex = TABS.findIndex((tab) => tab.slug === newSlug);
-  const oldIndex = TABS.findIndex((tab) => tab.slug === oldSlug);
-  slideDirection = newIndex >= oldIndex ? 1 : -1;
+  slideDirection = indexOfTab(newSlug) >= indexOfTab(oldSlug) ? 1 : -1;
+  nextTick(updateIndicator);
 });
 const { onBeforeLeave: onContentBeforeLeave, onLeave: onContentLeave, onEnter: onContentEnter } = useHeightAwareSlideTransition(() => slideDirection);
-
-// The tabs' labels vary in width, so (unlike a fixed two-tab toggle) the active-tab underline's
-// position and width need to be measured from the real DOM rather than expressed as a CSS
-// percentage — kept hidden until the first measurement lands so it never flashes in at (0, 0).
-// NuxtLink is a component, so its template ref is the component instance, not the <a> itself —
-// `.$el` is what actually has layout to measure.
-const tabRefs = ref<{ $el: HTMLElement }[]>([]);
-const indicatorStyle = ref({ left: '0px', width: '0px' });
-const indicatorReady = ref(false);
-
-const updateIndicator = () => {
-  const activeIndex = TABS.findIndex((tab) => tab.slug === activeTab.value);
-  const el = tabRefs.value[activeIndex]?.$el as HTMLElement | undefined;
-  if (!el) return;
-  indicatorStyle.value = { left: `${el.offsetLeft}px`, width: `${el.offsetWidth}px` };
-  indicatorReady.value = true;
-};
-
-onMounted(() => {
-  updateIndicator();
-  window.addEventListener('resize', updateIndicator);
-});
-onBeforeUnmount(() => window.removeEventListener('resize', updateIndicator));
-watch(activeTab, () => nextTick(updateIndicator));
 </script>
 
 <template>
@@ -70,7 +81,7 @@ watch(activeTab, () => nextTick(updateIndicator));
         :class="{ 'is-active': activeTab === tab.slug }">
         {{ $t(tab.labelKey) }}
       </NuxtLink>
-      <div v-if="indicatorReady" class="tab-indicator" :style="indicatorStyle"></div>
+      <div v-if="indicatorStyle" class="tab-indicator" :style="indicatorStyle"></div>
     </nav>
 
     <div class="legal-prose relative overflow-hidden">
