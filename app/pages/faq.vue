@@ -1,6 +1,8 @@
 <script setup lang="ts">
-const { t, tm } = useI18n();
+const { t, tm, rt } = useI18n();
 
+// tm() returns each nested string leaf as a compiled message AST node, not plain text — rt()
+// (used in the template below) is what actually resolves one of those nodes down to a string.
 const FAQS = computed(() => tm('faq.items') as { question: string; answer: string }[]);
 
 const openIndex = ref<number | null>(null);
@@ -19,13 +21,13 @@ useSeoMeta({
     <h1 class="heading-serif-lg mb-8">{{ $t('faq.title') }}</h1>
 
     <div class="faq-list">
-      <div v-for="(faq, index) in FAQS" :key="faq.question" class="faq-item">
+      <div v-for="(faq, index) in FAQS" :key="index" class="faq-item">
         <button type="button" class="faq-question" :aria-expanded="openIndex === index" @click="toggle(index)">
-          <span>{{ faq.question }}</span>
+          <span>{{ rt(faq.question) }}</span>
           <Icon :name="openIndex === index ? 'ion:remove-outline' : 'ion:add-outline'" size="18" />
         </button>
         <div v-if="openIndex === index" class="faq-answer">
-          <p>{{ faq.answer }}</p>
+          <p>{{ rt(faq.answer) }}</p>
         </div>
       </div>
     </div>
