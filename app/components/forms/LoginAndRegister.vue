@@ -8,29 +8,22 @@
     </div>
 
     <!-- Pestañas de Navegación (Visibles solo en Login y Registro) -->
-    <div v-if="formView === FormView.LOGIN || formView === FormView.REGISTER" class="mb-8 flex border-b border-[var(--color-sand)]">
+    <div v-if="formView === FormView.LOGIN || formView === FormView.REGISTER" class="relative mb-8 flex border-b border-[var(--color-sand)]">
       <button
         type="button"
         class="flex-1 pb-3 text-center font-sans text-xs font-semibold tracking-widest uppercase transition-colors cursor-pointer"
-        :class="
-          formView === FormView.LOGIN
-            ? 'border-b-2 border-[var(--color-charcoal)] text-[var(--color-charcoal)]'
-            : 'text-[var(--color-charcoal)]/50 hover:text-[var(--color-charcoal)]'
-        "
+        :class="formView === FormView.LOGIN ? 'text-[var(--color-charcoal)]' : 'text-[var(--color-charcoal)]/50 hover:text-[var(--color-charcoal)]'"
         @click="navigate(FormView.LOGIN)">
         {{ $t('account.login') }}
       </button>
       <button
         type="button"
         class="flex-1 pb-3 text-center font-sans text-xs font-semibold tracking-widest uppercase transition-colors cursor-pointer"
-        :class="
-          formView === FormView.REGISTER
-            ? 'border-b-2 border-[var(--color-charcoal)] text-[var(--color-charcoal)]'
-            : 'text-[var(--color-charcoal)]/50 hover:text-[var(--color-charcoal)]'
-        "
+        :class="formView === FormView.REGISTER ? 'text-[var(--color-charcoal)]' : 'text-[var(--color-charcoal)]/50 hover:text-[var(--color-charcoal)]'"
         @click="navigate(FormView.REGISTER)">
         {{ $t('account.register') }}
       </button>
+      <div class="tab-indicator" :class="{ 'tab-indicator--register': formView === FormView.REGISTER }"></div>
     </div>
 
     <!-- Proveedores Sociales (Google, Facebook, etc.) -->
@@ -514,5 +507,19 @@ const passwordLabel = computed(() => t('account.password'));
 
 .input-minimal {
   @apply h-11 w-full border border-[var(--color-sand)] bg-[var(--color-cream)] px-3 font-sans text-xs text-[var(--color-charcoal)] outline-none transition-colors focus:border-[var(--color-charcoal)];
+}
+
+.tab-indicator {
+  @apply absolute bottom-0 left-0 h-[2px] w-1/2 bg-[var(--color-charcoal)] transition-transform duration-300 ease-in-out;
+}
+
+.tab-indicator--register {
+  @apply translate-x-full;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tab-indicator {
+    @apply duration-0;
+  }
 }
 </style>
