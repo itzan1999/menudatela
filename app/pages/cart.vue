@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const { cart, isCartMutating, refreshCartIfNeeded } = useCart();
+const { t } = useI18n();
 
 onMounted(refreshCartIfNeeded);
 
@@ -8,8 +9,8 @@ definePageMeta({
 });
 
 useSeoMeta({
-  title: 'Shopping Cart',
-  description: 'View and manage items in your shopping cart',
+  title: () => t('shop.cart'),
+  description: () => t('general.cartPageDescription'),
 });
 </script>
 

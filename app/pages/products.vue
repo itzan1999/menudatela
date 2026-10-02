@@ -4,6 +4,7 @@ import type { Product } from '#types/gql';
 const { setProducts, updateProductList } = useProducts();
 const route = useRoute();
 const { storeSettings } = useAppConfig();
+const { t } = useI18n();
 
 const { data, error, status } = await useAsyncGql('getProducts');
 const allProducts = computed<Product[]>(() => (data.value?.products?.nodes ?? []) as Product[]);
@@ -30,8 +31,8 @@ watch(
 );
 
 useHead({
-  title: `Products`,
-  meta: [{ name: 'description', content: 'Discover our products' }],
+  title: () => t('general.products'),
+  meta: [{ name: 'description', content: () => t('general.productsPageDescription') }],
 });
 </script>
 

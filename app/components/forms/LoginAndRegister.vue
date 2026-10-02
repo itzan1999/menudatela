@@ -50,7 +50,7 @@
           <input
             id="resetEmail"
             v-model="userInfo.email"
-            placeholder="tuemail@ejemplo.com"
+            :placeholder="$t('account.emailPlaceholder')"
             autocomplete="email"
             name="email"
             type="text"
@@ -117,7 +117,7 @@
           <input
             id="regUsername"
             v-model="userInfo.username"
-            placeholder="usuario123"
+            :placeholder="$t('account.usernamePlaceholder')"
             autocomplete="username"
             name="username"
             type="text"
@@ -133,7 +133,7 @@
           <input
             id="regEmail"
             v-model="userInfo.email"
-            placeholder="tuemail@ejemplo.com"
+            :placeholder="$t('account.emailPlaceholder')"
             autocomplete="email"
             name="email"
             type="email"
@@ -159,7 +159,7 @@
           <input
             id="username"
             v-model="userInfo.username"
-            placeholder="tuemail@ejemplo.com o usuario"
+            :placeholder="$t('account.usernameOrEmailPlaceholder')"
             autocomplete="username"
             name="username"
             type="text"

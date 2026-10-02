@@ -2,6 +2,7 @@
 const { logoutUser, viewer, avatar, isPending, handlePostLoginRedirect } = useAuth();
 const { cart, isUpdatingCart } = useCart();
 const route = useRoute();
+const { t } = useI18n();
 
 const activeTab = computed(() => route.query.tab || 'personal-info');
 const showLoader = computed(() => !cart.value && !viewer.value && isUpdatingCart.value);
@@ -18,7 +19,7 @@ watch(viewer, (newViewer, oldViewer) => {
 });
 
 useSeoMeta({
-  title: `My Account`,
+  title: () => t('account.myAccount'),
 });
 </script>
 

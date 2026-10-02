@@ -12,7 +12,7 @@ const productCategories = data.value?.productCategories?.nodes || [];
 const popularProducts = productData.value?.products?.nodes || [];
 
 useSeoMeta({
-  title: `Home`,
+  title: () => t('general.home'),
   ogTitle: siteName,
   description: () => t('general.siteDescription'),
   ogDescription: () => t('general.siteShortDescription'),

@@ -17,9 +17,7 @@ const activeVariation = ref<Variation | null>(null);
 const variation = ref<VariationAttribute[]>([]);
 const attrValues = ref<ProductAttributeInput[]>([]);
 
-const productLoadError = error.value
-  ? getErrorMessage(error.value) || `We couldn't load "${slug}" right now. Please refresh and try again.`
-  : t('shop.productNotFound');
+const productLoadError = error.value ? getErrorMessage(error.value) || t('error.productLoadFailed', { slug }) : t('shop.productNotFound');
 
 const normalizeMatchToken = (value?: string | null): string =>
   (value ?? '')
@@ -556,7 +554,7 @@ const disabledAddToCart = computed(() => {
                   v-model.number="quantity"
                   type="number"
                   min="1"
-                  aria-label="Cantidad"
+                  :aria-label="$t('shop.quantity')"
                   class="w-12 text-center bg-transparent py-2 font-sans text-xs font-semibold text-[var(--color-charcoal)] focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   @input="onQuantityChanged" />
                 <button type="button" class="px-3 py-2 text-sm hover:bg-[var(--color-sand)]/30 transition-colors cursor-pointer" @click="incrementQuantity">
@@ -598,7 +596,7 @@ const disabledAddToCart = computed(() => {
               :href="externalProduct.externalUrl"
               target="_blank"
               class="border border-[var(--color-sand)] bg-transparent py-3 px-6 font-sans text-xs font-semibold tracking-widest uppercase text-[var(--color-charcoal)] transition-all duration-300 hover:border-[var(--color-charcoal)] hover:bg-[var(--color-charcoal)] hover:text-[var(--color-cream)] flex items-center justify-center gap-2">
-              {{ externalProduct?.buttonText || 'View product' }}
+              {{ externalProduct?.buttonText || $t('shop.viewProduct') }}
             </a>
           </form>
 

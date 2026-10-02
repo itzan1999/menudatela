@@ -87,7 +87,7 @@
             <input
               id="billing-address-2"
               v-model="customer.billing.address2"
-              placeholder="Apartment, studio, or floor"
+              :placeholder="$t('billing.address2Placeholder')"
               name="billing-address-2"
               autocomplete="billing address-line2"
               type="text"
@@ -235,7 +235,7 @@
             <input
               id="shipping-address-2"
               v-model="customer.shipping.address2"
-              placeholder="Apartment, studio, or floor"
+              :placeholder="$t('billing.address2Placeholder')"
               name="shipping-address-2"
               autocomplete="shipping address-line2"
               type="text"

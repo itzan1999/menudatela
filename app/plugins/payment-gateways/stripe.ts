@@ -69,6 +69,10 @@ export default defineNuxtPlugin(() => {
   const { orderInput, checkoutError, resolvePaymentMethodId } = useCheckout();
   const runtimeConfig = useRuntimeConfig();
   const route = useRoute();
+  // useI18n() requires an active component setup() and throws outside one — a Nuxt plugin runs
+  // in the app context but isn't a component, so this reaches the same i18n instance via the
+  // Nuxt app directly instead (same workaround already used by useHelpers.ts).
+  const { t } = useNuxtApp().$i18n as { t: (key: string, params?: Record<string, unknown>) => string };
   const stripeKey = runtimeConfig.public?.STRIPE_PUBLISHABLE_KEY || null;
   const gql = useWooGraphQL();
 
@@ -173,7 +177,7 @@ export default defineNuxtPlugin(() => {
 
   const applyStripePaymentIntent = (paymentIntent: { id: string; payment_method?: unknown; amount: number; currency: string; status: string }): boolean => {
     if (paymentIntent.status !== 'succeeded') {
-      throw new Error('Your payment is not yet confirmed. Please contact the shop before trying another payment.');
+      throw new Error(t('error.paymentNotConfirmed'));
     }
     upsertOrderMeta('_stripe_payment_intent_id', paymentIntent.id);
     // The WooCommerce Stripe gateway's webhook handler looks up the order by this exact meta
@@ -204,13 +208,13 @@ export default defineNuxtPlugin(() => {
 
     const tokenCustomerId = selectedSavedToken.value.customerId || undefined;
     if (!tokenCustomerId) {
-      throw new Error('Saved payment method is missing its Stripe customer ID.');
+      throw new Error(t('error.savedPaymentMethodMissingCustomer'));
     }
 
     const { stripePaymentIntent } = await gql.getStripePaymentIntent(createPaymentIntentVariables({ customerId: tokenCustomerId, saveForFuture: false }));
     if (stripePaymentIntent?.error) throw new Error(stripePaymentIntent.error);
     const clientSecret = stripePaymentIntent?.clientSecret ?? null;
-    if (!clientSecret) throw new Error('Payment intent not available. Please refresh and try again.');
+    if (!clientSecret) throw new Error(t('error.paymentIntentUnavailable'));
 
     const { error, paymentIntent } = await stripeClient.confirmPayment({
       clientSecret,
@@ -227,14 +231,14 @@ export default defineNuxtPlugin(() => {
 
   const confirmNewPaymentMethod = async (): Promise<boolean> => {
     const stripeClient = await ensureStripeLoaded();
-    if (!stripeClient) throw new Error('Stripe is not available. Please refresh and try again.');
-    if (!elements.value) throw new Error('Your payment details are still loading. Please wait a moment and try again.');
+    if (!stripeClient) throw new Error(t('error.stripeUnavailable'));
+    if (!elements.value) throw new Error(t('error.paymentDetailsLoading'));
 
     const saveForFuture = canSavePaymentMethod.value && savePaymentMethod.value;
     if (stripeClientSecret.value && stripeClientSecretSaveForFuture.value !== saveForFuture) {
       clearStripePaymentIntent();
       await initStripePaymentIntent(saveForFuture);
-      throw new Error('Your payment details are still loading. Please wait a moment and try again.');
+      throw new Error(t('error.paymentDetailsLoading'));
     }
 
     const { error: submitError } = await elements.value.submit();
@@ -260,7 +264,7 @@ export default defineNuxtPlugin(() => {
       clientSecret = stripePaymentIntent?.clientSecret ?? null;
     }
 
-    if (!clientSecret) throw new Error('Payment intent not available. Please refresh and try again.');
+    if (!clientSecret) throw new Error(t('error.paymentIntentUnavailable'));
 
     checkoutError.value = null;
 
@@ -315,8 +319,8 @@ export default defineNuxtPlugin(() => {
   };
 
   const getCheckoutDisabledMessage = (): string => {
-    if (!selectedPaymentMethodId.value) return 'Please select a payment method before checking out.';
-    if (selectedPaymentMethodId.value === 'stripe') return 'Your payment details are still loading. Please wait a moment and try again.';
+    if (!selectedPaymentMethodId.value) return t('error.selectPaymentMethod');
+    if (selectedPaymentMethodId.value === 'stripe') return t('error.paymentDetailsLoading');
     return '';
   };
 
@@ -336,10 +340,10 @@ export default defineNuxtPlugin(() => {
       id: `stripe-saved-${method.id}`,
       gateway,
       title: method.cardType,
-      details: [`•••• ${method.last4}`, `expires ${method.expiryMonth}/${method.expiryYear}`],
+      details: [`•••• ${method.last4}`, t('shop.cardExpires', { month: method.expiryMonth, year: method.expiryYear })],
       icon: cardBrandIcon(method.cardType),
       iconName: 'ion:card-outline',
-      badge: method.isDefault ? 'Default' : null,
+      badge: method.isDefault ? t('shop.defaultBadge') : null,
       sortOrder: index,
       isSelected: selectedSavedToken.value?.id === method.id,
       onSelect: () => selectSavedPaymentMethod(method),
@@ -347,7 +351,7 @@ export default defineNuxtPlugin(() => {
     {
       id: 'stripe-new-payment-method',
       gateway,
-      title: 'Credit / Debit Card',
+      title: t('shop.creditDebitCard'),
       iconName: 'ion:card-outline',
       sortOrder: savedPaymentMethods.value.length + 100,
       isSelected: isStripeSelected.value && !selectedSavedToken.value,
@@ -438,7 +442,7 @@ export default defineNuxtPlugin(() => {
       return {
         success: paymentIsPaid,
         isPaid: paymentIsPaid,
-        error: paymentIsPaid ? undefined : 'Payment was not confirmed. Please check its status before retrying.',
+        error: paymentIsPaid ? undefined : t('error.paymentNotConfirmedRetry'),
       };
     },
     getComponentProps: () => ({

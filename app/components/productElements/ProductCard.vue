@@ -3,6 +3,7 @@ import type { ImageFragment, Product, ProductVariationFragment, VariationAttribu
 
 const route = useRoute();
 const { storeSettings } = useAppConfig();
+const { t } = useI18n();
 
 const props = defineProps({
   node: { type: Object as PropType<Product>, required: true },
@@ -31,7 +32,7 @@ const fabricType = computed(() => {
   if (categories && categories.length > 0) {
     return categories[0].name;
   }
-  return 'Tela Premium';
+  return t('shop.defaultFabricType');
 });
 
 // Comprobar disponibilidad de stock
@@ -295,7 +296,7 @@ const handleNavigateClick = () => {
       <template v-if="sliderImages.length > 1">
         <button
           type="button"
-          aria-label="Imagen anterior"
+          :aria-label="$t('shop.previousImageFor', { name: node.name })"
           class="absolute left-2 top-1/2 z-20 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full bg-[var(--color-cream)]/90 text-[var(--color-charcoal)] opacity-0 shadow-md transition-all duration-300 hover:bg-[var(--color-charcoal)] hover:text-[var(--color-cream)] group-hover:opacity-100"
           @click="prevSlide">
           <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -305,7 +306,7 @@ const handleNavigateClick = () => {
 
         <button
           type="button"
-          aria-label="Imagen siguiente"
+          :aria-label="$t('shop.nextImageFor', { name: node.name })"
           class="absolute right-2 top-1/2 z-20 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full bg-[var(--color-cream)]/90 text-[var(--color-charcoal)] opacity-0 shadow-md transition-all duration-300 hover:bg-[var(--color-charcoal)] hover:text-[var(--color-cream)] group-hover:opacity-100"
           @click="nextSlide">
           <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -322,7 +323,7 @@ const handleNavigateClick = () => {
         @click="handleNavigateClick">
         <span
           class="inline-block border border-[var(--color-cream)] bg-[var(--color-cream)] px-5 py-2 font-sans text-xs font-medium tracking-widest uppercase text-[var(--color-charcoal)] shadow-sm transition-colors hover:bg-[var(--color-charcoal)] hover:text-[var(--color-cream)]">
-          Ver Detalle
+          {{ $t('shop.viewDetail') }}
         </span>
       </NuxtLink>
     </div>

@@ -21,6 +21,6 @@ const isOnSale = computed(() => props.node?.onSale ?? false);
   <span
     v-if="isOnSale"
     class="inline-block border border-[var(--color-charcoal)] bg-[var(--color-charcoal)] px-2.5 py-1 font-sans text-[10px] font-semibold tracking-widest uppercase text-[var(--color-cream)]">
-    OFERTA {{ discountPercentage ? `DEL ${discountPercentage}%` : '' }}
+    {{ discountPercentage ? $t('shop.saleBadgeWithPercent', { percent: discountPercentage }) : $t('shop.onSale') }}
   </span>
 </template>

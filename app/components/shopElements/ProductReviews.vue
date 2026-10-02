@@ -5,6 +5,8 @@ const props = defineProps({
   product: { type: Object as PropType<Product>, required: true },
 });
 
+const { t } = useI18n();
+
 const showForm = ref(false);
 
 const averageRating = computed(() => ('averageRating' in props.product ? (props.product.averageRating ?? 0) : 0));
@@ -36,7 +38,7 @@ const reviews = computed(() => {
 
     return {
       id: node.id || node.databaseId || Math.random(),
-      author: node.author?.node?.name || node.author?.name || 'Cliente',
+      author: node.author?.node?.name || node.author?.name || t('shop.anonymousCustomer'),
       date: node.date ? new Date(node.date).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' }) : '',
       content: node.content || '',
       rating,

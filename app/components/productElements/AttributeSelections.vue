@@ -9,6 +9,7 @@ interface Props {
 
 const { attributes, defaultAttributes, variations } = defineProps<Props>();
 const emit = defineEmits(['attrs-changed']);
+const { t } = useI18n();
 
 const selections = ref<Record<string, string>>({});
 
@@ -58,7 +59,7 @@ const getSelectionHint = (attr: ProductAttribute): string => {
   const attrLabel = toHintLabel(attr.label ?? attr.name);
   if (!primaryLabel || !attrLabel) return '';
 
-  return `Select ${primaryLabel} to see available ${attrLabel}`;
+  return t('shop.selectAttributeHint', { primary: primaryLabel, attribute: attrLabel });
 };
 
 const getSelectedName = (attr: ProductAttribute, value?: string) => {

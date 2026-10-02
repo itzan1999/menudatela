@@ -26,14 +26,16 @@ const providerIcons = {
   LINKEDIN: 'ion:logo-linkedin',
 };
 
+const { t } = useI18n();
+
 const socialLoginsDisplay = storeSettings?.socialLoginsDisplay || 'buttons';
 const socialLoginProviders = computed(
   () => loginClients.value?.filter((loginClient: LoginClient) => loginClient?.provider !== LoginProviderEnum.Password) || [],
 );
 
 const labelFallback = (providerName?: LoginProviderEnum | null) => {
-  if (!providerName) return 'Acceder';
-  return `Acceder con ${providerName.charAt(0).toUpperCase() + providerName.slice(1).toLowerCase()}`;
+  if (!providerName) return t('account.signIn');
+  return t('account.signInWithProvider', { provider: providerName.charAt(0).toUpperCase() + providerName.slice(1).toLowerCase() });
 };
 </script>
 

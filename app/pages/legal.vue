@@ -25,7 +25,7 @@ useSeoMeta({
   <main class="container my-16 max-w-4xl">
     <h1 class="legal-heading mb-8">{{ $t('legal.pageTitle') }}</h1>
 
-    <nav class="legal-tabs" aria-label="Páginas legales">
+    <nav class="legal-tabs" :aria-label="$t('legal.tabsAriaLabel')">
       <NuxtLink
         v-for="tab in TABS"
         :key="tab.slug"
