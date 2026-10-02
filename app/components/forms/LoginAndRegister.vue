@@ -38,156 +38,172 @@
 
     <!-- Formulario Principal -->
     <form @submit.prevent="handleFormSubmit">
-      <!-- Vista: Solicitud de Restablecer Contraseña -->
-      <template v-if="formView === FormView.FORGOT_PASSWORD">
-        <p class="mb-6 text-center font-sans text-xs leading-relaxed text-[var(--color-charcoal)]/70">
-          {{ $t('account.enterEmailOrUsernameForReset') }}
-        </p>
-        <div class="mb-4">
-          <label class="mb-1.5 block font-sans text-[11px] font-medium tracking-wider uppercase text-[var(--color-charcoal)]/80" for="resetEmail">
-            {{ $t('account.emailOrUsername') }}
-          </label>
-          <input
-            id="resetEmail"
-            v-model="userInfo.email"
-            :placeholder="$t('account.emailPlaceholder')"
-            autocomplete="email"
-            name="email"
-            type="text"
-            required
-            class="input-minimal" />
-        </div>
-      </template>
-
-      <!-- Vista: Nueva Contraseña (Llegada desde enlace del correo) -->
-      <template v-else-if="formView === FormView.RESET_PASSWORD">
-        <i18n-t
-          keypath="account.resetPasswordForAccount"
-          tag="p"
-          class="mb-6 text-center font-sans text-xs leading-relaxed text-[var(--color-charcoal)]/70">
-          <template #account><strong>{{ resetUser }}</strong></template>
-        </i18n-t>
-        <div class="mb-6">
-          <label class="mb-1.5 block font-sans text-[11px] font-medium tracking-wider uppercase text-[var(--color-charcoal)]/80" for="newPasswordInput">
-            {{ $t('account.newPassword') }}
-          </label>
-          <PasswordInput id="newPasswordInput" v-model="newPassword" placeholder="********" name="newPassword" autocomplete="new-password" :required="true" />
-        </div>
-      </template>
-
-      <!-- Vista: Registro -->
-      <template v-else-if="formView === FormView.REGISTER">
-        <!-- Nombre y Apellidos -->
-        <div class="grid grid-cols-2 gap-3 mb-4">
-          <div>
-            <label class="mb-1.5 block font-sans text-[11px] font-medium tracking-wider uppercase text-[var(--color-charcoal)]/80" for="firstName">
-              {{ $t('billing.firstName') }}
-            </label>
-            <input
-              id="firstName"
-              v-model="userInfo.firstName"
-              :placeholder="$t('billing.firstName')"
-              autocomplete="given-name"
-              name="firstName"
-              type="text"
-              required
-              class="input-minimal" />
+      <div class="relative overflow-hidden">
+        <Transition :css="false" @before-leave="onFormBeforeLeave" @leave="onFormLeave" @enter="onFormEnter">
+          <!-- Vista: Solicitud de Restablecer Contraseña -->
+          <div v-if="formView === FormView.FORGOT_PASSWORD" key="forgotPassword">
+            <p class="mb-6 text-center font-sans text-xs leading-relaxed text-[var(--color-charcoal)]/70">
+              {{ $t('account.enterEmailOrUsernameForReset') }}
+            </p>
+            <div class="mb-4">
+              <label class="mb-1.5 block font-sans text-[11px] font-medium tracking-wider uppercase text-[var(--color-charcoal)]/80" for="resetEmail">
+                {{ $t('account.emailOrUsername') }}
+              </label>
+              <input
+                id="resetEmail"
+                v-model="userInfo.email"
+                :placeholder="$t('account.emailPlaceholder')"
+                autocomplete="email"
+                name="email"
+                type="text"
+                required
+                class="input-minimal" />
+            </div>
           </div>
-          <div>
-            <label class="mb-1.5 block font-sans text-[11px] font-medium tracking-wider uppercase text-[var(--color-charcoal)]/80" for="lastName">
-              {{ $t('billing.lastName') }}
-            </label>
-            <input
-              id="lastName"
-              v-model="userInfo.lastName"
-              :placeholder="$t('billing.lastName')"
-              autocomplete="family-name"
-              name="lastName"
-              type="text"
-              required
-              class="input-minimal" />
+
+          <!-- Vista: Nueva Contraseña (Llegada desde enlace del correo) -->
+          <div v-else-if="formView === FormView.RESET_PASSWORD" key="resetPassword">
+            <i18n-t
+              keypath="account.resetPasswordForAccount"
+              tag="p"
+              class="mb-6 text-center font-sans text-xs leading-relaxed text-[var(--color-charcoal)]/70">
+              <template #account><strong>{{ resetUser }}</strong></template>
+            </i18n-t>
+            <div class="mb-6">
+              <label class="mb-1.5 block font-sans text-[11px] font-medium tracking-wider uppercase text-[var(--color-charcoal)]/80" for="newPasswordInput">
+                {{ $t('account.newPassword') }}
+              </label>
+              <PasswordInput
+                id="newPasswordInput"
+                v-model="newPassword"
+                placeholder="********"
+                name="newPassword"
+                autocomplete="new-password"
+                :required="true" />
+            </div>
           </div>
-        </div>
 
-        <!-- Nombre de Usuario (Username) -->
-        <div class="mb-4">
-          <label class="mb-1.5 block font-sans text-[11px] font-medium tracking-wider uppercase text-[var(--color-charcoal)]/80" for="regUsername">
-            {{ $t('account.username') }}
-          </label>
-          <input
-            id="regUsername"
-            v-model="userInfo.username"
-            :placeholder="$t('account.usernamePlaceholder')"
-            autocomplete="username"
-            name="username"
-            type="text"
-            required
-            class="input-minimal" />
-        </div>
+          <!-- Vista: Registro -->
+          <div v-else-if="formView === FormView.REGISTER" key="register">
+            <!-- Nombre y Apellidos -->
+            <div class="grid grid-cols-2 gap-3 mb-4">
+              <div>
+                <label class="mb-1.5 block font-sans text-[11px] font-medium tracking-wider uppercase text-[var(--color-charcoal)]/80" for="firstName">
+                  {{ $t('billing.firstName') }}
+                </label>
+                <input
+                  id="firstName"
+                  v-model="userInfo.firstName"
+                  :placeholder="$t('billing.firstName')"
+                  autocomplete="given-name"
+                  name="firstName"
+                  type="text"
+                  required
+                  class="input-minimal" />
+              </div>
+              <div>
+                <label class="mb-1.5 block font-sans text-[11px] font-medium tracking-wider uppercase text-[var(--color-charcoal)]/80" for="lastName">
+                  {{ $t('billing.lastName') }}
+                </label>
+                <input
+                  id="lastName"
+                  v-model="userInfo.lastName"
+                  :placeholder="$t('billing.lastName')"
+                  autocomplete="family-name"
+                  name="lastName"
+                  type="text"
+                  required
+                  class="input-minimal" />
+              </div>
+            </div>
 
-        <!-- Correo Electrónico -->
-        <div class="mb-4">
-          <label class="mb-1.5 block font-sans text-[11px] font-medium tracking-wider uppercase text-[var(--color-charcoal)]/80" for="regEmail">
-            {{ $t('billing.email') }}
-          </label>
-          <input
-            id="regEmail"
-            v-model="userInfo.email"
-            :placeholder="$t('account.emailPlaceholder')"
-            autocomplete="email"
-            name="email"
-            type="email"
-            required
-            class="input-minimal" />
-        </div>
+            <!-- Nombre de Usuario (Username) -->
+            <div class="mb-4">
+              <label class="mb-1.5 block font-sans text-[11px] font-medium tracking-wider uppercase text-[var(--color-charcoal)]/80" for="regUsername">
+                {{ $t('account.username') }}
+              </label>
+              <input
+                id="regUsername"
+                v-model="userInfo.username"
+                :placeholder="$t('account.usernamePlaceholder')"
+                autocomplete="username"
+                name="username"
+                type="text"
+                required
+                class="input-minimal" />
+            </div>
 
-        <!-- Contraseña -->
-        <div class="mb-6">
-          <label class="mb-1.5 block font-sans text-[11px] font-medium tracking-wider uppercase text-[var(--color-charcoal)]/80" for="regPassword">
-            {{ passwordLabel }}
-          </label>
-          <PasswordInput id="regPassword" v-model="userInfo.password" placeholder="********" name="password" autocomplete="new-password" :required="true" />
-        </div>
-      </template>
+            <!-- Correo Electrónico -->
+            <div class="mb-4">
+              <label class="mb-1.5 block font-sans text-[11px] font-medium tracking-wider uppercase text-[var(--color-charcoal)]/80" for="regEmail">
+                {{ $t('billing.email') }}
+              </label>
+              <input
+                id="regEmail"
+                v-model="userInfo.email"
+                :placeholder="$t('account.emailPlaceholder')"
+                autocomplete="email"
+                name="email"
+                type="email"
+                required
+                class="input-minimal" />
+            </div>
 
-      <!-- Vista: Inicio de Sesión -->
-      <template v-else-if="formView === FormView.LOGIN">
-        <div class="mb-4">
-          <label class="mb-1.5 block font-sans text-[11px] font-medium tracking-wider uppercase text-[var(--color-charcoal)]/80" for="username">
-            {{ $t('account.emailOrUsername') }}
-          </label>
-          <input
-            id="username"
-            v-model="userInfo.username"
-            :placeholder="$t('account.usernameOrEmailPlaceholder')"
-            autocomplete="username"
-            name="username"
-            type="text"
-            required
-            class="input-minimal" />
-        </div>
-
-        <div class="mb-4">
-          <div class="mb-1.5 flex items-center justify-between">
-            <label class="font-sans text-[11px] font-medium tracking-wider uppercase text-[var(--color-charcoal)]/80" for="loginPassword">
-              {{ passwordLabel }}
-            </label>
-            <button
-              type="button"
-              class="font-sans text-[11px] text-[var(--color-charcoal)]/60 hover:text-[var(--color-charcoal)] hover:underline cursor-pointer"
-              @click="navigate(FormView.FORGOT_PASSWORD)">
-              {{ $t('account.forgotPassword') }}
-            </button>
+            <!-- Contraseña -->
+            <div class="mb-6">
+              <label class="mb-1.5 block font-sans text-[11px] font-medium tracking-wider uppercase text-[var(--color-charcoal)]/80" for="regPassword">
+                {{ passwordLabel }}
+              </label>
+              <PasswordInput
+                id="regPassword"
+                v-model="userInfo.password"
+                placeholder="********"
+                name="password"
+                autocomplete="new-password"
+                :required="true" />
+            </div>
           </div>
-          <PasswordInput
-            id="loginPassword"
-            v-model="userInfo.password"
-            placeholder="********"
-            name="password"
-            autocomplete="current-password"
-            :required="true" />
-        </div>
-      </template>
+
+          <!-- Vista: Inicio de Sesión -->
+          <div v-else-if="formView === FormView.LOGIN" key="login">
+            <div class="mb-4">
+              <label class="mb-1.5 block font-sans text-[11px] font-medium tracking-wider uppercase text-[var(--color-charcoal)]/80" for="username">
+                {{ $t('account.emailOrUsername') }}
+              </label>
+              <input
+                id="username"
+                v-model="userInfo.username"
+                :placeholder="$t('account.usernameOrEmailPlaceholder')"
+                autocomplete="username"
+                name="username"
+                type="text"
+                required
+                class="input-minimal" />
+            </div>
+
+            <div class="mb-4">
+              <div class="mb-1.5 flex items-center justify-between">
+                <label class="font-sans text-[11px] font-medium tracking-wider uppercase text-[var(--color-charcoal)]/80" for="loginPassword">
+                  {{ passwordLabel }}
+                </label>
+                <button
+                  type="button"
+                  class="font-sans text-[11px] text-[var(--color-charcoal)]/60 hover:text-[var(--color-charcoal)] hover:underline cursor-pointer"
+                  @click="navigate(FormView.FORGOT_PASSWORD)">
+                  {{ $t('account.forgotPassword') }}
+                </button>
+              </div>
+              <PasswordInput
+                id="loginPassword"
+                v-model="userInfo.password"
+                placeholder="********"
+                name="password"
+                autocomplete="current-password"
+                :required="true" />
+            </div>
+          </div>
+        </Transition>
+      </div>
 
       <!-- Mensajes de Estado / Retroalimentación -->
       <Transition name="scale-y" mode="out-in">
@@ -222,6 +238,7 @@
 </template>
 
 <script setup lang="ts">
+import gsap from 'gsap';
 import type { UserInfo } from '#types/gql';
 import ResetUserPasswordMutation from '~/queries/resetUserPassword.gql?raw';
 
@@ -253,23 +270,100 @@ const resetKey = ref('');
 const resetUser = ref('');
 const newPassword = ref('');
 
+// Read by onFormEnter/onFormLeave at the moment they actually fire — Login and Register sit side
+// by side as tabs (login first, register second), so moving right (login → register) slides the
+// same direction a forward step through that row would; the forgot/reset-password detour extends
+// that same forward/back line rather than getting its own special-cased direction.
+const VIEW_ORDER = [FormView.LOGIN, FormView.REGISTER, FormView.FORGOT_PASSWORD, FormView.RESET_PASSWORD];
+let slideDirection: 1 | -1 = 1;
+
+const setFormView = (view: FormView): void => {
+  slideDirection = VIEW_ORDER.indexOf(view) >= VIEW_ORDER.indexOf(formView.value) ? 1 : -1;
+  formView.value = view;
+};
+
 const updateFormView = () => {
   errorMessage.value = '';
   message.value = '';
 
   if (route.query.action === 'resetPassword' && route.query.key && route.query.login) {
-    formView.value = FormView.RESET_PASSWORD;
+    setFormView(FormView.RESET_PASSWORD);
     resetKey.value = String(route.query.key);
     resetUser.value = String(route.query.login);
   } else if (route.query.action === FormView.FORGOT_PASSWORD) {
-    formView.value = FormView.FORGOT_PASSWORD;
+    setFormView(FormView.FORGOT_PASSWORD);
   } else if (route.query.action === FormView.REGISTER) {
-    formView.value = FormView.REGISTER;
+    setFormView(FormView.REGISTER);
   } else {
-    formView.value = FormView.LOGIN;
+    setFormView(FormView.LOGIN);
   }
 };
 watch(route, updateFormView, { immediate: true });
+
+const SLIDE_DURATION = 0.4;
+
+const onFormBeforeLeave = (el: Element): void => {
+  const node = el as HTMLElement;
+  const wrapper = node.parentElement;
+  // Pin the wrapper to the leaving view's own height before it drops out of flow below —
+  // otherwise the wrapper snaps straight to the entering view's height (forms vary a lot: four
+  // fields plus a password vs. a single email field), making the leaving content visibly resize
+  // mid-slide instead of just sliding away at its original size.
+  if (wrapper instanceof HTMLElement) {
+    wrapper.style.height = `${wrapper.getBoundingClientRect().height}px`;
+  }
+  gsap.killTweensOf(node);
+  node.style.position = 'absolute';
+  node.style.inset = '0';
+};
+
+const onFormLeave = (el: Element, done: () => void): void => {
+  if (prefersReducedMotion()) {
+    done();
+    return;
+  }
+  gsap.to(el, {
+    xPercent: slideDirection * -100,
+    duration: SLIDE_DURATION,
+    ease: 'power2.inOut',
+    onComplete: done,
+  });
+};
+
+const onFormEnter = (el: Element, done: () => void): void => {
+  const node = el as HTMLElement;
+  const wrapper = node.parentElement;
+
+  // Forms vary a lot in height (four fields plus a password vs. a single email field) — grow or
+  // shrink the pinned wrapper to the entering view's own height over the same beat as the slide,
+  // instead of releasing it to `auto` only once the leaving view is gone, which snapped the
+  // wrapper straight to the new height right as the slide finished.
+  if (wrapper instanceof HTMLElement) {
+    gsap.killTweensOf(wrapper);
+    if (prefersReducedMotion()) {
+      wrapper.style.height = '';
+    } else {
+      // 'auto' lets GSAP measure the true natural height itself right as the tween starts,
+      // rather than trusting a snapshot taken slightly earlier that can drift from the real
+      // value by the time the content has fully settled.
+      gsap.to(wrapper, {
+        height: 'auto',
+        duration: SLIDE_DURATION,
+        ease: 'power2.inOut',
+        onComplete: () => {
+          wrapper.style.height = '';
+        },
+      });
+    }
+  }
+
+  if (prefersReducedMotion()) {
+    done();
+    return;
+  }
+  gsap.killTweensOf(node);
+  gsap.fromTo(node, { xPercent: slideDirection * 100 }, { xPercent: 0, duration: SLIDE_DURATION, ease: 'power2.inOut', onComplete: done });
+};
 
 const login = async () => {
   const loginPayload: UserInfo = {
@@ -388,7 +482,7 @@ const handleResetPassword = async () => {
 };
 
 const navigate = (view: FormView) => {
-  formView.value = view;
+  setFormView(view);
   if (view === FormView.FORGOT_PASSWORD) {
     router.push({ query: { action: 'forgotPassword' } });
   } else if (view === FormView.REGISTER) {
