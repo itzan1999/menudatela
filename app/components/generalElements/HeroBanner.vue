@@ -133,14 +133,14 @@ onUnmounted(() => {
 
 /* The stitched seam between panel and photo. A dedicated element (rather than a border on
    .hero-panel) so it can be scaled independently for the GSAP "stitching in" reveal. */
-.hero-seam {
+/* .hero-seam {
   order: 2;
   width: 100%;
   height: 2px;
   border-top: 2px dashed color-mix(in oklab, var(--color-charcoal) 35%, transparent);
-}
+} */
 
-@media (min-width: 900px) {
+/* @media (min-width: 900px) {
   .hero-seam {
     grid-column: 2;
     order: initial;
@@ -149,7 +149,7 @@ onUnmounted(() => {
     border-top: none;
     border-right: 2px dashed color-mix(in oklab, var(--color-charcoal) 35%, transparent);
   }
-}
+} */
 
 .hero-title {
   font-family: var(--font-serif);
