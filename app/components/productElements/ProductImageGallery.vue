@@ -97,9 +97,22 @@ const onImageLeave = (el: Element, done: () => void) => {
   gsap.to(el, { xPercent: slideDirection * -100, duration: SLIDE_DURATION, ease: 'power2.out', onComplete: done });
 };
 
+// activeVariation resolves asynchronously after mount (it depends on the product fetch finishing
+// attribute matching), so its first real value here isn't a user switching color — it's this same
+// navigation catching up. Skip that one when a listing card already picked a deliberate photo
+// (?img=<id>, honored by initialImage above): otherwise the variation's own default image
+// clobbers it moments after mount, and worse, firing mid-way through the shared-element zoom's own
+// resolve() races this gallery's internal slide transition against it, throwing off the target
+// rect it measures (it can catch the entering image still mid-tween, offset from its resting spot).
+let skipNextVariationSync = props.initialImageId != null;
+
 watch(
   () => props.activeVariation,
   (newVal) => {
+    if (skipNextVariationSync) {
+      skipNextVariationSync = false;
+      return;
+    }
     if (newVal?.image) {
       const foundImage = galleryImages.value.find((img) => img.sourceUrl && img.sourceUrl === newVal.image?.sourceUrl);
       if (foundImage) changeImage(foundImage);

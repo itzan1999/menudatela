@@ -231,7 +231,6 @@
 </template>
 
 <script setup lang="ts">
-import gsap from 'gsap';
 import type { UserInfo } from '#types/gql';
 import ResetUserPasswordMutation from '~/queries/resetUserPassword.gql?raw';
 
@@ -293,70 +292,7 @@ const updateFormView = () => {
 };
 watch(route, updateFormView, { immediate: true });
 
-const SLIDE_DURATION = 0.4;
-
-const onFormBeforeLeave = (el: Element): void => {
-  const node = el as HTMLElement;
-  const wrapper = node.parentElement;
-  // Pin the wrapper to the leaving view's own height before it drops out of flow below —
-  // otherwise the wrapper snaps straight to the entering view's height (forms vary a lot: four
-  // fields plus a password vs. a single email field), making the leaving content visibly resize
-  // mid-slide instead of just sliding away at its original size.
-  if (wrapper instanceof HTMLElement) {
-    wrapper.style.height = `${wrapper.getBoundingClientRect().height}px`;
-  }
-  gsap.killTweensOf(node);
-  node.style.position = 'absolute';
-  node.style.inset = '0';
-};
-
-const onFormLeave = (el: Element, done: () => void): void => {
-  if (prefersReducedMotion()) {
-    done();
-    return;
-  }
-  gsap.to(el, {
-    xPercent: slideDirection * -100,
-    duration: SLIDE_DURATION,
-    ease: 'power2.inOut',
-    onComplete: done,
-  });
-};
-
-const onFormEnter = (el: Element, done: () => void): void => {
-  const node = el as HTMLElement;
-  const wrapper = node.parentElement;
-
-  // Forms vary a lot in height (four fields plus a password vs. a single email field) — grow or
-  // shrink the pinned wrapper to the entering view's own height over the same beat as the slide,
-  // instead of releasing it to `auto` only once the leaving view is gone, which snapped the
-  // wrapper straight to the new height right as the slide finished.
-  if (wrapper instanceof HTMLElement) {
-    gsap.killTweensOf(wrapper);
-    if (prefersReducedMotion()) {
-      wrapper.style.height = '';
-    } else {
-      // 'auto' lets GSAP measure the true natural height itself right as the tween starts,
-      // rather than trusting a snapshot taken slightly earlier that can drift from the real
-      // value by the time the content has fully settled.
-      gsap.to(wrapper, {
-        height: 'auto',
-        duration: SLIDE_DURATION,
-        ease: 'power2.inOut',
-        onComplete: () => {
-          wrapper.style.height = '';
-        },
-      });
-    }
-  }
-
-  if (prefersReducedMotion()) {
-    done();
-    return;
-  }
-  gsap.killTweensOf(node);
-  gsap.fromTo(node, { xPercent: slideDirection * 100 }, { xPercent: 0, duration: SLIDE_DURATION, ease: 'power2.inOut', onComplete: done });
-};
+const { onBeforeLeave: onFormBeforeLeave, onLeave: onFormLeave, onEnter: onFormEnter } = useHeightAwareSlideTransition(() => slideDirection);
 
 const login = async () => {
   const loginPayload: UserInfo = {
